@@ -15,7 +15,7 @@
 <header class="hero">
   <div class="container hero-inner">
     <div class="hero-copy">
-      <span class="hero-eyebrow"><span class="dot"></span> 38 free tools · one universe</span>
+      <div class="hero-eyebrow-row"><span class="eyebrow-rule" aria-hidden="true"></span><span class="hero-eyebrow"><span class="dot"></span> 38 free tools · one universe</span></div>
       <h1>All your tools.<br><span class="hl">One universe.</span></h1>
       <p class="sub">Merge a PDF, shrink an image, format JSON or mint a strong password — free, instant, and private, because everything runs right here in your browser.</p>
       <div class="hero-search">
@@ -68,7 +68,7 @@
   </section>
 
   <section class="section" id="popular">
-    <div class="section-head"><h2>Most popular</h2><span class="count">The tools people reach for first</span></div>
+    <div class="section-head"><h2><span class="bar"></span>Most popular</h2><span class="count">The tools people reach for first</span></div>
     <div class="tool-grid">
       <a class="tool-card reveal" href="tools/merge-pdf.html" data-cat="pdf"><span class="tool-icon" data-icon="merge-pdf"></span><span class="tool-card-body"><span class="tool-name">Merge PDF</span><span class="tool-desc">Combine several PDF files into a single document.</span></span><span class="fav-btn" data-slug="merge-pdf" role="button" tabindex="0" aria-label="Save Merge PDF to favourites">☆</span></a>
       <a class="tool-card reveal" href="tools/compress-image.html" data-cat="image"><span class="tool-icon" data-icon="compress-image"></span><span class="tool-card-body"><span class="tool-name">Compress Image</span><span class="tool-desc">Reduce JPG, PNG and WebP file size with a quality slider.</span></span><span class="fav-btn" data-slug="compress-image" role="button" tabindex="0" aria-label="Save Compress Image to favourites">☆</span></a>
@@ -83,8 +83,18 @@
     </div>
   </section>
 
+  <section class="section" id="trending">
+    <div class="section-head"><h2><span class="bar"></span>Trending tools</h2><span class="count">Our featured picks right now</span></div>
+    <ol class="trend-list">
+      <li><a class="trend-row reveal" href="tools/merge-pdf.html" data-cat="pdf"><span class="trend-rank">01</span><span class="tool-icon" data-icon="merge-pdf"></span><span class="trend-body"><span class="trend-name">Merge PDF</span><span class="trend-desc">Combine several PDF files into one tidy document.</span></span><span class="trend-open">Open →</span></a></li>
+      <li><a class="trend-row reveal" href="tools/compress-image.html" data-cat="image"><span class="trend-rank">02</span><span class="tool-icon" data-icon="compress-image"></span><span class="trend-body"><span class="trend-name">Compress Image</span><span class="trend-desc">Shrink JPG, PNG and WebP files without losing the look.</span></span><span class="trend-open">Open →</span></a></li>
+      <li><a class="trend-row reveal" href="tools/qr-code-generator.html" data-cat="generators"><span class="trend-rank">03</span><span class="tool-icon" data-icon="qr-code-generator"></span><span class="trend-body"><span class="trend-name">QR Code Generator</span><span class="trend-desc">Turn any link or text into a scannable code in seconds.</span></span><span class="trend-open">Open →</span></a></li>
+      <li><a class="trend-row reveal" href="tools/word-counter.html" data-cat="text"><span class="trend-rank">04</span><span class="tool-icon" data-icon="word-counter"></span><span class="trend-body"><span class="trend-name">Word Counter</span><span class="trend-desc">Words, characters, sentences and reading time, counted live.</span></span><span class="trend-open">Open →</span></a></li>
+    </ol>
+  </section>
+
   <section class="section" id="categories">
-    <div class="section-head"><h2>Browse by category</h2><span class="count">38 tools · all live</span></div>
+    <div class="section-head"><h2><span class="bar"></span>Browse by category</h2><span class="count">38 tools · all live</span></div>
     <div class="cat-grid">
       <a class="cat-card reveal" href="#pdf" data-cat="pdf"><span class="tool-icon" data-icon="merge-pdf"></span><span class="cat-name">PDF Tools</span><span class="cat-meta">6 tools</span><span class="cat-go">Explore →</span></a>
       <a class="cat-card reveal" href="#image" data-cat="image"><span class="tool-icon" data-icon="compress-image"></span><span class="cat-name">Image Tools</span><span class="cat-meta">6 tools</span><span class="cat-go">Explore →</span></a>
