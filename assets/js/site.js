@@ -191,6 +191,9 @@
     syncFavButtons();
   }
 
+  /* ---------- Logo (360 Orbit mark) ---------- */
+  var LOGO_SVG = '<svg class="logo-svg" viewBox="0 0 48 48" fill="none" aria-hidden="true"><defs><linearGradient id="t360lg" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7c3aed"/><stop offset=".52" stop-color="#d946ef"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs><circle cx="24" cy="24" r="18.5" stroke="url(#t360lg)" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="86 30"/><circle cx="36.6" cy="10.5" r="3.2" fill="#06b6d4"/><path fill="currentColor" fill-rule="evenodd" d="M24 14.6l8.1 4.7v9.4L24 33.4l-8.1-4.7v-9.4L24 14.6zm0 5.3a4.1 4.1 0 1 0 0 8.2 4.1 4.1 0 0 0 0-8.2z"/></svg>';
+
   /* ---------- Header / footer injection ---------- */
   var sunSVG = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
   var moonSVG = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
@@ -206,7 +209,7 @@
       header.className = "site-header";
       header.innerHTML =
         '<div class="container header-inner">' +
-          '<a class="logo" href="' + BASE + 'index.html" aria-label="Tool360 home"><span class="logo-mark">360</span><span>Tool<span class="logo-num">360</span></span></a>' +
+          '<a class="logo" href="' + BASE + 'index.html" aria-label="Tool360 home">' + LOGO_SVG + '<span>Tool<span class="logo-num">360</span></span></a>' +
           '<nav class="main-nav" aria-label="Tool categories">' + nav + "</nav>" +
           '<div class="header-actions">' +
             '<button class="search-btn" id="hdr-search" type="button" aria-label="Search tools">' + searchSVG + '<span class="sb-label">Search tools…</span><span class="spacer"></span><span class="kbd">Ctrl K</span></button>' +
@@ -235,7 +238,7 @@
         '<div class="container">' +
           '<div class="footer-grid">' +
             '<div class="footer-brand">' +
-              '<a class="logo" href="' + BASE + 'index.html"><span class="logo-mark">360</span><span>Tool<span class="logo-num">360</span></span></a>' +
+              '<a class="logo" href="' + BASE + 'index.html">' + LOGO_SVG + '<span>Tool<span class="logo-num">360</span></span></a>' +
               "<p>Free online tools for PDFs, images, text, conversions and code. Everything runs locally in your browser — your files are never uploaded to a server.</p>" +
             "</div>" +
             "<div><h4>Categories</h4><ul>" + catLinks + "</ul></div>" +
@@ -404,10 +407,9 @@
 
   /* ---------- Init ---------- */
   (function initTheme() {
+    /* Dark is the default showpiece theme; a saved choice always wins. */
     var saved = lsGet("t360:theme", null);
-    if (saved) document.documentElement.setAttribute("data-theme", saved);
-    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)
-      document.documentElement.setAttribute("data-theme", "dark");
+    document.documentElement.setAttribute("data-theme", saved === "light" ? "light" : "dark");
   })();
 
   injectChrome();
@@ -456,5 +458,33 @@
     } else {
       revealEls.forEach(function (el) { el.classList.add("in"); });
     }
+  }
+
+  /* ---------- 3D tilt + glow on cards (fine pointers only) ---------- */
+  if (window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.querySelectorAll(".tool-card, .cat-card").forEach(function (card) {
+      card.addEventListener("pointermove", function (e) {
+        var r = card.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        card.style.setProperty("--ry", ((px - 0.5) * 7).toFixed(2) + "deg");
+        card.style.setProperty("--rx", ((0.5 - py) * 7).toFixed(2) + "deg");
+        card.style.setProperty("--mx", (px * 100).toFixed(1) + "%");
+        card.style.setProperty("--my", (py * 100).toFixed(1) + "%");
+        card.classList.add("tilting");
+      });
+      card.addEventListener("pointerleave", function () {
+        card.style.setProperty("--rx", "0deg");
+        card.style.setProperty("--ry", "0deg");
+        card.classList.remove("tilting");
+      });
+    });
+  }
+
+  /* ---------- Marquee: clone the set once for a seamless loop ---------- */
+  var mqTrack = document.getElementById("marquee-track");
+  if (mqTrack && mqTrack.children.length === 1) {
+    mqTrack.appendChild(mqTrack.children[0].cloneNode(true));
+    mqTrack.classList.add("loop");
   }
 })();

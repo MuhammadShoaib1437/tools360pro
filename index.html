@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tool360 — Free Online Tools for PDF, Images, Text &amp; Code</title>
 <meta name="description" content="Tool360 is a free all-in-one toolbox: merge and split PDFs, compress and convert images, count words, format JSON, generate QR codes and passwords — all in your browser, no sign-up, no uploads.">
+<meta name="theme-color" content="#07070f">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -12,29 +13,47 @@
 <div id="site-header"></div>
 
 <header class="hero">
-  <div class="shapes" aria-hidden="true">
-    <div class="shape cube s1"></div>
-    <div class="shape ring s2"></div>
-    <div class="shape pill s3"></div>
-    <div class="shape cube small s4"></div>
-    <div class="shape dot s5"></div>
-    <div class="shape cube small s6"></div>
-  </div>
-  <div class="container">
-    <h1>Every everyday tool,<br><span class="hl">in one place.</span></h1>
-    <p class="sub">Merge a PDF, shrink an image, format JSON or mint a strong password — free, instant, and private, because everything runs right here in your browser.</p>
-    <div class="hero-search">
-      <span class="hs-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5 16.7 16.7"/></svg></span>
-      <input id="hero-search" type="text" placeholder="Search tools… try “merge pdf” or “bmi”" aria-label="Search tools" autocomplete="off">
-      <span class="kbd">Ctrl K</span>
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <span class="hero-eyebrow"><span class="dot"></span> 38 free tools · one universe</span>
+      <h1>All your tools.<br><span class="hl">One universe.</span></h1>
+      <p class="sub">Merge a PDF, shrink an image, format JSON or mint a strong password — free, instant, and private, because everything runs right here in your browser.</p>
+      <div class="hero-search">
+        <div class="hs-shell">
+          <span class="hs-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5 16.7 16.7"/></svg></span>
+          <input id="hero-search" type="text" placeholder="Search tools… try “merge pdf” or “bmi”" aria-label="Search tools" autocomplete="off">
+          <span class="kbd">Ctrl K</span>
+        </div>
+      </div>
+      <div class="trust-chips">
+        <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> 100% Free</span>
+        <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> No sign-up</span>
+        <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Files never leave your device</span>
+      </div>
     </div>
-    <div class="trust-chips">
-      <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> 100% Free</span>
-      <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> No sign-up</span>
-      <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Files never leave your device</span>
+    <div class="hero-stage" id="hero-stage">
+      <div class="hero-fallback" aria-hidden="true">
+        <div class="hf-ring r1"></div>
+        <div class="hf-ring r2"></div>
+        <div class="hf-logo"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><defs><linearGradient id="t360lg-h" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7c3aed"/><stop offset=".52" stop-color="#d946ef"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs><circle cx="24" cy="24" r="18.5" stroke="url(#t360lg-h)" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="86 30"/><circle cx="36.6" cy="10.5" r="3.2" fill="#06b6d4"/><path fill="currentColor" fill-rule="evenodd" d="M24 14.6l8.1 4.7v9.4L24 33.4l-8.1-4.7v-9.4L24 14.6zm0 5.3a4.1 4.1 0 1 0 0 8.2 4.1 4.1 0 0 0 0-8.2z"/></svg></div>
+        <span class="hf-chip c1" data-cat="pdf"><span class="tool-icon" data-icon="merge-pdf"></span></span>
+        <span class="hf-chip c2" data-cat="image"><span class="tool-icon" data-icon="compress-image"></span></span>
+        <span class="hf-chip c3" data-cat="generators"><span class="tool-icon" data-icon="qr-code-generator"></span></span>
+        <span class="hf-chip c4" data-cat="developer"><span class="tool-icon" data-icon="json-formatter"></span></span>
+        <span class="hf-chip c5" data-cat="text"><span class="tool-icon" data-icon="word-counter"></span></span>
+      </div>
+      <canvas id="hero-canvas" aria-hidden="true"></canvas>
     </div>
   </div>
 </header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="marquee-track">
+    <div class="mq-set">
+      <span class="mq-item"><i></i>Merge PDF</span><span class="mq-item"><i></i>Split PDF</span><span class="mq-item"><i></i>Images to PDF</span><span class="mq-item"><i></i>PDF to Image</span><span class="mq-item"><i></i>Rotate &amp; Organize PDF</span><span class="mq-item"><i></i>Compress PDF</span><span class="mq-item"><i></i>Compress Image</span><span class="mq-item"><i></i>Resize Image</span><span class="mq-item"><i></i>Convert Image</span><span class="mq-item"><i></i>Crop Image</span><span class="mq-item"><i></i>Watermark Image</span><span class="mq-item"><i></i>Favicon Generator</span><span class="mq-item"><i></i>Word Counter</span><span class="mq-item"><i></i>Case Converter</span><span class="mq-item"><i></i>Keyword Density Checker</span><span class="mq-item"><i></i>Meta Tag Generator</span><span class="mq-item"><i></i>Lorem Ipsum Generator</span><span class="mq-item"><i></i>Text Cleaner</span><span class="mq-item"><i></i>Unit Converter</span><span class="mq-item"><i></i>Time Zone Converter</span><span class="mq-item"><i></i>Number Base Converter</span><span class="mq-item"><i></i>Currency Converter</span><span class="mq-item"><i></i>Percentage Calculator</span><span class="mq-item"><i></i>Age Calculator</span><span class="mq-item"><i></i>BMI Calculator</span><span class="mq-item"><i></i>Loan / EMI Calculator</span><span class="mq-item"><i></i>Tip &amp; Bill Split Calculator</span><span class="mq-item"><i></i>JSON Formatter &amp; Validator</span><span class="mq-item"><i></i>Base64 Encoder &amp; Decoder</span><span class="mq-item"><i></i>UUID Generator</span><span class="mq-item"><i></i>URL &amp; HTML Encoder</span><span class="mq-item"><i></i>JWT Decoder</span><span class="mq-item"><i></i>CSS Gradient &amp; Shadow Generator</span><span class="mq-item"><i></i>Regex Tester</span><span class="mq-item"><i></i>QR Code Generator</span><span class="mq-item"><i></i>Password Generator</span><span class="mq-item"><i></i>Color Converter &amp; Palette</span><span class="mq-item"><i></i>List Randomizer</span>
+    </div>
+  </div>
+</div>
 
 <main class="container">
 
@@ -74,6 +93,30 @@
       <a class="cat-card reveal" href="#calculators" data-cat="calculators"><span class="tool-icon" data-icon="percentage-calculator"></span><span class="cat-name">Calculators</span><span class="cat-meta">5 tools</span><span class="cat-go">Explore →</span></a>
       <a class="cat-card reveal" href="#developer" data-cat="developer"><span class="tool-icon" data-icon="json-formatter"></span><span class="cat-name">Developer Tools</span><span class="cat-meta">7 tools</span><span class="cat-go">Explore →</span></a>
       <a class="cat-card reveal" href="#generators" data-cat="generators"><span class="tool-icon" data-icon="qr-code-generator"></span><span class="cat-name">Generators</span><span class="cat-meta">4 tools</span><span class="cat-go">Explore →</span></a>
+    </div>
+  </section>
+
+  <section class="section orbit-wrap" id="orbit">
+    <div class="section-head"><h2><span class="bar"></span>The Tool360 Orbit</h2><span class="count">Featured tools, in motion — tap one to open it</span></div>
+    <div class="orbit-stage">
+      <div class="orbit-ring r1">
+        <a class="orbit-node" style="--a:0deg" href="tools/merge-pdf.html" data-cat="pdf"><span class="orbit-pos"><span class="orbit-chip"><span class="tool-icon" data-icon="merge-pdf"></span><span class="oc-name">Merge PDF</span></span></span></a>
+        <a class="orbit-node" style="--a:45deg" href="tools/compress-image.html" data-cat="image"><span class="orbit-pos"><span class="orbit-chip"><span class="tool-icon" data-icon="compress-image"></span><span class="oc-name">Compress Image</span></span></span></a>
+        <a class="orbit-node" style="--a:90deg" href="tools/qr-code-generator.html" data-cat="generators"><span class="orbit-pos"><span class="orbit-chip"><span class="tool-icon" data-icon="qr-code-generator"></span><span class="oc-name">QR Code Generator</span></span></span></a>
+        <a class="orbit-node" style="--a:135deg" href="tools/word-counter.html" data-cat="text"><span class="orbit-pos"><span class="orbit-chip"><span class="tool-icon" data-icon="word-counter"></span><span class="oc-name">Word Counter</span></span></span></a>
+        <a class="orbit-node" style="--a:180deg" href="tools/json-formatter.html" data-cat="developer"><span class="orbit-pos"><span class="orbit-chip"><span class="tool-icon" data-icon="json-formatter"></span><span class="oc-name">JSON Formatter</span></span></span></a>
+        <a class="orbit-node" style="--a:225deg" href="tools/password-generator.html" data-cat="generators"><span class="orbit-pos"><span class="orbit-chip"><span class="tool-icon" data-icon="password-generator"></span><span class="oc-name">Password Generator</span></span></span></a>
+        <a class="orbit-node" style="--a:270deg" href="tools/images-to-pdf.html" data-cat="pdf"><span class="orbit-pos"><span class="orbit-chip"><span class="tool-icon" data-icon="images-to-pdf"></span><span class="oc-name">Images to PDF</span></span></span></a>
+        <a class="orbit-node" style="--a:315deg" href="tools/unit-converter.html" data-cat="converters"><span class="orbit-pos"><span class="orbit-chip"><span class="tool-icon" data-icon="unit-converter"></span><span class="oc-name">Unit Converter</span></span></span></a>
+      </div>
+      <div class="orbit-ring r2">
+        <a class="orbit-node" style="--a:36deg" href="tools/pdf-to-image.html" data-cat="pdf"><span class="orbit-pos"><span class="orbit-chip"><span class="tool-icon" data-icon="pdf-to-image"></span><span class="oc-name">PDF to Image</span></span></span></a>
+        <a class="orbit-node" style="--a:108deg" href="tools/regex-tester.html" data-cat="developer"><span class="orbit-pos"><span class="orbit-chip"><span class="tool-icon" data-icon="regex-tester"></span><span class="oc-name">Regex Tester</span></span></span></a>
+        <a class="orbit-node" style="--a:180deg" href="tools/color-palette.html" data-cat="generators"><span class="orbit-pos"><span class="orbit-chip"><span class="tool-icon" data-icon="color-palette"></span><span class="oc-name">Color Palette</span></span></span></a>
+        <a class="orbit-node" style="--a:252deg" href="tools/loan-calculator.html" data-cat="calculators"><span class="orbit-pos"><span class="orbit-chip"><span class="tool-icon" data-icon="loan-calculator"></span><span class="oc-name">Loan / EMI Calculator</span></span></span></a>
+        <a class="orbit-node" style="--a:324deg" href="tools/case-converter.html" data-cat="text"><span class="orbit-pos"><span class="orbit-chip"><span class="tool-icon" data-icon="case-converter"></span><span class="oc-name">Case Converter</span></span></span></a>
+      </div>
+      <div class="orbit-core"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><defs><linearGradient id="t360lg-o" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7c3aed"/><stop offset=".52" stop-color="#d946ef"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs><circle cx="24" cy="24" r="18.5" stroke="url(#t360lg-o)" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="86 30"/><circle cx="36.6" cy="10.5" r="3.2" fill="#06b6d4"/><path fill="currentColor" fill-rule="evenodd" d="M24 14.6l8.1 4.7v9.4L24 33.4l-8.1-4.7v-9.4L24 14.6zm0 5.3a4.1 4.1 0 1 0 0 8.2 4.1 4.1 0 0 0 0-8.2z"/></svg><span>38 tools</span></div>
     </div>
   </section>
 
@@ -185,5 +228,7 @@
 
 <div id="site-footer"></div>
 <script src="assets/js/site.js"></script>
+<script src="assets/vendor/three.min.js" defer></script>
+<script src="assets/js/hero3d.js" defer></script>
 </body>
 </html>
