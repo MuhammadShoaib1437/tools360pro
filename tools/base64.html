@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base64 Encoder &amp; Decoder — Free Online Base64 Encoder &amp; Decoder | Tool360</title>
+<meta name="description" content="Encode and decode Base64 online for free with full UTF-8 support. Convert text and files to Base64 instantly, private and secure in your browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="base64" data-category="developer">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#developer">Developer Tools</a> <span class="sep">›</span> <span aria-current="page">Base64 Encoder &amp; Decoder</span></nav>
+  <h1>Base64 Encoder &amp; Decoder</h1>
+  <p class="lede">Encode text to Base64 or decode it back — with full Unicode support and file conversion.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your code and data never leave this device</p>
+
+  <section class="workspace card">
+    <div class="options-bar">
+      <div class="seg" role="group" aria-label="Mode">
+        <button type="button" id="encodeModeBtn" class="active">Encode</button>
+        <button type="button" id="decodeModeBtn">Decode</button>
+      </div>
+      <button type="button" id="swapBtn" class="btn">Swap</button>
+      <button type="button" id="clearBtn" class="btn btn-ghost">Clear</button>
+      <button type="button" id="copyOutputBtn" class="btn btn-primary">Copy output</button>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label for="inputArea">Input <span id="inputCount" style="font-weight:normal">(0 characters)</span></label>
+        <textarea id="inputArea" class="textarea" rows="10" style="font-family:ui-monospace,monospace" placeholder="Type or paste text here…" spellcheck="false"></textarea>
+      </div>
+      <div class="field">
+        <label for="outputArea">Output <span id="outputCount" style="font-weight:normal">(0 characters)</span></label>
+        <textarea id="outputArea" class="textarea out-box" rows="10" readonly placeholder="Result will appear here" spellcheck="false"></textarea>
+      </div>
+    </div>
+
+    <div id="messageBox" class="hidden" style="margin-top:12px"></div>
+
+    <hr style="margin:24px 0;border:none;border-top:1px solid #e5e7eb">
+
+    <h2 style="margin-top:0">File to Base64</h2>
+    <p>Select a file to generate its Data URL (which includes the Base64 data). Useful for embedding small images or files in CSS, HTML, or JSON.</p>
+    <div class="field">
+      <label for="fileInput">Choose a file</label>
+      <input type="file" id="fileInput" class="input">
+    </div>
+    <div id="fileInfo" class="result-panel hidden" style="margin-top:12px">
+      <div class="stat-row">
+        <div class="stat"><strong>File:</strong> <span id="fileName">—</span></div>
+        <div class="stat"><strong>Size:</strong> <span id="fileSize">—</span></div>
+        <div class="stat"><strong>Raw Base64 length:</strong> <span id="fileB64Length">—</span></div>
+      </div>
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label for="fileOutput">Data URL</label>
+      <textarea id="fileOutput" class="textarea out-box" rows="6" readonly placeholder="Data URL will appear here after you choose a file" spellcheck="false"></textarea>
+    </div>
+    <div class="options-bar" style="margin-top:10px">
+      <button type="button" id="copyFileBtn" class="btn">Copy Data URL</button>
+    </div>
+    <p id="fileNote" class="hidden" style="margin-top:8px"></p>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the Base64 Encoder &amp; Decoder</h2>
+    <ol class="steps">
+      <li>Choose Encode or Decode using the toggle at the top.</li>
+      <li>Type or paste your text into the Input box — the output updates live as you type.</li>
+      <li>Click Copy output to copy the result, or Swap to move the output back into the input and flip the mode.</li>
+      <li>To convert a file, use the File to Base64 panel below: pick a file and copy its full Data URL.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my data uploaded to a server?</summary><p>No. Encoding, decoding, and file conversion all run locally in your browser. Your text and files are never uploaded, stored, or sent anywhere.</p></details>
+    <details><summary>Does this tool handle Unicode and emojis?</summary><p>Yes. Encoding uses TextEncoder to convert your text to UTF-8 bytes before applying Base64, so accented characters, non-Latin scripts, and emojis encode and decode correctly.</p></details>
+    <details><summary>Why did decoding fail with “not valid UTF-8”?</summary><p>Base64 can represent any bytes, not just text. If the decoded bytes are not valid UTF-8 text (for example, a binary file encoded as Base64), the tool reports that instead of showing garbled text. Use the file workflow for binary data.</p></details>
+    <details><summary>What is a Data URL?</summary><p>A Data URL looks like <code>data:image/png;base64,iVBOR…</code> — it contains the file type plus the Base64 data, so a file can be embedded directly in HTML, CSS, or JSON without a separate file.</p></details>
+    <details><summary>Is Base64 encryption?</summary><p>No. Base64 is an encoding, not encryption. Anyone can decode it. Do not use it to protect passwords or secrets.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var mode = 'encode';
+  var input = T360.qs('#inputArea');
+  var output = T360.qs('#outputArea');
+  var inputCount = T360.qs('#inputCount');
+  var outputCount = T360.qs('#outputCount');
+  var messageBox = T360.qs('#messageBox');
+  var encodeBtn = T360.qs('#encodeModeBtn');
+  var decodeBtn = T360.qs('#decodeModeBtn');
+
+  function showError(msg){
+    messageBox.className = 'error-text';
+    messageBox.textContent = msg;
+  }
+  function clearMessage(){
+    messageBox.className = 'hidden';
+    messageBox.textContent = '';
+  }
+  function updateCounts(){
+    inputCount.textContent = '(' + input.value.length + ' characters)';
+    outputCount.textContent = '(' + output.value.length + ' characters)';
+  }
+  function encodeText(text){
+    var bytes = new TextEncoder().encode(text);
+    var bin = '';
+    bytes.forEach(function(b){ bin += String.fromCharCode(b); });
+    return btoa(bin);
+  }
+  function decodeText(text){
+    var cleaned = text.replace(/\s+/g, '');
+    if(cleaned === '') return '';
+    // Validate charset: Base64 alphabet plus padding only at end, length multiple handling
+    if(!/^[A-Za-z0-9+/]+={0,2}$/.test(cleaned)){
+      throw new Error('Invalid Base64 input: contains characters outside the Base64 alphabet (A–Z, a–z, 0–9, +, /, and = padding).');
+    }
+    // atob requires correct padding; add missing padding if needed
+    var padded = cleaned;
+    while(padded.length % 4 !== 0) padded += '=';
+    var bin;
+    try {
+      bin = atob(padded);
+    } catch(e){
+      throw new Error('Invalid Base64 input: could not be decoded. Check for missing or extra characters.');
+    }
+    var bytes = new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+    try {
+      return new TextDecoder('utf-8', {fatal:true}).decode(bytes);
+    } catch(e){
+      throw new Error('Decoded bytes are not valid UTF-8 text. This Base64 may represent a binary file rather than text.');
+    }
+  }
+  function convert(){
+    clearMessage();
+    var val = input.value;
+    if(!val){
+      output.value = '';
+      updateCounts();
+      return;
+    }
+    try {
+      if(mode === 'encode'){
+        output.value = encodeText(val);
+      } else {
+        output.value = decodeText(val);
+      }
+    } catch(e){
+      output.value = '';
+      showError(e.message.indexOf('Invalid Base64') === 0 || e.message.indexOf('Decoded bytes') === 0 ? e.message : 'Invalid Base64 input: ' + e.message);
+    }
+    updateCounts();
+  }
+  function setMode(newMode){
+    mode = newMode;
+    if(mode === 'encode'){
+      encodeBtn.classList.add('active');
+      decodeBtn.classList.remove('active');
+      input.placeholder = 'Type or paste plain text here…';
+    } else {
+      decodeBtn.classList.add('active');
+      encodeBtn.classList.remove('active');
+      input.placeholder = 'Paste Base64 here to decode…';
+    }
+    convert();
+  }
+
+  encodeBtn.addEventListener('click', function(){ setMode('encode'); });
+  decodeBtn.addEventListener('click', function(){ setMode('decode'); });
+  input.addEventListener('input', convert);
+
+  T360.qs('#swapBtn').addEventListener('click', function(){
+    if(!output.value && !input.value) return;
+    var newInput = output.value;
+    input.value = newInput;
+    setMode(mode === 'encode' ? 'decode' : 'encode');
+  });
+
+  T360.qs('#clearBtn').addEventListener('click', function(){
+    input.value = '';
+    output.value = '';
+    clearMessage();
+    updateCounts();
+    input.focus();
+  });
+
+  T360.qs('#copyOutputBtn').addEventListener('click', function(e){
+    if(!output.value){ T360.toast('Nothing to copy yet'); return; }
+    T360.copyText(output.value, e.currentTarget);
+  });
+
+  // File to Base64
+  var fileInput = T360.qs('#fileInput');
+  var fileOutput = T360.qs('#fileOutput');
+  var fileInfo = T360.qs('#fileInfo');
+  var fileNameEl = T360.qs('#fileName');
+  var fileSizeEl = T360.qs('#fileSize');
+  var fileB64LengthEl = T360.qs('#fileB64Length');
+  var fileNote = T360.qs('#fileNote');
+
+  fileInput.addEventListener('change', function(){
+    var file = fileInput.files && fileInput.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      var dataUrl = String(reader.result || '');
+      fileOutput.value = dataUrl;
+      var commaIdx = dataUrl.indexOf(',');
+      var rawB64 = commaIdx >= 0 ? dataUrl.slice(commaIdx+1) : '';
+      fileNameEl.textContent = file.name;
+      fileSizeEl.textContent = T360.formatBytes ? T360.formatBytes(file.size) : (file.size + ' B');
+      fileB64LengthEl.textContent = String(rawB64.length) + ' characters';
+      fileInfo.classList.remove('hidden');
+      fileNote.textContent = 'Raw Base64 length (without the data: prefix): ' + rawB64.length + ' characters. Full Data URL length: ' + dataUrl.length + ' characters.';
+      fileNote.classList.remove('hidden');
+    };
+    reader.onerror = function(){
+      T360.toast('Could not read that file');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  T360.qs('#copyFileBtn').addEventListener('click', function(e){
+    if(!fileOutput.value){ T360.toast('Choose a file first'); return; }
+    T360.copyText(fileOutput.value, e.currentTarget);
+  });
+
+  updateCounts();
+  convert();
+})();
+</script>
+</body>
+</html>

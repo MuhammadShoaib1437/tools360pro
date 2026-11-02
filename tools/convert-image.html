@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convert Image — JPG, PNG &amp; WebP Converter Online Free | Tool360</title>
+<meta name="description" content="Convert images between JPG, PNG and WebP formats in your browser — one file or a whole batch. See sizes before and after and download each result. No uploads.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="convert-image" data-category="image">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#image">Image Tools</a> <span class="sep">›</span> <span aria-current="page">Convert Image</span></nav>
+  <h1>Convert Image</h1>
+  <p class="lede">Convert images between JPG, PNG and WebP — singly or in a batch.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your files never leave this device</p>
+
+  <section class="workspace card">
+    <div class="dropzone" id="dz" role="button" tabindex="0" aria-label="Add images">
+      <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5.5"/><path d="M6.5 10.5 12 5l5.5 5.5"/><path d="M4 20h16"/></svg>
+      <div class="dz-title">Drop your images here</div>
+      <div class="dz-sub">or click to browse · JPG, PNG, WebP, GIF or BMP · multiple files welcome</div>
+    </div>
+    <input type="file" id="file-input" accept="image/*" multiple hidden>
+    <p class="error-text hidden" id="err"></p>
+
+    <div class="options-bar">
+      <div class="field"><label for="format">Convert to</label>
+        <select class="select" id="format">
+          <option value="image/png">PNG</option>
+          <option value="image/jpeg" selected>JPEG</option>
+          <option value="image/webp">WebP</option>
+        </select>
+      </div>
+      <div class="field"><label for="quality">Quality (JPEG/WebP)</label>
+        <div class="range-wrap"><input type="range" id="quality" min="10" max="100" value="92"><output id="quality-out">92%</output></div>
+      </div>
+    </div>
+    <div class="options-bar" style="margin-top:0">
+      <button class="btn btn-primary btn-lg" id="convert-btn" disabled>Convert images</button>
+      <button class="btn btn-ghost" id="clear-btn" disabled>Clear all</button>
+    </div>
+
+    <h3 style="margin:20px 0 4px;font-size:1rem">Files</h3>
+    <div class="file-list" id="file-list"></div>
+    <div class="result-panel hidden" id="result">
+      <p style="margin:0 0 10px;font-weight:700">Converted files</p>
+      <div class="file-list" id="result-list" style="margin-top:0"></div>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the Convert Image tool</h2>
+    <ol class="steps">
+      <li>Drop one or more images onto the box above, or click to browse.</li>
+      <li>Choose the target format — PNG for crisp graphics, JPEG for photos, WebP for the smallest web files.</li>
+      <li>Press <b>Convert images</b>. Each converted file appears below with its new size.</li>
+      <li>Download the files one by one. Your originals stay untouched.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Are my images uploaded to a server?</summary><p>No. Conversion runs on a canvas in your browser. Nothing leaves your device.</p></details>
+    <details><summary>Which format should I pick?</summary><p><b>PNG</b> is lossless and best for screenshots, logos and transparency. <b>JPEG</b> is best for photographs shared anywhere. <b>WebP</b> gives the smallest files for websites and is supported by all modern browsers.</p></details>
+    <details><summary>What happens to transparency when I convert to JPEG?</summary><p>JPEG has no transparency, so transparent areas are placed on a white background. Convert to PNG or WebP to keep transparency.</p></details>
+    <details><summary>Can I convert a whole batch at once?</summary><p>Yes — add as many images as you like and convert them all with one click. Each result gets its own download button.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function () {
+  var dz = T360.qs("#dz"), input = T360.qs("#file-input"), list = T360.qs("#file-list"),
+      err = T360.qs("#err"), convertBtn = T360.qs("#convert-btn"), clearBtn = T360.qs("#clear-btn"),
+      formatSel = T360.qs("#format"), quality = T360.qs("#quality"), qOut = T360.qs("#quality-out"),
+      result = T360.qs("#result"), resultList = T360.qs("#result-list");
+  var items = []; // {file, name, size, url}
+  var results = []; // {blob, name, size, srcName, srcSize}
+
+  function showErr(m) { err.textContent = m; err.classList.toggle("hidden", !m); }
+  function extFor(t) { return t === "image/png" ? "png" : t === "image/webp" ? "webp" : "jpg"; }
+  function renderFiles() {
+    list.innerHTML = items.map(function (f, i) {
+      return '<div class="file-chip"><img src="' + f.url + '" alt="">' +
+        '<div class="fc-main"><div class="fc-name">' + f.name.replace(/</g, "&lt;") + '</div>' +
+        '<div class="fc-meta">' + T360.formatBytes(f.size) + "</div></div>" +
+        '<div class="fc-actions"><button class="chip-btn" data-rm="' + i + '" aria-label="Remove">✕</button></div></div>';
+    }).join("") || '<p style="color:var(--muted);margin:6px 0 0">No files added yet.</p>';
+    convertBtn.disabled = items.length === 0;
+    clearBtn.disabled = items.length === 0;
+  }
+  function renderResults() {
+    if (!results.length) { result.classList.add("hidden"); return; }
+    result.classList.remove("hidden");
+    resultList.innerHTML = "";
+    results.forEach(function (r, i) {
+      var chip = document.createElement("div");
+      chip.className = "file-chip";
+      chip.innerHTML = '<div class="fc-main"><div class="fc-name">' + r.name.replace(/</g, "&lt;") + '</div>' +
+        '<div class="fc-meta">' + T360.formatBytes(r.srcSize) + " → " + T360.formatBytes(r.size) + "</div></div>";
+      var btn = document.createElement("button");
+      btn.className = "btn btn-primary btn-sm";
+      btn.textContent = "Download";
+      btn.addEventListener("click", function () { T360.download(r.blob, r.name); });
+      chip.appendChild(btn);
+      resultList.appendChild(chip);
+    });
+  }
+  function addFiles(fileObjs) {
+    showErr("");
+    for (var k = 0; k < fileObjs.length; k++) {
+      var f = fileObjs[k];
+      if (!/^image\//.test(f.type)) { showErr("“" + f.name + "” is not an image and was skipped."); continue; }
+      items.push({ file: f, name: f.name, size: f.size, url: URL.createObjectURL(f) });
+    }
+    renderFiles();
+  }
+  function convertOne(item, type, q) {
+    return new Promise(function (resolve, reject) {
+      var imgEl = new Image();
+      imgEl.onload = function () {
+        var c = document.createElement("canvas");
+        c.width = imgEl.naturalWidth; c.height = imgEl.naturalHeight;
+        var ctx = c.getContext("2d");
+        if (type === "image/jpeg") { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, c.width, c.height); }
+        ctx.drawImage(imgEl, 0, 0);
+        c.toBlob(function (blob) { blob ? resolve(blob) : reject(new Error("convert failed")); }, type, type === "image/png" ? undefined : q);
+      };
+      imgEl.onerror = reject;
+      imgEl.src = item.url;
+    });
+  }
+  dz.addEventListener("click", function () { input.click(); });
+  dz.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+  input.addEventListener("change", function () { addFiles(Array.prototype.slice.call(input.files)); input.value = ""; });
+  ["dragenter", "dragover"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("dragover"); }); });
+  ["dragleave", "drop"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove("dragover"); }); });
+  dz.addEventListener("drop", function (e) { if (e.dataTransfer.files.length) addFiles(Array.prototype.slice.call(e.dataTransfer.files)); });
+  list.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-rm]"); if (!b) return;
+    var i = +b.getAttribute("data-rm");
+    URL.revokeObjectURL(items[i].url); items.splice(i, 1);
+    renderFiles();
+  });
+  quality.addEventListener("input", function () { qOut.textContent = quality.value + "%"; });
+  clearBtn.addEventListener("click", function () {
+    items.forEach(function (f) { URL.revokeObjectURL(f.url); });
+    items = []; results = []; renderFiles(); renderResults();
+  });
+  convertBtn.addEventListener("click", async function () {
+    convertBtn.disabled = true; convertBtn.textContent = "Converting…";
+    var type = formatSel.value, q = +quality.value / 100, ext = extFor(type);
+    results = [];
+    for (var k = 0; k < items.length; k++) {
+      try {
+        var blob = await convertOne(items[k], type, q);
+        results.push({ blob: blob, size: blob.size, srcSize: items[k].size, name: items[k].name.replace(/\.[^.]+$/, "") + "." + ext });
+      } catch (e) {
+        showErr("Could not convert “" + items[k].name + "”.");
+      }
+    }
+    renderResults();
+    if (results.length) T360.toast(results.length + (results.length === 1 ? " image" : " images") + " converted");
+    convertBtn.disabled = items.length === 0; convertBtn.textContent = "Convert images";
+  });
+  renderFiles();
+})();
+</script>
+</body>
+</html>

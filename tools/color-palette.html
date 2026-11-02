@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Converter &amp; Palette — Convert HEX, RGB &amp; HSL Instantly | Tool360</title>
+<meta name="description" content="Convert colours between HEX, RGB, HSL and HSV, build shade and tint scales and find colour harmonies. Free online colour converter and palette tool — runs in your browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  .picker-row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+  .picker-row .field{flex:1;min-width:180px}
+  #color-input{width:72px;height:48px;padding:4px}
+  .copy-value{width:100%;justify-content:flex-start;font-family:var(--mono);font-size:.92rem;word-break:break-all}
+  .swatch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:10px;margin-top:12px}
+  .swatch{border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:6px;cursor:pointer;text-align:center;color:var(--text)}
+  .swatch:hover{border-color:var(--acc)}
+  .swatch-block{height:52px;border-radius:8px;border:1px solid var(--border)}
+  .swatch-hex{font-family:var(--mono);font-size:.78rem;margin-top:6px;display:block;word-break:break-all}
+  .swatch-tag{font-size:.68rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-top:2px}
+  .swatch.is-base{outline:2px solid var(--acc);outline-offset:1px}
+  .harmony-group{margin-top:18px}
+  .harmony-group h3{margin:0 0 4px;font-size:1rem}
+  .harmony-group p{margin:0;color:var(--muted);font-size:.9rem}
+  .preview-block{height:92px;border-radius:13px;border:1px solid var(--border);margin-top:16px}
+</style>
+</head>
+<body data-tool="color-palette" data-category="generators">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#generators">Generators</a> <span class="sep">›</span> <span aria-current="page">Color Converter &amp; Palette</span></nav>
+  <h1>Color Converter &amp; Palette</h1>
+  <p class="lede">Pick a colour or type a HEX value to see it in HEX, RGB, HSL and HSV — plus a shade and tint scale and ready-made colour harmonies you can copy in one click.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — nothing is uploaded</p>
+  <section class="workspace card">
+    <div class="picker-row">
+      <div class="field" style="flex:0 0 auto;">
+        <label for="color-input">Pick a colour</label>
+        <input type="color" id="color-input" value="#7c3aed">
+      </div>
+      <div class="field">
+        <label for="hex-input">HEX value</label>
+        <input id="hex-input" class="input mono" type="text" value="#7c3aed" placeholder="#7c3aed" spellcheck="false" autocomplete="off">
+      </div>
+    </div>
+    <p id="err" class="error-text hidden" role="alert"></p>
+    <div id="preview" class="preview-block" style="background:#7c3aed;" aria-hidden="true"></div>
+
+    <h2 style="margin-top:22px;">Conversions — click to copy</h2>
+    <div class="stat-row">
+      <div class="stat">
+        <span>HEX</span>
+        <button type="button" id="val-hex" class="btn btn-ghost copy-value">#7C3AED</button>
+      </div>
+      <div class="stat">
+        <span>RGB</span>
+        <button type="button" id="val-rgb" class="btn btn-ghost copy-value">rgb(124, 58, 237)</button>
+      </div>
+      <div class="stat">
+        <span>HSL</span>
+        <button type="button" id="val-hsl" class="btn btn-ghost copy-value">hsl(262, 83%, 58%)</button>
+      </div>
+      <div class="stat">
+        <span>HSV</span>
+        <button type="button" id="val-hsv" class="btn btn-ghost copy-value">hsv(262, 76%, 93%)</button>
+      </div>
+    </div>
+
+    <h2 style="margin-top:26px;">Shades &amp; tints — click a swatch to copy</h2>
+    <p style="color:var(--muted);margin:0;">Shades mix the colour with black, tints mix it with white. The base colour sits in the middle.</p>
+    <div id="scale" class="swatch-grid"></div>
+
+    <h2 style="margin-top:26px;">Harmonies — click a swatch to copy</h2>
+    <div id="harmony"></div>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Color Converter &amp; Palette</h2>
+    <ol class="steps"><li>Pick a colour with the colour picker, or type a HEX value such as #7c3aed, 7c3aed or a short form like #73e.</li><li>Read the same colour in HEX, RGB, HSL and HSV in the conversion tiles — click any tile to copy that value.</li><li>Browse the shade and tint scale for darker and lighter versions of your colour, and click a swatch to copy its HEX.</li><li>Check the harmonies for complementary, analogous and triadic colours that work with your base colour, and click to copy the ones you want.</li></ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Which HEX formats can I type?</summary><p>You can type a 6-digit HEX value like #7c3aed or 7c3aed (the # is optional), or a 3-digit short form like #73e, which expands to #7733ee. Anything else shows an error message and leaves the current colour unchanged.</p></details>
+    <details><summary>What is the difference between HSL and HSV?</summary><p>Both describe a colour by its hue (the colour itself, 0–360°). HSL uses saturation and lightness, where 50% lightness is the pure colour. HSV (also called HSB) uses saturation and value, where 100% value is the pure colour. Design tools and CSS use HSL; HSV is common in colour pickers and graphics software.</p></details>
+    <details><summary>How are shades and tints made?</summary><p>A shade is the base colour mixed with black and a tint is the base colour mixed with white. This scale uses black mixes of 80%, 60%, 40%, 25% and 12%, then the base colour, then white mixes of 12%, 25%, 40%, 60% and 80%.</p></details>
+    <details><summary>What are complementary, analogous and triadic colours?</summary><p>Complementary is the colour opposite yours on the colour wheel (hue + 180°). Analogous colours sit either side of yours (±30°). Triadic colours are spaced evenly around the wheel (±120°). All three keep your colour's saturation and lightness and only rotate the hue.</p></details>
+    <details><summary>Is my colour uploaded anywhere?</summary><p>No. All conversions and palette calculations run in your browser with JavaScript. Nothing you pick or type is uploaded or stored.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var colorInput = T360.qs('#color-input');
+  var hexInput = T360.qs('#hex-input');
+  var errEl = T360.qs('#err');
+  var preview = T360.qs('#preview');
+  var valHex = T360.qs('#val-hex');
+  var valRgb = T360.qs('#val-rgb');
+  var valHsl = T360.qs('#val-hsl');
+  var valHsv = T360.qs('#val-hsv');
+  var scaleEl = T360.qs('#scale');
+  var harmonyEl = T360.qs('#harmony');
+
+  function clamp255(n){ return Math.max(0, Math.min(255, Math.round(n))); }
+
+  function parseHex(raw){
+    if (raw == null) return null;
+    var s = String(raw).trim();
+    if (s.charAt(0) === '#') s = s.slice(1);
+    s = s.trim();
+    if (/^[0-9a-fA-F]{3}$/.test(s)) {
+      s = s.charAt(0) + s.charAt(0) + s.charAt(1) + s.charAt(1) + s.charAt(2) + s.charAt(2);
+    }
+    if (!/^[0-9a-fA-F]{6}$/.test(s)) return null;
+    return {
+      r: parseInt(s.slice(0, 2), 16),
+      g: parseInt(s.slice(2, 4), 16),
+      b: parseInt(s.slice(4, 6), 16)
+    };
+  }
+  function rgbToHex(rgb){
+    function part(n){
+      var h = clamp255(n).toString(16).toUpperCase();
+      return h.length === 1 ? '0' + h : h;
+    }
+    return '#' + part(rgb.r) + part(rgb.g) + part(rgb.b);
+  }
+  function hueFromRgb(r, g, b, max, d){
+    var h = 0;
+    if (d !== 0) {
+      if (max === r) h = ((g - b) / d) % 6;
+      else if (max === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      h = h * 60;
+      if (h < 0) h += 360;
+    }
+    return h;
+  }
+  function rgbToHsl(rgb){
+    var r = rgb.r / 255, g = rgb.g / 255, b = rgb.b / 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var d = max - min;
+    var l = (max + min) / 2;
+    var s = 0;
+    if (d !== 0) s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    return { h: hueFromRgb(r, g, b, max, d), s: s * 100, l: l * 100 };
+  }
+  function rgbToHsv(rgb){
+    var r = rgb.r / 255, g = rgb.g / 255, b = rgb.b / 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var d = max - min;
+    var s = max === 0 ? 0 : d / max;
+    return { h: hueFromRgb(r, g, b, max, d), s: s * 100, v: max * 100 };
+  }
+  function hslToRgb(hsl){
+    var h = ((hsl.h % 360) + 360) % 360 / 360;
+    var s = Math.max(0, Math.min(100, hsl.s)) / 100;
+    var l = Math.max(0, Math.min(100, hsl.l)) / 100;
+    var r, g, b;
+    if (s === 0) {
+      r = g = b = l;
+    } else {
+      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      var p = 2 * l - q;
+      function hue2rgb(pp, qq, t){
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return pp + (qq - pp) * 6 * t;
+        if (t < 1 / 2) return qq;
+        if (t < 2 / 3) return pp + (qq - pp) * (2 / 3 - t) * 6;
+        return pp;
+      }
+      r = hue2rgb(p, q, h + 1 / 3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1 / 3);
+    }
+    return { r: clamp255(r * 255), g: clamp255(g * 255), b: clamp255(b * 255) };
+  }
+  function mix(rgb, target, pct){
+    var p = pct / 100;
+    return {
+      r: clamp255(rgb.r * (1 - p) + target.r * p),
+      g: clamp255(rgb.g * (1 - p) + target.g * p),
+      b: clamp255(rgb.b * (1 - p) + target.b * p)
+    };
+  }
+  function showError(msg){
+    errEl.textContent = msg;
+    errEl.classList.remove('hidden');
+  }
+  function hideError(){
+    errEl.textContent = '';
+    errEl.classList.add('hidden');
+  }
+  function makeSwatch(rgb, tag, isBase){
+    var hex = rgbToHex(rgb);
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'swatch' + (isBase ? ' is-base' : '');
+    btn.setAttribute('aria-label', 'Copy ' + hex);
+    var block = document.createElement('span');
+    block.className = 'swatch-block';
+    block.style.background = hex;
+    var label = document.createElement('span');
+    label.className = 'swatch-hex';
+    label.textContent = hex;
+    btn.appendChild(block);
+    btn.appendChild(label);
+    if (tag) {
+      var tagEl = document.createElement('span');
+      tagEl.className = 'swatch-tag';
+      tagEl.textContent = tag;
+      btn.appendChild(tagEl);
+    }
+    btn.addEventListener('click', function(){ T360.copyText(hex, btn); });
+    return btn;
+  }
+  function renderScale(rgb){
+    scaleEl.innerHTML = '';
+    var black = { r: 0, g: 0, b: 0 };
+    var white = { r: 255, g: 255, b: 255 };
+    var shadePcts = [80, 60, 40, 25, 12];
+    var tintPcts = [12, 25, 40, 60, 80];
+    shadePcts.forEach(function(pct){
+      scaleEl.appendChild(makeSwatch(mix(rgb, black, pct), 'Shade ' + pct + '%', false));
+    });
+    scaleEl.appendChild(makeSwatch(rgb, 'Base', true));
+    tintPcts.forEach(function(pct){
+      scaleEl.appendChild(makeSwatch(mix(rgb, white, pct), 'Tint ' + pct + '%', false));
+    });
+  }
+  function harmonyGroup(title, desc, colours){
+    var wrap = document.createElement('div');
+    wrap.className = 'harmony-group';
+    var h = document.createElement('h3');
+    h.textContent = title;
+    var p = document.createElement('p');
+    p.textContent = desc;
+    var grid = document.createElement('div');
+    grid.className = 'swatch-grid';
+    colours.forEach(function(rgb){ grid.appendChild(makeSwatch(rgb, '', false)); });
+    wrap.appendChild(h);
+    wrap.appendChild(p);
+    wrap.appendChild(grid);
+    return wrap;
+  }
+  function renderHarmony(rgb){
+    harmonyEl.innerHTML = '';
+    var hsl = rgbToHsl(rgb);
+    function atHue(hue){
+      return hslToRgb({ h: ((hue % 360) + 360) % 360, s: hsl.s, l: hsl.l });
+    }
+    harmonyEl.appendChild(harmonyGroup('Complementary', 'The colour opposite yours on the wheel (hue + 180°).', [atHue(hsl.h + 180)]));
+    harmonyEl.appendChild(harmonyGroup('Analogous', 'Neighbouring colours either side of yours (hue − 30° and + 30°).', [atHue(hsl.h - 30), atHue(hsl.h + 30)]));
+    harmonyEl.appendChild(harmonyGroup('Triadic', 'Two colours spaced evenly around the wheel (hue + 120° and + 240°).', [atHue(hsl.h + 120), atHue(hsl.h + 240)]));
+  }
+  function render(rgb, syncHexInput){
+    var hex = rgbToHex(rgb);
+    var hsl = rgbToHsl(rgb);
+    var hsv = rgbToHsv(rgb);
+    var hexText = hex;
+    var rgbText = 'rgb(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ')';
+    var hslText = 'hsl(' + Math.round(hsl.h) + ', ' + Math.round(hsl.s) + '%, ' + Math.round(hsl.l) + '%)';
+    var hsvText = 'hsv(' + Math.round(hsv.h) + ', ' + Math.round(hsv.s) + '%, ' + Math.round(hsv.v) + '%)';
+    valHex.textContent = hexText;
+    valRgb.textContent = rgbText;
+    valHsl.textContent = hslText;
+    valHsv.textContent = hsvText;
+    preview.style.background = hex;
+    if (syncHexInput !== false) hexInput.value = hex.toLowerCase();
+    var pickerValue = hex.toLowerCase();
+    if (colorInput.value.toLowerCase() !== pickerValue) colorInput.value = pickerValue;
+    renderScale(rgb);
+    renderHarmony(rgb);
+  }
+  [valHex, valRgb, valHsl, valHsv].forEach(function(btn){
+    btn.addEventListener('click', function(){ T360.copyText(btn.textContent, btn); });
+  });
+  colorInput.addEventListener('input', function(){
+    var rgb = parseHex(colorInput.value);
+    if (!rgb) return;
+    hideError();
+    render(rgb, true);
+  });
+  hexInput.addEventListener('input', function(){
+    var rgb = parseHex(hexInput.value);
+    if (!rgb) {
+      showError('That is not a valid HEX colour. Use 3 or 6 hex digits, with or without #, for example #7c3aed.');
+      return;
+    }
+    hideError();
+    render(rgb, false);
+  });
+  hexInput.addEventListener('change', function(){
+    var rgb = parseHex(hexInput.value);
+    if (rgb) { hideError(); render(rgb, true); }
+  });
+
+  var initial = parseHex(colorInput.value) || { r: 124, g: 58, b: 237 };
+  render(initial, true);
+})();
+</script>
+</body>
+</html>

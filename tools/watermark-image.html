@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watermark Image — Add Text Watermark to Photos Online Free | Tool360</title>
+<meta name="description" content="Add a text watermark to images online free. Control position, opacity, size and colour, tile it diagonally, and download at full resolution — no uploads.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+#preview{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--border);background:var(--surface-2)}
+input[type="color"]{width:52px;height:40px}
+</style>
+</head>
+<body data-tool="watermark-image" data-category="image">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#image">Image Tools</a> <span class="sep">›</span> <span aria-current="page">Watermark Image</span></nav>
+  <h1>Watermark Image</h1>
+  <p class="lede">Stamp a text watermark onto a photo — positioned, sized and faded exactly how you want it, at full original resolution.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your files never leave this device</p>
+
+  <section class="workspace card">
+    <div class="dropzone" id="dz" role="button" tabindex="0" aria-label="Add an image">
+      <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5.5"/><path d="M6.5 10.5 12 5l5.5 5.5"/><path d="M4 20h16"/></svg>
+      <div class="dz-title">Drop your image here</div>
+      <div class="dz-sub">or click to browse · JPG, PNG, WebP and more</div>
+    </div>
+    <input type="file" id="file-input" accept="image/*" hidden>
+    <p class="error-text hidden" id="err"></p>
+
+    <div id="editor" class="hidden">
+      <canvas id="preview" style="margin-top:16px"></canvas>
+
+      <div class="options-bar">
+        <div class="field"><label for="wm-text">Watermark text</label>
+          <input type="text" class="input" id="wm-text" value="Watermark" placeholder="Type your watermark text" maxlength="80">
+        </div>
+        <div class="field"><label>Position</label>
+          <div class="seg" id="pos-seg">
+            <button type="button" data-pos="tl">Top left</button>
+            <button type="button" data-pos="tr">Top right</button>
+            <button type="button" data-pos="c">Center</button>
+            <button type="button" data-pos="bl">Bottom left</button>
+            <button type="button" data-pos="br" class="active">Bottom right</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="options-bar">
+        <div class="field"><label for="wm-opacity">Opacity</label>
+          <div class="range-wrap"><input type="range" id="wm-opacity" min="5" max="100" value="50"><output id="wm-opacity-out">50%</output></div>
+        </div>
+        <div class="field"><label for="wm-size">Size (% of image width)</label>
+          <div class="range-wrap"><input type="range" id="wm-size" min="2" max="20" value="6"><output id="wm-size-out">6%</output></div>
+        </div>
+        <div class="field"><label for="wm-color">Colour</label>
+          <input type="color" id="wm-color" value="#ffffff">
+        </div>
+      </div>
+
+      <label class="switch-row"><input type="checkbox" id="wm-tile"> Tile watermark diagonally across the whole image</label>
+
+      <div class="options-bar" style="margin-bottom:0">
+        <button class="btn btn-primary btn-lg" id="download-btn" type="button">Download watermarked image</button>
+        <button class="btn btn-ghost" id="reset-btn" type="button">Use a different image</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the Watermark Image tool</h2>
+    <ol class="steps">
+      <li>Drop an image onto the box above, or click to browse for one.</li>
+      <li>Type your watermark text and pick a position — the preview updates live as you change any control.</li>
+      <li>Adjust the opacity, size and colour, or switch on tiling to repeat the watermark diagonally across the image.</li>
+      <li>Download the result as a PNG at the image's full original resolution.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my image uploaded to a server?</summary><p>No. The watermark is drawn on a canvas in your browser and the download is generated locally. Your image never leaves your device.</p></details>
+    <details><summary>Does the download keep the original resolution?</summary><p>Yes. The preview canvas is the full-size original, so the downloaded PNG has exactly the same pixel dimensions as the image you loaded.</p></details>
+    <details><summary>Why is the download a PNG?</summary><p>PNG is lossless, so the watermarked image keeps the original's quality with no extra compression artefacts. If you need a smaller JPEG afterwards, run the result through the Compress Image tool.</p></details>
+    <details><summary>What does the tile option do?</summary><p>Instead of one watermark in a corner, the text is repeated in a grid across the whole image, rotated −30°. That makes the mark much harder to crop out, which suits preview images and proofs.</p></details>
+    <details><summary>How do I make the watermark readable on any photo?</summary><p>The text is drawn bold with a subtle dark shadow, so it stays legible on light and dark areas alike. Lower opacity (around 40–60%) is usually enough to claim the image without dominating it.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function () {
+  var dz = T360.qs("#dz"), input = T360.qs("#file-input"), err = T360.qs("#err"),
+      editor = T360.qs("#editor"), canvas = T360.qs("#preview"), ctx = canvas.getContext("2d"),
+      wmText = T360.qs("#wm-text"), opacity = T360.qs("#wm-opacity"), opacityOut = T360.qs("#wm-opacity-out"),
+      size = T360.qs("#wm-size"), sizeOut = T360.qs("#wm-size-out"),
+      color = T360.qs("#wm-color"), tile = T360.qs("#wm-tile");
+  var img = new Image(), loaded = false, pos = "br";
+
+  function showErr(m) { err.textContent = m; err.classList.toggle("hidden", !m); }
+
+  function draw() {
+    if (!loaded) return;
+    var W = img.naturalWidth, H = img.naturalHeight;
+    if (canvas.width !== W) canvas.width = W;
+    if (canvas.height !== H) canvas.height = H;
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(img, 0, 0, W, H);
+    var text = wmText.value;
+    if (!text) return;
+    var fontSize = Math.max(8, W * (+size.value) / 100);
+    ctx.save();
+    ctx.font = "700 " + fontSize + "px Arial, Helvetica, sans-serif";
+    ctx.fillStyle = color.value;
+    ctx.globalAlpha = +opacity.value / 100;
+    ctx.shadowColor = "rgba(0,0,0,0.45)";
+    ctx.shadowBlur = Math.max(2, fontSize * 0.08);
+    ctx.shadowOffsetY = Math.max(1, fontSize * 0.03);
+    if (tile.checked) {
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.translate(W / 2, H / 2);
+      ctx.rotate(-30 * Math.PI / 180);
+      var stepX = ctx.measureText(text).width + fontSize * 1.6;
+      var stepY = fontSize * 4;
+      var extent = Math.sqrt(W * W + H * H);
+      for (var yy = -extent; yy <= extent; yy += stepY) {
+        for (var xx = -extent; xx <= extent; xx += stepX) {
+          ctx.fillText(text, xx, yy);
+        }
+      }
+    } else {
+      var padX = W * 0.04, padY = H * 0.04;
+      var x, y;
+      if (pos === "tl") { ctx.textAlign = "left"; ctx.textBaseline = "top"; x = padX; y = padY; }
+      else if (pos === "tr") { ctx.textAlign = "right"; ctx.textBaseline = "top"; x = W - padX; y = padY; }
+      else if (pos === "c") { ctx.textAlign = "center"; ctx.textBaseline = "middle"; x = W / 2; y = H / 2; }
+      else if (pos === "bl") { ctx.textAlign = "left"; ctx.textBaseline = "bottom"; x = padX; y = H - padY; }
+      else { ctx.textAlign = "right"; ctx.textBaseline = "bottom"; x = W - padX; y = H - padY; }
+      ctx.fillText(text, x, y);
+    }
+    ctx.restore();
+  }
+
+  function loadFile(f) {
+    if (!f.type || f.type.indexOf("image/") !== 0) { showErr("Please choose an image file."); return; }
+    showErr("");
+    var url = URL.createObjectURL(f);
+    img.onload = function () {
+      loaded = true;
+      editor.classList.remove("hidden");
+      dz.classList.add("hidden");
+      draw();
+    };
+    img.onerror = function () { showErr("That image could not be read."); };
+    img.src = url;
+  }
+  dz.addEventListener("click", function () { input.click(); });
+  dz.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+  input.addEventListener("change", function () { if (input.files[0]) loadFile(input.files[0]); input.value = ""; });
+  ["dragenter", "dragover"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("dragover"); }); });
+  ["dragleave", "drop"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove("dragover"); }); });
+  dz.addEventListener("drop", function (e) { if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+
+  wmText.addEventListener("input", draw);
+  opacity.addEventListener("input", function () { opacityOut.textContent = opacity.value + "%"; draw(); });
+  size.addEventListener("input", function () { sizeOut.textContent = size.value + "%"; draw(); });
+  color.addEventListener("input", draw);
+  tile.addEventListener("change", draw);
+  T360.qsa("#pos-seg button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      T360.qsa("#pos-seg button").forEach(function (b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      pos = btn.getAttribute("data-pos");
+      draw();
+    });
+  });
+
+  T360.qs("#download-btn").addEventListener("click", function () {
+    if (!loaded) return;
+    draw();
+    canvas.toBlob(function (blob) {
+      if (!blob) { T360.toast("Export failed in this browser"); return; }
+      T360.download(blob, "watermarked.png");
+    }, "image/png");
+  });
+  T360.qs("#reset-btn").addEventListener("click", function () {
+    loaded = false; editor.classList.add("hidden"); dz.classList.remove("hidden");
+  });
+})();
+</script>
+</body>
+</html>

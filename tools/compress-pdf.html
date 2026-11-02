@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compress PDF — Reduce PDF File Size Online Free | Tool360</title>
+<meta name="description" content="Compress a PDF file to a smaller size, free and in your browser. Pick a quality level and download the compressed PDF — nothing is uploaded. Best for scanned and photo-heavy PDFs.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="compress-pdf" data-category="pdf">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#pdf">PDF Tools</a> <span class="sep">›</span> <span aria-current="page">Compress PDF</span></nav>
+  <h1>Compress PDF</h1>
+  <p class="lede">Shrink a PDF by re-rendering its pages as compact images — a good fit for scanned and photo-heavy documents that are too big to email or upload.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your files never leave this device</p>
+
+  <section class="workspace card">
+    <div class="dropzone" id="dz" role="button" tabindex="0" aria-label="Add a PDF file">
+      <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5.5"/><path d="M6.5 10.5 12 5l5.5 5.5"/><path d="M4 20h16"/></svg>
+      <div class="dz-title">Drop your PDF file here</div>
+      <div class="dz-sub">or click to browse · one PDF file · compression happens on this device</div>
+    </div>
+    <input type="file" id="file-input" accept="application/pdf,.pdf" hidden>
+    <div class="file-list" id="file-list"></div>
+    <p class="error-text hidden" id="err"></p>
+    <div class="options-bar">
+      <div class="field">
+        <label>Quality level</label>
+        <div class="seg" id="quality-seg">
+          <button type="button" data-q="high">High quality</button>
+          <button type="button" data-q="balanced" class="active">Balanced</button>
+          <button type="button" data-q="small">Small file</button>
+        </div>
+      </div>
+    </div>
+    <p style="color:var(--muted);font-size:.9rem;margin:0 0 4px">High quality keeps pages sharpest but shrinks the file least. Small file compresses the most, with softer pages. Pages are converted to images, so text in the result is no longer selectable — see the FAQ below.</p>
+    <div class="progress hidden" id="progress"><i></i></div>
+    <div class="options-bar">
+      <button class="btn btn-primary btn-lg" id="compress-btn" disabled>Compress PDF</button>
+    </div>
+    <div class="result-panel hidden" id="result">
+      <div class="stat-row" style="margin-top:0">
+        <div class="stat"><b id="r-orig">—</b><span>Original size</span></div>
+        <div class="stat"><b id="r-new">—</b><span>Compressed size</span></div>
+        <div class="stat"><b id="r-pct">—</b><span>Change</span></div>
+      </div>
+      <div class="options-bar" style="margin-bottom:0">
+        <button class="btn btn-primary" id="download-btn">Download compressed PDF</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the Compress PDF tool</h2>
+    <ol class="steps">
+      <li>Drop one PDF file onto the box above, or click it to browse your device — its size and page count are shown.</li>
+      <li>Pick a quality level: High quality, Balanced, or Small file.</li>
+      <li>Press <b>Compress PDF</b> and wait while each page is re-rendered and rebuilt in your browser.</li>
+      <li>Compare the original and compressed sizes, then download the result. Your original file is never modified or uploaded.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my PDF uploaded to a server?</summary><p>No. The compression happens entirely in your browser using JavaScript. Your file never leaves your device, and nothing is stored anywhere.</p></details>
+    <details><summary>How does this compression work — and what do I lose?</summary><p>Each page is converted to a JPEG image (rasterized) and rebuilt into a new PDF at the same page size. That means text will no longer be selectable or searchable, and vector graphics such as logos and diagrams become pictures. Links, bookmarks and form fields are also not carried over.</p></details>
+    <details><summary>Which PDFs does this work best for?</summary><p>Scanned documents and photo-heavy PDFs — files whose size comes from big embedded images. Those usually shrink a lot. It is not recommended for documents where you need to copy text, search the content, or keep crisp vector artwork.</p></details>
+    <details><summary>Why did my file get bigger instead of smaller?</summary><p>Results vary. A text-only PDF is already very compact, so turning its pages into images can occasionally make the output larger. If that happens, try the Small file level — or keep the original, which may already be as small as it reasonably gets.</p></details>
+    <details><summary>Which quality level should I pick?</summary><p>Balanced is the sensible default for everyday sharing. Choose High quality when pages will be printed or read closely, and Small file when you must fit a strict upload or email size limit and softer pages are acceptable.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script src="../assets/vendor/pdf-lib.min.js"></script>
+<script src="../assets/vendor/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = "../assets/vendor/pdf.worker.min.js";
+(function () {
+  var dz = T360.qs("#dz"), input = T360.qs("#file-input"), list = T360.qs("#file-list"),
+      err = T360.qs("#err"), progress = T360.qs("#progress"),
+      compressBtn = T360.qs("#compress-btn"), result = T360.qs("#result"),
+      qualitySeg = T360.qs("#quality-seg");
+  var QUALITY = {
+    high: { q: 0.8, scale: 2 },
+    balanced: { q: 0.6, scale: 1.5 },
+    small: { q: 0.35, scale: 1 }
+  };
+  var quality = "balanced";
+  var pdfBytes = null, pdfFile = null, pageCount = 0, lastBlob = null;
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function showErr(msg) { err.textContent = msg; err.classList.toggle("hidden", !msg); }
+  function canvasBlob(canvas, type, q) {
+    return new Promise(function (resolve) { canvas.toBlob(resolve, type, q); });
+  }
+
+  qualitySeg.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-q]"); if (!b) return;
+    quality = b.getAttribute("data-q");
+    T360.qsa("button", qualitySeg).forEach(function (x) { x.classList.toggle("active", x === b); });
+  });
+
+  async function loadFile(f) {
+    if (!f) return;
+    if (!/\.pdf$/i.test(f.name) && f.type !== "application/pdf") { showErr("“" + f.name + "” is not a PDF file."); return; }
+    showErr(""); lastBlob = null; result.classList.add("hidden");
+    pdfBytes = null; pdfFile = null; pageCount = 0; compressBtn.disabled = true; list.innerHTML = "";
+    try {
+      var bytes = await f.arrayBuffer();
+      var doc = await PDFLib.PDFDocument.load(bytes.slice(0), { ignoreEncryption: false });
+      pageCount = doc.getPageCount();
+      pdfBytes = bytes; pdfFile = f;
+      list.innerHTML = '<div class="file-chip"><div class="fc-main"><div class="fc-name">' + esc(f.name) + '</div><div class="fc-meta">' + T360.formatBytes(f.size) + " · " + pageCount + (pageCount === 1 ? " page" : " pages") + "</div></div></div>";
+      compressBtn.disabled = false;
+      T360.toast("PDF loaded — " + pageCount + (pageCount === 1 ? " page" : " pages"));
+    } catch (e) {
+      showErr("Could not read that PDF — it may be corrupted or password-protected.");
+    }
+  }
+
+  dz.addEventListener("click", function () { input.click(); });
+  dz.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+  input.addEventListener("change", function () { loadFile(input.files[0]); input.value = ""; });
+  ["dragenter", "dragover"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("dragover"); }); });
+  ["dragleave", "drop"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove("dragover"); }); });
+  dz.addEventListener("drop", function (e) { if (e.dataTransfer.files.length) loadFile(e.dataTransfer.files[0]); });
+
+  compressBtn.addEventListener("click", async function () {
+    if (!pdfBytes || !pdfFile) return;
+    showErr(""); result.classList.add("hidden");
+    compressBtn.disabled = true; compressBtn.textContent = "Compressing…";
+    progress.classList.remove("hidden");
+    var bar = progress.querySelector("i"); bar.style.width = "0";
+    var cfg = QUALITY[quality] || QUALITY.balanced;
+    try {
+      var src = await pdfjsLib.getDocument({ data: pdfBytes.slice(0) }).promise;
+      var out = await PDFLib.PDFDocument.create();
+      for (var n = 1; n <= src.numPages; n++) {
+        var page = await src.getPage(n);
+        var pt = page.getViewport({ scale: 1 });
+        var vp = page.getViewport({ scale: cfg.scale });
+        var canvas = document.createElement("canvas");
+        canvas.width = Math.ceil(vp.width); canvas.height = Math.ceil(vp.height);
+        var ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvasContext: ctx, viewport: vp }).promise;
+        var blob = await canvasBlob(canvas, "image/jpeg", cfg.q);
+        if (!blob) throw new Error("render failed");
+        var jpgBytes = await blob.arrayBuffer();
+        var img = await out.embedJpg(jpgBytes);
+        var newPage = out.addPage([pt.width, pt.height]);
+        newPage.drawImage(img, { x: 0, y: 0, width: pt.width, height: pt.height });
+        bar.style.width = Math.round((n / src.numPages) * 100) + "%";
+      }
+      var bytes = await out.save();
+      lastBlob = new Blob([bytes], { type: "application/pdf" });
+      T360.qs("#r-orig").textContent = T360.formatBytes(pdfFile.size);
+      T360.qs("#r-new").textContent = T360.formatBytes(lastBlob.size);
+      if (lastBlob.size < pdfFile.size) {
+        T360.qs("#r-pct").textContent = "−" + Math.round((1 - lastBlob.size / pdfFile.size) * 100) + "%";
+      } else {
+        T360.qs("#r-pct").textContent = "No smaller — try Small file";
+      }
+      result.classList.remove("hidden");
+      T360.toast("Compression finished");
+    } catch (e) {
+      showErr("Something went wrong while compressing. The file may be damaged.");
+    }
+    progress.classList.add("hidden"); bar.style.width = "0";
+    compressBtn.disabled = !pdfBytes; compressBtn.textContent = "Compress PDF";
+  });
+
+  T360.qs("#download-btn").addEventListener("click", function () {
+    if (lastBlob) T360.download(lastBlob, "compressed.pdf");
+  });
+})();
+</script>
+</body>
+</html>

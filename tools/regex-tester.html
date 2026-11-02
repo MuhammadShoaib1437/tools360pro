@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regex Tester — Test regular expressions with highlighted matches | Tool360</title>
+<meta name="description" content="Test regular expressions online for free. See highlighted matches, indexes and capture groups live as you type, entirely in your browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+#hl mark{background:color-mix(in srgb,var(--warn) 38%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+.match-row{padding:9px 0;border-bottom:1px solid var(--border)}
+.match-row:last-child{border-bottom:none}
+.match-main{font-family:var(--mono);font-size:.92rem;word-break:break-all}
+.match-group{color:var(--muted);font-family:var(--mono);font-size:.86rem;margin-left:18px;word-break:break-all}
+.flags-row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.flags-row label{display:flex;align-items:center;gap:6px;font-weight:600;font-size:.93rem}
+</style>
+</head>
+<body data-tool="regex-tester" data-category="developer">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#developer">Developer Tools</a> <span class="sep">›</span> <span aria-current="page">Regex Tester</span></nav>
+  <h1>Regex Tester</h1>
+  <p class="lede">Test a regular expression against sample text with highlighted matches, indexes, and capture groups — live as you type.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — nothing is uploaded</p>
+
+  <section class="workspace card">
+    <div class="field">
+      <label for="pattern">Pattern</label>
+      <input type="text" id="pattern" class="input mono" value="[0-9]+" placeholder="Type a regular expression, e.g. \b\w+@\w+\.\w+\b" spellcheck="false" autocomplete="off">
+    </div>
+
+    <div class="field" style="margin-top:14px">
+      <label>Flags</label>
+      <div class="flags-row">
+        <label><input type="checkbox" id="fl-g" checked> g — global</label>
+        <label><input type="checkbox" id="fl-i"> i — ignore case</label>
+        <label><input type="checkbox" id="fl-m"> m — multiline</label>
+        <label><input type="checkbox" id="fl-s"> s — dotAll</label>
+        <label><input type="checkbox" id="fl-u"> u — unicode</label>
+      </div>
+    </div>
+
+    <p id="err" class="error-text hidden"></p>
+
+    <div class="field" style="margin-top:14px">
+      <label for="text">Test text</label>
+      <textarea id="text" class="textarea" rows="7" spellcheck="false">The quick brown fox jumps over 13 lazy dogs. Email me at hello@example.com or visit https://example.com today!</textarea>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><b id="match-count">0</b><span>Matches</span></div>
+    </div>
+    <p id="cap-note" class="hidden" style="color:var(--warn);font-weight:600;font-size:.93rem;margin-top:10px"></p>
+
+    <div class="field" style="margin-top:16px">
+      <label>Highlighted preview</label>
+      <div class="out-box" id="hl"></div>
+    </div>
+
+    <div class="field" style="margin-top:16px">
+      <label>Matches</label>
+      <div id="match-list" class="result-panel" style="margin-top:0"></div>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the Regex Tester</h2>
+    <ol class="steps">
+      <li>Type your regular expression into the Pattern box — do not include the surrounding slashes.</li>
+      <li>Tick the flags you need: g for all matches instead of just the first, i for case-insensitive matching, and m, s, or u as required.</li>
+      <li>Edit the test text and watch the highlighted preview, match count, and match list update live.</li>
+      <li>Check each match's index and any capture groups in the Matches list, and fix any error shown under the pattern.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my text uploaded to a server?</summary><p>No. Patterns are compiled and run entirely in your browser using JavaScript's RegExp. Your text is never uploaded, stored, or sent anywhere.</p></details>
+    <details><summary>Do I need to include slashes around the pattern?</summary><p>No. Type the pattern only, without the /…/ slashes you would use in JavaScript code. Choose the flags using the checkboxes instead of letters after a closing slash.</p></details>
+    <details><summary>Why do I only see one match?</summary><p>Without the g (global) flag, a search stops at the first match — that mirrors how RegExp behaves in JavaScript. Tick the g flag to find every match in the text.</p></details>
+    <details><summary>What are capture groups?</summary><p>Parts of the pattern wrapped in parentheses are capture groups. When a match has groups, this tool lists each group's captured text under the match so you can check exactly what was captured.</p></details>
+    <details><summary>Why is there a limit of 1,000 matches?</summary><p>Patterns that can match empty strings or very short text could otherwise produce an unbounded number of matches and freeze the page. Matches are capped at 1,000, zero-width matches safely advance the search position, and the tool notes when the cap is reached.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var patternEl = T360.qs('#pattern');
+  var textEl = T360.qs('#text');
+  var err = T360.qs('#err');
+  var matchCount = T360.qs('#match-count');
+  var hl = T360.qs('#hl');
+  var matchList = T360.qs('#match-list');
+  var capNote = T360.qs('#cap-note');
+  var MAX_MATCHES = 1000;
+
+  function esc(str){
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  function showError(msg){
+    err.textContent = msg;
+    err.classList.remove('hidden');
+  }
+  function clearError(){
+    err.textContent = '';
+    err.classList.add('hidden');
+  }
+  function getFlags(){
+    var flags = '';
+    if(T360.qs('#fl-g').checked) flags += 'g';
+    if(T360.qs('#fl-i').checked) flags += 'i';
+    if(T360.qs('#fl-m').checked) flags += 'm';
+    if(T360.qs('#fl-s').checked) flags += 's';
+    if(T360.qs('#fl-u').checked) flags += 'u';
+    return flags;
+  }
+  function clearResults(){
+    matchCount.textContent = '0';
+    hl.textContent = '';
+    matchList.textContent = '';
+    capNote.textContent = '';
+    capNote.classList.add('hidden');
+  }
+  function run(){
+    clearError();
+    var pattern = patternEl.value;
+    var text = textEl.value;
+    if(!pattern){ clearResults(); return; }
+    var flags = getFlags();
+    var re;
+    try {
+      re = new RegExp(pattern, flags);
+    } catch(e){
+      clearResults();
+      showError(e.message);
+      return;
+    }
+    var matches = [];
+    var capped = false;
+    if(flags.indexOf('g') >= 0){
+      var m;
+      while((m = re.exec(text)) !== null){
+        matches.push({text: m[0], index: m.index, groups: Array.prototype.slice.call(m, 1)});
+        if(matches.length >= MAX_MATCHES){ capped = true; break; }
+        if(m[0] === '') re.lastIndex += 1;
+        if(re.lastIndex > text.length) break;
+      }
+    } else {
+      var single = re.exec(text);
+      if(single) matches.push({text: single[0], index: single.index, groups: Array.prototype.slice.call(single, 1)});
+    }
+
+    matchCount.textContent = String(matches.length);
+    if(capped){
+      capNote.textContent = 'Stopped at 1,000 matches — the text may contain more.';
+      capNote.classList.remove('hidden');
+    } else {
+      capNote.textContent = '';
+      capNote.classList.add('hidden');
+    }
+
+    if(!matches.length){
+      hl.textContent = text;
+      matchList.textContent = '';
+      var none = document.createElement('p');
+      none.textContent = 'No matches';
+      none.style.margin = '0';
+      none.style.color = 'var(--muted)';
+      matchList.appendChild(none);
+      return;
+    }
+
+    // Highlighted preview: build from escaped slices only — never raw user text.
+    var html = '';
+    var last = 0;
+    matches.forEach(function(match){
+      if(match.index < last) return;
+      html += esc(text.slice(last, match.index));
+      html += '<mark>' + esc(match.text) + '</mark>';
+      last = match.index + match.text.length;
+    });
+    html += esc(text.slice(last));
+    hl.innerHTML = html;
+
+    // Match list: built with textContent only.
+    matchList.textContent = '';
+    matches.forEach(function(match, i){
+      var row = document.createElement('div');
+      row.className = 'match-row';
+      var main = document.createElement('div');
+      main.className = 'match-main';
+      main.textContent = (i + 1) + '. "' + match.text + '" (index ' + match.index + ')';
+      row.appendChild(main);
+      match.groups.forEach(function(group, gi){
+        var line = document.createElement('div');
+        line.className = 'match-group';
+        line.textContent = 'Group ' + (gi + 1) + ': ' + (group === undefined ? '(not matched)' : '"' + group + '"');
+        row.appendChild(line);
+      });
+      matchList.appendChild(row);
+    });
+  }
+
+  [patternEl, textEl].forEach(function(el){ el.addEventListener('input', run); });
+  ['#fl-g', '#fl-i', '#fl-m', '#fl-s', '#fl-u'].forEach(function(sel){
+    T360.qs(sel).addEventListener('change', run);
+  });
+  run();
+})();
+</script>
+</body>
+</html>

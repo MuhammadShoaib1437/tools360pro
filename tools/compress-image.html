@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compress Image — Reduce Image File Size Online Free | Tool360</title>
+<meta name="description" content="Compress JPG, PNG and WebP images in your browser with a quality slider. See the size before and after, preview the result and download — no uploads, no sign-up.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="compress-image" data-category="image">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#image">Image Tools</a> <span class="sep">›</span> <span aria-current="page">Compress Image</span></nav>
+  <h1>Compress Image</h1>
+  <p class="lede">Shrink the file size of JPG, PNG and WebP images while keeping them looking sharp.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your files never leave this device</p>
+
+  <section class="workspace card">
+    <div class="dropzone" id="dz" role="button" tabindex="0" aria-label="Add an image">
+      <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5.5"/><path d="M6.5 10.5 12 5l5.5 5.5"/><path d="M4 20h16"/></svg>
+      <div class="dz-title">Drop your image here</div>
+      <div class="dz-sub">or click to browse · JPG, PNG or WebP</div>
+    </div>
+    <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" hidden>
+    <p class="error-text hidden" id="err"></p>
+
+    <div id="editor" class="hidden">
+      <div class="grid-2" style="margin-top:18px">
+        <div>
+          <p style="margin:0 0 6px;font-weight:700;font-size:.9rem">Original · <span id="orig-meta" style="color:var(--muted);font-weight:600"></span></p>
+          <img id="orig-img" alt="Original image preview" style="width:100%;border-radius:12px;border:1px solid var(--border)">
+        </div>
+        <div>
+          <p style="margin:0 0 6px;font-weight:700;font-size:.9rem">Compressed · <span id="comp-meta" style="color:var(--muted);font-weight:600"></span></p>
+          <img id="comp-img" alt="Compressed image preview" style="width:100%;border-radius:12px;border:1px solid var(--border)">
+        </div>
+      </div>
+      <div class="options-bar">
+        <div class="field"><label for="quality">Quality</label>
+          <div class="range-wrap"><input type="range" id="quality" min="10" max="100" value="80"><output id="quality-out">80%</output></div>
+        </div>
+        <div class="field"><label for="format">Output format</label>
+          <select class="select" id="format">
+            <option value="keep">Keep original</option>
+            <option value="image/jpeg">JPEG</option>
+            <option value="image/webp">WebP</option>
+            <option value="image/png">PNG</option>
+          </select>
+        </div>
+        <div class="field"><label for="maxdim">Max dimension</label>
+          <select class="select" id="maxdim">
+            <option value="0">Original size</option>
+            <option value="1920">1920 px</option>
+            <option value="1280">1280 px</option>
+            <option value="800">800 px</option>
+          </select>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><b id="r-before">—</b><span>Before</span></div>
+        <div class="stat"><b id="r-after">—</b><span>After</span></div>
+        <div class="stat"><b id="r-saving">—</b><span>Saving</span></div>
+      </div>
+      <div class="options-bar" style="margin-bottom:0">
+        <button class="btn btn-primary btn-lg" id="download-btn">Download compressed image</button>
+        <button class="btn btn-ghost" id="reset-btn">Use a different image</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the Compress Image tool</h2>
+    <ol class="steps">
+      <li>Drop a JPG, PNG or WebP image onto the box above, or click to browse.</li>
+      <li>Drag the quality slider — the compressed preview and file size update live. 75–85% is a good balance for photos.</li>
+      <li>Optionally switch the output format (WebP usually gives the smallest files) or cap the maximum dimension.</li>
+      <li>Download the compressed image. The original on your device is untouched.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my image uploaded to a server?</summary><p>No. Compression happens in your browser on a canvas element. Your image never leaves your device.</p></details>
+    <details><summary>Why did my PNG get bigger when saved as JPEG, or smaller as WebP?</summary><p>Formats compress differently. PNG is lossless and large for photos; JPEG and WebP discard some detail to save space. WebP typically produces the smallest files at the same visual quality. Flat graphics with few colours often compress best as PNG.</p></details>
+    <details><summary>What quality setting should I use?</summary><p>For photographs, 75–85% is nearly indistinguishable from the original at a fraction of the size. For screenshots with crisp text, prefer PNG or a higher quality setting.</p></details>
+    <details><summary>Does compressing change the image dimensions?</summary><p>Only if you set a maximum dimension. Otherwise the pixel size stays exactly the same — only the file gets smaller.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function () {
+  var dz = T360.qs("#dz"), input = T360.qs("#file-input"), err = T360.qs("#err"),
+      editor = T360.qs("#editor"), quality = T360.qs("#quality"), qOut = T360.qs("#quality-out"),
+      formatSel = T360.qs("#format"), maxdimSel = T360.qs("#maxdim");
+  var img = new Image(), file = null, outBlob = null, outExt = "jpg", debounce = null;
+
+  function showErr(m) { err.textContent = m; err.classList.toggle("hidden", !m); }
+  function extFor(type) { return type === "image/png" ? "png" : type === "image/webp" ? "webp" : "jpg"; }
+  function process() {
+    if (!file) return;
+    var type = formatSel.value === "keep" ? (file.type === "image/png" ? "image/png" : file.type === "image/webp" ? "image/webp" : "image/jpeg") : formatSel.value;
+    var maxd = +maxdimSel.value;
+    var w = img.naturalWidth, h = img.naturalHeight;
+    if (maxd > 0 && Math.max(w, h) > maxd) {
+      var s = maxd / Math.max(w, h); w = Math.round(w * s); h = Math.round(h * s);
+    }
+    var c = document.createElement("canvas"); c.width = w; c.height = h;
+    var ctx = c.getContext("2d");
+    if (type === "image/jpeg") { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h); }
+    ctx.drawImage(img, 0, 0, w, h);
+    var q = +quality.value / 100;
+    c.toBlob(function (blob) {
+      if (!blob) return;
+      outBlob = blob; outExt = extFor(type);
+      var prev = T360.qs("#comp-img");
+      if (prev.src) URL.revokeObjectURL(prev.src);
+      prev.src = URL.createObjectURL(blob);
+      T360.qs("#orig-meta").textContent = T360.formatBytes(file.size) + " · " + img.naturalWidth + "×" + img.naturalHeight;
+      T360.qs("#comp-meta").textContent = T360.formatBytes(blob.size) + " · " + w + "×" + h;
+      T360.qs("#r-before").textContent = T360.formatBytes(file.size);
+      T360.qs("#r-after").textContent = T360.formatBytes(blob.size);
+      var saving = (1 - blob.size / file.size) * 100;
+      T360.qs("#r-saving").textContent = (saving >= 0 ? "−" : "+") + Math.abs(saving).toFixed(1) + "%";
+    }, type, type === "image/png" ? undefined : q);
+  }
+  function schedule() { clearTimeout(debounce); debounce = setTimeout(process, 120); }
+  function loadFile(f) {
+    if (!/^image\/(jpeg|png|webp)$/.test(f.type)) { showErr("Please choose a JPG, PNG or WebP image."); return; }
+    showErr(""); file = f;
+    var url = URL.createObjectURL(f);
+    img.onload = function () {
+      T360.qs("#orig-img").src = url;
+      editor.classList.remove("hidden");
+      dz.classList.add("hidden");
+      process();
+    };
+    img.onerror = function () { showErr("That image could not be read."); };
+    img.src = url;
+  }
+  dz.addEventListener("click", function () { input.click(); });
+  dz.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+  input.addEventListener("change", function () { if (input.files[0]) loadFile(input.files[0]); input.value = ""; });
+  ["dragenter", "dragover"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("dragover"); }); });
+  ["dragleave", "drop"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove("dragover"); }); });
+  dz.addEventListener("drop", function (e) { if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+  quality.addEventListener("input", function () { qOut.textContent = quality.value + "%"; schedule(); });
+  formatSel.addEventListener("change", process);
+  maxdimSel.addEventListener("change", process);
+  T360.qs("#download-btn").addEventListener("click", function () {
+    if (outBlob && file) T360.download(outBlob, file.name.replace(/\.[^.]+$/, "") + "-compressed." + outExt);
+  });
+  T360.qs("#reset-btn").addEventListener("click", function () {
+    file = null; outBlob = null; editor.classList.add("hidden"); dz.classList.remove("hidden");
+  });
+})();
+</script>
+</body>
+</html>

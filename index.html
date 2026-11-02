@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tool360 — Free Online Tools for PDF, Images, Text &amp; Code</title>
+<meta name="description" content="Tool360 is a free all-in-one toolbox: merge and split PDFs, compress and convert images, count words, format JSON, generate QR codes and passwords — all in your browser, no sign-up, no uploads.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="home">
+<div id="site-header"></div>
+
+<header class="hero">
+  <div class="shapes" aria-hidden="true">
+    <div class="shape cube s1"></div>
+    <div class="shape ring s2"></div>
+    <div class="shape pill s3"></div>
+    <div class="shape cube small s4"></div>
+    <div class="shape dot s5"></div>
+    <div class="shape cube small s6"></div>
+  </div>
+  <div class="container">
+    <h1>Every everyday tool,<br><span class="hl">in one place.</span></h1>
+    <p class="sub">Merge a PDF, shrink an image, format JSON or mint a strong password — free, instant, and private, because everything runs right here in your browser.</p>
+    <div class="hero-search">
+      <span class="hs-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5 16.7 16.7"/></svg></span>
+      <input id="hero-search" type="text" placeholder="Search tools… try “merge pdf” or “bmi”" aria-label="Search tools" autocomplete="off">
+      <span class="kbd">Ctrl K</span>
+    </div>
+    <div class="trust-chips">
+      <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> 100% Free</span>
+      <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> No sign-up</span>
+      <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Files never leave your device</span>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="section hidden" id="recent-section">
+    <div class="section-head"><h2>Recently used</h2></div>
+    <div class="tool-grid" id="recent-grid"></div>
+  </section>
+
+  <section class="section hidden" id="fav-section">
+    <div class="section-head"><h2>Your favourites</h2></div>
+    <div class="tool-grid" id="fav-grid"></div>
+  </section>
+
+  <section class="section" id="popular">
+    <div class="section-head"><h2>Most popular</h2><span class="count">The tools people reach for first</span></div>
+    <div class="tool-grid">
+      <a class="tool-card reveal" href="tools/merge-pdf.html" data-cat="pdf"><span class="tool-icon" data-icon="merge-pdf"></span><span class="tool-card-body"><span class="tool-name">Merge PDF</span><span class="tool-desc">Combine several PDF files into a single document.</span></span><span class="fav-btn" data-slug="merge-pdf" role="button" tabindex="0" aria-label="Save Merge PDF to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/compress-image.html" data-cat="image"><span class="tool-icon" data-icon="compress-image"></span><span class="tool-card-body"><span class="tool-name">Compress Image</span><span class="tool-desc">Reduce JPG, PNG and WebP file size with a quality slider.</span></span><span class="fav-btn" data-slug="compress-image" role="button" tabindex="0" aria-label="Save Compress Image to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/qr-code-generator.html" data-cat="generators"><span class="tool-icon" data-icon="qr-code-generator"></span><span class="tool-card-body"><span class="tool-name">QR Code Generator</span><span class="tool-desc">Create QR codes for links and text, download PNG or SVG.</span></span><span class="fav-btn" data-slug="qr-code-generator" role="button" tabindex="0" aria-label="Save QR Code Generator to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/word-counter.html" data-cat="text"><span class="tool-icon" data-icon="word-counter"></span><span class="tool-card-body"><span class="tool-name">Word Counter</span><span class="tool-desc">Count words, characters, sentences and reading time.</span></span><span class="fav-btn" data-slug="word-counter" role="button" tabindex="0" aria-label="Save Word Counter to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/json-formatter.html" data-cat="developer"><span class="tool-icon" data-icon="json-formatter"></span><span class="tool-card-body"><span class="tool-name">JSON Formatter &amp; Validator</span><span class="tool-desc">Format, minify and validate JSON with clear errors.</span></span><span class="fav-btn" data-slug="json-formatter" role="button" tabindex="0" aria-label="Save JSON Formatter to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/images-to-pdf.html" data-cat="pdf"><span class="tool-icon" data-icon="images-to-pdf"></span><span class="tool-card-body"><span class="tool-name">Images to PDF</span><span class="tool-desc">Turn JPG, PNG and WebP images into one PDF document.</span></span><span class="fav-btn" data-slug="images-to-pdf" role="button" tabindex="0" aria-label="Save Images to PDF to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/password-generator.html" data-cat="generators"><span class="tool-icon" data-icon="password-generator"></span><span class="tool-card-body"><span class="tool-name">Password Generator</span><span class="tool-desc">Generate strong random passwords with a strength meter.</span></span><span class="fav-btn" data-slug="password-generator" role="button" tabindex="0" aria-label="Save Password Generator to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/unit-converter.html" data-cat="converters"><span class="tool-icon" data-icon="unit-converter"></span><span class="tool-card-body"><span class="tool-name">Unit Converter</span><span class="tool-desc">Convert length, weight, temperature, area, speed and more.</span></span><span class="fav-btn" data-slug="unit-converter" role="button" tabindex="0" aria-label="Save Unit Converter to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/resize-image.html" data-cat="image"><span class="tool-icon" data-icon="resize-image"></span><span class="tool-card-body"><span class="tool-name">Resize Image</span><span class="tool-desc">Change image dimensions by pixels or percentage.</span></span><span class="fav-btn" data-slug="resize-image" role="button" tabindex="0" aria-label="Save Resize Image to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/bmi-calculator.html" data-cat="calculators"><span class="tool-icon" data-icon="bmi-calculator"></span><span class="tool-card-body"><span class="tool-name">BMI Calculator</span><span class="tool-desc">Check your body mass index and healthy weight range.</span></span><span class="fav-btn" data-slug="bmi-calculator" role="button" tabindex="0" aria-label="Save BMI Calculator to favourites">☆</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="categories">
+    <div class="section-head"><h2>Browse by category</h2><span class="count">38 tools · all live</span></div>
+    <div class="cat-grid">
+      <a class="cat-card reveal" href="#pdf" data-cat="pdf"><span class="tool-icon" data-icon="merge-pdf"></span><span class="cat-name">PDF Tools</span><span class="cat-meta">6 tools</span><span class="cat-go">Explore →</span></a>
+      <a class="cat-card reveal" href="#image" data-cat="image"><span class="tool-icon" data-icon="compress-image"></span><span class="cat-name">Image Tools</span><span class="cat-meta">6 tools</span><span class="cat-go">Explore →</span></a>
+      <a class="cat-card reveal" href="#text" data-cat="text"><span class="tool-icon" data-icon="word-counter"></span><span class="cat-name">Text Tools</span><span class="cat-meta">6 tools</span><span class="cat-go">Explore →</span></a>
+      <a class="cat-card reveal" href="#converters" data-cat="converters"><span class="tool-icon" data-icon="unit-converter"></span><span class="cat-name">Converters</span><span class="cat-meta">4 tools</span><span class="cat-go">Explore →</span></a>
+      <a class="cat-card reveal" href="#calculators" data-cat="calculators"><span class="tool-icon" data-icon="percentage-calculator"></span><span class="cat-name">Calculators</span><span class="cat-meta">5 tools</span><span class="cat-go">Explore →</span></a>
+      <a class="cat-card reveal" href="#developer" data-cat="developer"><span class="tool-icon" data-icon="json-formatter"></span><span class="cat-name">Developer Tools</span><span class="cat-meta">7 tools</span><span class="cat-go">Explore →</span></a>
+      <a class="cat-card reveal" href="#generators" data-cat="generators"><span class="tool-icon" data-icon="qr-code-generator"></span><span class="cat-name">Generators</span><span class="cat-meta">4 tools</span><span class="cat-go">Explore →</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="pdf">
+    <div class="section-head"><h2 data-cat="pdf"><span class="bar"></span>PDF Tools</h2><span class="count">Merge, split and build PDFs</span></div>
+    <div class="tool-grid">
+      <a class="tool-card reveal" href="tools/merge-pdf.html" data-cat="pdf"><span class="tool-icon" data-icon="merge-pdf"></span><span class="tool-card-body"><span class="tool-name">Merge PDF</span><span class="tool-desc">Combine several PDF files into a single document.</span></span><span class="fav-btn" data-slug="merge-pdf" role="button" tabindex="0" aria-label="Save Merge PDF to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/split-pdf.html" data-cat="pdf"><span class="tool-icon" data-icon="split-pdf"></span><span class="tool-card-body"><span class="tool-name">Split PDF</span><span class="tool-desc">Extract a page range or split a PDF into separate files.</span></span><span class="fav-btn" data-slug="split-pdf" role="button" tabindex="0" aria-label="Save Split PDF to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/images-to-pdf.html" data-cat="pdf"><span class="tool-icon" data-icon="images-to-pdf"></span><span class="tool-card-body"><span class="tool-name">Images to PDF</span><span class="tool-desc">Turn JPG, PNG and WebP images into one PDF document.</span></span><span class="fav-btn" data-slug="images-to-pdf" role="button" tabindex="0" aria-label="Save Images to PDF to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/pdf-to-image.html" data-cat="pdf"><span class="tool-icon" data-icon="pdf-to-image"></span><span class="tool-card-body"><span class="tool-name">PDF to Image</span><span class="tool-desc">Render PDF pages as JPG or PNG images.</span></span><span class="fav-btn" data-slug="pdf-to-image" role="button" tabindex="0" aria-label="Save PDF to Image to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/rotate-pdf.html" data-cat="pdf"><span class="tool-icon" data-icon="rotate-pdf"></span><span class="tool-card-body"><span class="tool-name">Rotate &amp; Organize PDF</span><span class="tool-desc">Rotate, reorder and delete PDF pages.</span></span><span class="fav-btn" data-slug="rotate-pdf" role="button" tabindex="0" aria-label="Save Rotate &amp; Organize PDF to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/compress-pdf.html" data-cat="pdf"><span class="tool-icon" data-icon="compress-pdf"></span><span class="tool-card-body"><span class="tool-name">Compress PDF</span><span class="tool-desc">Shrink a PDF by re-encoding its images.</span></span><span class="fav-btn" data-slug="compress-pdf" role="button" tabindex="0" aria-label="Save Compress PDF to favourites">☆</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="image">
+    <div class="section-head"><h2 data-cat="image"><span class="bar"></span>Image Tools</h2><span class="count">Compress, resize and convert images</span></div>
+    <div class="tool-grid">
+      <a class="tool-card reveal" href="tools/compress-image.html" data-cat="image"><span class="tool-icon" data-icon="compress-image"></span><span class="tool-card-body"><span class="tool-name">Compress Image</span><span class="tool-desc">Reduce JPG, PNG and WebP file size with a quality slider.</span></span><span class="fav-btn" data-slug="compress-image" role="button" tabindex="0" aria-label="Save Compress Image to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/resize-image.html" data-cat="image"><span class="tool-icon" data-icon="resize-image"></span><span class="tool-card-body"><span class="tool-name">Resize Image</span><span class="tool-desc">Change image dimensions by pixels or percentage.</span></span><span class="fav-btn" data-slug="resize-image" role="button" tabindex="0" aria-label="Save Resize Image to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/convert-image.html" data-cat="image"><span class="tool-icon" data-icon="convert-image"></span><span class="tool-card-body"><span class="tool-name">Convert Image</span><span class="tool-desc">Convert images between JPG, PNG and WebP formats.</span></span><span class="fav-btn" data-slug="convert-image" role="button" tabindex="0" aria-label="Save Convert Image to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/crop-image.html" data-cat="image"><span class="tool-icon" data-icon="crop-image"></span><span class="tool-card-body"><span class="tool-name">Crop Image</span><span class="tool-desc">Crop images with a visual box and aspect presets.</span></span><span class="fav-btn" data-slug="crop-image" role="button" tabindex="0" aria-label="Save Crop Image to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/watermark-image.html" data-cat="image"><span class="tool-icon" data-icon="watermark-image"></span><span class="tool-card-body"><span class="tool-name">Watermark Image</span><span class="tool-desc">Stamp text watermarks onto your images.</span></span><span class="fav-btn" data-slug="watermark-image" role="button" tabindex="0" aria-label="Save Watermark Image to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/favicon-generator.html" data-cat="image"><span class="tool-icon" data-icon="favicon-generator"></span><span class="tool-card-body"><span class="tool-name">Favicon Generator</span><span class="tool-desc">Generate favicon sizes and an ICO from one image.</span></span><span class="fav-btn" data-slug="favicon-generator" role="button" tabindex="0" aria-label="Save Favicon Generator to favourites">☆</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="text">
+    <div class="section-head"><h2 data-cat="text"><span class="bar"></span>Text Tools</h2><span class="count">Count, convert and clean up text</span></div>
+    <div class="tool-grid">
+      <a class="tool-card reveal" href="tools/word-counter.html" data-cat="text"><span class="tool-icon" data-icon="word-counter"></span><span class="tool-card-body"><span class="tool-name">Word Counter</span><span class="tool-desc">Count words, characters, sentences and reading time.</span></span><span class="fav-btn" data-slug="word-counter" role="button" tabindex="0" aria-label="Save Word Counter to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/case-converter.html" data-cat="text"><span class="tool-icon" data-icon="case-converter"></span><span class="tool-card-body"><span class="tool-name">Case Converter</span><span class="tool-desc">Switch text between UPPER, lower, Title, camelCase and more.</span></span><span class="fav-btn" data-slug="case-converter" role="button" tabindex="0" aria-label="Save Case Converter to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/keyword-density.html" data-cat="text"><span class="tool-icon" data-icon="keyword-density"></span><span class="tool-card-body"><span class="tool-name">Keyword Density Checker</span><span class="tool-desc">See how often words and phrases repeat in your text.</span></span><span class="fav-btn" data-slug="keyword-density" role="button" tabindex="0" aria-label="Save Keyword Density Checker to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/meta-tag-generator.html" data-cat="text"><span class="tool-icon" data-icon="meta-tag-generator"></span><span class="tool-card-body"><span class="tool-name">Meta Tag Generator</span><span class="tool-desc">Build meta, Open Graph and Twitter Card tags with preview.</span></span><span class="fav-btn" data-slug="meta-tag-generator" role="button" tabindex="0" aria-label="Save Meta Tag Generator to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/lorem-ipsum.html" data-cat="text"><span class="tool-icon" data-icon="lorem-ipsum"></span><span class="tool-card-body"><span class="tool-name">Lorem Ipsum Generator</span><span class="tool-desc">Generate placeholder paragraphs, sentences or words.</span></span><span class="fav-btn" data-slug="lorem-ipsum" role="button" tabindex="0" aria-label="Save Lorem Ipsum Generator to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/text-cleaner.html" data-cat="text"><span class="tool-icon" data-icon="text-cleaner"></span><span class="tool-card-body"><span class="tool-name">Text Cleaner</span><span class="tool-desc">Clean up text: extra spaces, line breaks, duplicates and accents.</span></span><span class="fav-btn" data-slug="text-cleaner" role="button" tabindex="0" aria-label="Save Text Cleaner to favourites">☆</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="converters">
+    <div class="section-head"><h2 data-cat="converters"><span class="bar"></span>Converters</h2><span class="count">Units, bases, time zones and more</span></div>
+    <div class="tool-grid">
+      <a class="tool-card reveal" href="tools/unit-converter.html" data-cat="converters"><span class="tool-icon" data-icon="unit-converter"></span><span class="tool-card-body"><span class="tool-name">Unit Converter</span><span class="tool-desc">Convert length, weight, temperature, area, speed and more.</span></span><span class="fav-btn" data-slug="unit-converter" role="button" tabindex="0" aria-label="Save Unit Converter to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/time-zone-converter.html" data-cat="converters"><span class="tool-icon" data-icon="time-zone-converter"></span><span class="tool-card-body"><span class="tool-name">Time Zone Converter</span><span class="tool-desc">Convert times between world time zones.</span></span><span class="fav-btn" data-slug="time-zone-converter" role="button" tabindex="0" aria-label="Save Time Zone Converter to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/number-base-converter.html" data-cat="converters"><span class="tool-icon" data-icon="number-base-converter"></span><span class="tool-card-body"><span class="tool-name">Number Base Converter</span><span class="tool-desc">Convert between binary, decimal, octal and hex.</span></span><span class="fav-btn" data-slug="number-base-converter" role="button" tabindex="0" aria-label="Save Number Base Converter to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/currency-converter.html" data-cat="converters"><span class="tool-icon" data-icon="currency-converter"></span><span class="tool-card-body"><span class="tool-name">Currency Converter</span><span class="tool-desc">Convert currencies with daily exchange rates.</span></span><span class="fav-btn" data-slug="currency-converter" role="button" tabindex="0" aria-label="Save Currency Converter to favourites">☆</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="calculators">
+    <div class="section-head"><h2 data-cat="calculators"><span class="bar"></span>Calculators</h2><span class="count">Percentages, age, BMI, loans and tips</span></div>
+    <div class="tool-grid">
+      <a class="tool-card reveal" href="tools/percentage-calculator.html" data-cat="calculators"><span class="tool-icon" data-icon="percentage-calculator"></span><span class="tool-card-body"><span class="tool-name">Percentage Calculator</span><span class="tool-desc">Find percentages, ratios and percentage change.</span></span><span class="fav-btn" data-slug="percentage-calculator" role="button" tabindex="0" aria-label="Save Percentage Calculator to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/age-calculator.html" data-cat="calculators"><span class="tool-icon" data-icon="age-calculator"></span><span class="tool-card-body"><span class="tool-name">Age Calculator</span><span class="tool-desc">Calculate exact age in years, months and days.</span></span><span class="fav-btn" data-slug="age-calculator" role="button" tabindex="0" aria-label="Save Age Calculator to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/bmi-calculator.html" data-cat="calculators"><span class="tool-icon" data-icon="bmi-calculator"></span><span class="tool-card-body"><span class="tool-name">BMI Calculator</span><span class="tool-desc">Check your body mass index and healthy weight range.</span></span><span class="fav-btn" data-slug="bmi-calculator" role="button" tabindex="0" aria-label="Save BMI Calculator to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/loan-calculator.html" data-cat="calculators"><span class="tool-icon" data-icon="loan-calculator"></span><span class="tool-card-body"><span class="tool-name">Loan / EMI Calculator</span><span class="tool-desc">Monthly payments plus a full amortisation table.</span></span><span class="fav-btn" data-slug="loan-calculator" role="button" tabindex="0" aria-label="Save Loan / EMI Calculator to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/tip-calculator.html" data-cat="calculators"><span class="tool-icon" data-icon="tip-calculator"></span><span class="tool-card-body"><span class="tool-name">Tip &amp; Bill Split Calculator</span><span class="tool-desc">Work out the tip and split the bill fairly.</span></span><span class="fav-btn" data-slug="tip-calculator" role="button" tabindex="0" aria-label="Save Tip &amp; Bill Split Calculator to favourites">☆</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="developer">
+    <div class="section-head"><h2 data-cat="developer"><span class="bar"></span>Developer Tools</h2><span class="count">JSON, Base64, JWT, CSS and regex</span></div>
+    <div class="tool-grid">
+      <a class="tool-card reveal" href="tools/json-formatter.html" data-cat="developer"><span class="tool-icon" data-icon="json-formatter"></span><span class="tool-card-body"><span class="tool-name">JSON Formatter &amp; Validator</span><span class="tool-desc">Format, minify and validate JSON with clear errors.</span></span><span class="fav-btn" data-slug="json-formatter" role="button" tabindex="0" aria-label="Save JSON Formatter to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/base64.html" data-cat="developer"><span class="tool-icon" data-icon="base64"></span><span class="tool-card-body"><span class="tool-name">Base64 Encoder &amp; Decoder</span><span class="tool-desc">Encode and decode Base64 text and files, Unicode-safe.</span></span><span class="fav-btn" data-slug="base64" role="button" tabindex="0" aria-label="Save Base64 tool to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/uuid-generator.html" data-cat="developer"><span class="tool-icon" data-icon="uuid-generator"></span><span class="tool-card-body"><span class="tool-name">UUID Generator</span><span class="tool-desc">Generate random v4 UUIDs, one or in bulk.</span></span><span class="fav-btn" data-slug="uuid-generator" role="button" tabindex="0" aria-label="Save UUID Generator to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/url-encode.html" data-cat="developer"><span class="tool-icon" data-icon="url-encode"></span><span class="tool-card-body"><span class="tool-name">URL &amp; HTML Encoder</span><span class="tool-desc">Encode and decode URLs and HTML entities.</span></span><span class="fav-btn" data-slug="url-encode" role="button" tabindex="0" aria-label="Save URL &amp; HTML Encoder to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/jwt-decoder.html" data-cat="developer"><span class="tool-icon" data-icon="jwt-decoder"></span><span class="tool-card-body"><span class="tool-name">JWT Decoder</span><span class="tool-desc">Inspect JWT headers and payloads in your browser.</span></span><span class="fav-btn" data-slug="jwt-decoder" role="button" tabindex="0" aria-label="Save JWT Decoder to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/css-gradient-generator.html" data-cat="developer"><span class="tool-icon" data-icon="css-gradient-generator"></span><span class="tool-card-body"><span class="tool-name">CSS Gradient &amp; Shadow Generator</span><span class="tool-desc">Design gradients and box shadows with live preview.</span></span><span class="fav-btn" data-slug="css-gradient-generator" role="button" tabindex="0" aria-label="Save CSS Gradient &amp; Shadow Generator to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/regex-tester.html" data-cat="developer"><span class="tool-icon" data-icon="regex-tester"></span><span class="tool-card-body"><span class="tool-name">Regex Tester</span><span class="tool-desc">Test regular expressions with highlighted matches.</span></span><span class="fav-btn" data-slug="regex-tester" role="button" tabindex="0" aria-label="Save Regex Tester to favourites">☆</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="generators">
+    <div class="section-head"><h2 data-cat="generators"><span class="bar"></span>Generators</h2><span class="count">QR codes, passwords and palettes</span></div>
+    <div class="tool-grid">
+      <a class="tool-card reveal" href="tools/qr-code-generator.html" data-cat="generators"><span class="tool-icon" data-icon="qr-code-generator"></span><span class="tool-card-body"><span class="tool-name">QR Code Generator</span><span class="tool-desc">Create QR codes for links and text, download PNG or SVG.</span></span><span class="fav-btn" data-slug="qr-code-generator" role="button" tabindex="0" aria-label="Save QR Code Generator to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/password-generator.html" data-cat="generators"><span class="tool-icon" data-icon="password-generator"></span><span class="tool-card-body"><span class="tool-name">Password Generator</span><span class="tool-desc">Generate strong random passwords with a strength meter.</span></span><span class="fav-btn" data-slug="password-generator" role="button" tabindex="0" aria-label="Save Password Generator to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/color-palette.html" data-cat="generators"><span class="tool-icon" data-icon="color-palette"></span><span class="tool-card-body"><span class="tool-name">Color Converter &amp; Palette</span><span class="tool-desc">Convert HEX, RGB and HSL and build colour palettes.</span></span><span class="fav-btn" data-slug="color-palette" role="button" tabindex="0" aria-label="Save Color Converter &amp; Palette to favourites">☆</span></a>
+      <a class="tool-card reveal" href="tools/list-randomizer.html" data-cat="generators"><span class="tool-icon" data-icon="list-randomizer"></span><span class="tool-card-body"><span class="tool-name">List Randomizer</span><span class="tool-desc">Shuffle lists and pick random winners.</span></span><span class="fav-btn" data-slug="list-randomizer" role="button" tabindex="0" aria-label="Save List Randomizer to favourites">☆</span></a>
+    </div>
+  </section>
+
+  <div class="trust-band">
+    <div class="trust-item">
+      <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Private by design</h3>
+      <p>Every Tool360 tool runs entirely in your web browser. Your PDFs, images and text are processed on your own device — they are never uploaded to a server, so there is nothing to leak, store or delete.</p>
+    </div>
+    <div class="trust-item">
+      <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/></svg> Fast, with no accounts</h3>
+      <p>No sign-up forms, no waiting for uploads, no daily limits. Open a tool, drop your file in, and get the result in seconds — the work happens on your device, not in a queue.</p>
+    </div>
+    <div class="trust-item">
+      <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 1 10-10"/><path d="M8.5 12.5 11 15 15.5 9.5"/></svg> Honest by default</h3>
+      <p>All 38 tools on this site are live and every one of them fully works — no placeholders, no locked features, no fake buttons. Every tool works the same way: locally, instantly and free.</p>
+    </div>
+  </div>
+
+  <section class="section faq" id="faq">
+    <div class="section-head"><h2>Frequently asked questions</h2></div>
+    <details><summary>Are the tools on Tool360 really free?</summary><p>Yes. Every live tool is free to use with no account and no usage counter. The tools run on your own device, so there is no server bill to pass on to you.</p></details>
+    <details><summary>Are my files uploaded to a server?</summary><p>No. Tool360 processes files locally in your browser using JavaScript. Your PDFs and images never leave your device, and closing the tab removes everything from memory.</p></details>
+    <details><summary>Do I need to install anything?</summary><p>No installation and no browser extensions. Any modern browser on desktop or mobile can run every tool on this site.</p></details>
+    <details><summary>Is there a limit on file size or number of uses?</summary><p>There are no accounts, quotas or daily limits. Because everything is processed on your own device, the only practical limit for very large files is your device’s memory — for everyday documents and images you will not notice one.</p></details>
+    <details><summary>How can I find a tool quickly?</summary><p>Press <span class="kbd">Ctrl</span> + <span class="kbd">K</span> (or <span class="kbd">Cmd</span> + <span class="kbd">K</span> on a Mac) anywhere on the site to open the search palette, or tap the star on any tool card to pin it to your favourites on this page.</p></details>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

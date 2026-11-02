@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta Tag Generator — Build SEO, Open Graph and Twitter tags with live previews | Tool360</title>
+<meta name="description" content="Generate title, description, Open Graph and Twitter Card meta tags with live Google and social previews. Free and runs in your browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+.hint{font-size:.8rem;color:var(--muted);font-weight:600}
+.serp-box{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:16px 18px;max-width:600px}
+.serp-url{font-size:.82rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.serp-crumb{color:var(--muted)}
+.serp-title{color:#1a0dab;font-size:1.18rem;line-height:1.3;margin:3px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+[data-theme="dark"] .serp-title{color:#8ab4f8}
+.serp-desc{color:var(--muted);font-size:.9rem;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.social-card{border:1px solid var(--border);border-radius:13px;overflow:hidden;max-width:520px;background:var(--surface)}
+.social-card img{width:100%;aspect-ratio:1.91/1;object-fit:cover;background:var(--surface-2)}
+.social-body{padding:12px 14px;background:var(--surface-2)}
+.social-title{font-weight:700;font-size:.97rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.social-desc{color:var(--muted);font-size:.88rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.social-domain{color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;margin-top:5px}
+.preview-label{font-size:.86rem;font-weight:700;color:var(--muted);margin:18px 0 8px}
+.preview-label:first-child{margin-top:0}
+</style>
+</head>
+<body data-tool="meta-tag-generator" data-category="text">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#text">Text Tools</a> <span class="sep">›</span> <span aria-current="page">Meta Tag Generator</span></nav>
+  <h1>Meta Tag Generator</h1>
+  <p class="lede">Fill in your page details once and get ready-to-paste title, description, Open Graph and Twitter Card tags — with live previews as you type.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your text never leaves this device</p>
+  <section class="workspace card">
+    <div class="grid-2">
+      <div class="field">
+        <label for="f-title">Page title</label>
+        <input id="f-title" class="input" type="text" placeholder="e.g. Best Hiking Boots — Trail Shop">
+        <span class="hint"><span id="title-count">0</span>/60 characters — aim for ~60</span>
+      </div>
+      <div class="field">
+        <label for="f-url">Page URL</label>
+        <input id="f-url" class="input" type="url" placeholder="https://example.com/page">
+      </div>
+    </div>
+    <div class="field" style="margin-top:14px;">
+      <label for="f-desc">Meta description</label>
+      <textarea id="f-desc" class="textarea" rows="3" placeholder="A short, honest summary of what this page offers..."></textarea>
+      <span class="hint"><span id="desc-count">0</span>/160 characters — aim for ~160</span>
+    </div>
+    <div class="grid-2" style="margin-top:14px;">
+      <div class="field">
+        <label for="f-image">Social image URL (Open Graph)</label>
+        <input id="f-image" class="input" type="url" placeholder="https://example.com/og-image.jpg">
+      </div>
+      <div class="field">
+        <label for="f-type">Page type</label>
+        <select id="f-type" class="select">
+          <option value="website" selected>website</option>
+          <option value="article">article</option>
+          <option value="profile">profile</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-twitter">Twitter card type</label>
+        <select id="f-twitter" class="select">
+          <option value="summary" selected>summary</option>
+          <option value="summary_large_image">summary_large_image</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-handle">Twitter @username</label>
+        <input id="f-handle" class="input" type="text" placeholder="@yourhandle">
+      </div>
+      <div class="field">
+        <label for="f-author">Author</label>
+        <input id="f-author" class="input" type="text" placeholder="Author name">
+      </div>
+      <div class="field">
+        <label for="f-keywords">Keywords (comma-separated)</label>
+        <input id="f-keywords" class="input" type="text" placeholder="keyword one, keyword two">
+      </div>
+      <div class="field">
+        <label for="f-theme">Theme colour</label>
+        <input id="f-theme" type="color" value="#7c3aed">
+      </div>
+      <div class="field">
+        <label for="f-robots">Robots</label>
+        <select id="f-robots" class="select">
+          <option value="index, follow" selected>index, follow</option>
+          <option value="noindex, follow">noindex, follow</option>
+          <option value="index, nofollow">index, nofollow</option>
+          <option value="noindex, nofollow">noindex, nofollow</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="preview-label" style="margin-top:22px;">Google search preview</p>
+    <div class="serp-box" id="serp-preview">
+      <div class="serp-url" id="serp-url">example.com</div>
+      <div class="serp-title" id="serp-title">Your page title will appear here</div>
+      <div class="serp-desc" id="serp-desc">Your meta description will appear here. Fill in the description field above to preview how it may look in search results.</div>
+    </div>
+
+    <p class="preview-label">Social share preview</p>
+    <div class="social-card" id="social-preview">
+      <img id="social-img" alt="" class="hidden">
+      <div class="social-body">
+        <div class="social-title" id="social-title">Your page title will appear here</div>
+        <div class="social-desc" id="social-desc">Your meta description will appear here.</div>
+        <div class="social-domain" id="social-domain">example.com</div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:22px;">
+      <label for="output">Generated HTML — paste into your page &lt;head&gt;</label>
+      <pre class="out-box" id="output"></pre>
+    </div>
+    <div class="options-bar">
+      <button type="button" id="copy-btn" class="btn btn-primary">Copy HTML</button>
+      <button type="button" id="clear-btn" class="btn btn-ghost">Clear all</button>
+    </div>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Meta Tag Generator</h2>
+    <ol class="steps"><li>Enter your page title, URL and meta description — the counters show characters used as guidance (aim for ~60 for titles and ~160 for descriptions).</li><li>Add a social image URL, page type, Twitter card type and any optional author, keywords, theme colour and robots settings.</li><li>Check the Google and social previews to see how your page may appear when listed or shared.</li><li>Click Copy HTML and paste the generated tags into the &lt;head&gt; section of your page.</li></ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Where do I paste the generated tags?</summary><p>Paste them inside the &lt;head&gt; section of your HTML page, ideally near the top. If your page already has a &lt;title&gt; element or charset/viewport meta tags, replace the old title rather than adding a second one.</p></details>
+    <details><summary>Are 60 and 160 characters hard limits?</summary><p>No. They are widely used guidelines for how much text search results typically display before truncating. The counters on this page are guidance only — a slightly longer title or description will still work.</p></details>
+    <details><summary>What is the difference between Open Graph and Twitter Card tags?</summary><p>Open Graph tags (og:) control how your page looks when shared on platforms such as Facebook and LinkedIn. Twitter Card tags (twitter:) do the same for X/Twitter. This generator creates both from the same details.</p></details>
+    <details><summary>Which fields can I leave empty?</summary><p>Any of them. Empty fields are simply left out of the generated HTML, except for defaults like the robots setting and theme colour that you choose explicitly.</p></details>
+    <details><summary>Is my data uploaded?</summary><p>No. The tags and previews are generated entirely in your browser. Nothing you type is sent to a server.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var F = {
+    title: T360.qs('#f-title'), desc: T360.qs('#f-desc'), url: T360.qs('#f-url'),
+    image: T360.qs('#f-image'), type: T360.qs('#f-type'), twitter: T360.qs('#f-twitter'),
+    handle: T360.qs('#f-handle'), author: T360.qs('#f-author'), keywords: T360.qs('#f-keywords'),
+    theme: T360.qs('#f-theme'), robots: T360.qs('#f-robots')
+  };
+  var output = T360.qs('#output');
+  var titleCount = T360.qs('#title-count'), descCount = T360.qs('#desc-count');
+  var serpUrl = T360.qs('#serp-url'), serpTitle = T360.qs('#serp-title'), serpDesc = T360.qs('#serp-desc');
+  var socImg = T360.qs('#social-img'), socTitle = T360.qs('#social-title'), socDesc = T360.qs('#social-desc'), socDomain = T360.qs('#social-domain');
+
+  function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function domainOf(u){
+    try { return new URL(u).hostname.replace(/^www\./,''); } catch(e){ return ''; }
+  }
+  function crumbOf(u){
+    try {
+      var parsed = new URL(u);
+      var parts = parsed.pathname.split('/').filter(Boolean).map(function(p){ try { return decodeURIComponent(p); } catch(e){ return p; } });
+      var host = parsed.hostname;
+      return parts.length ? host + ' › ' + parts.join(' › ') : host;
+    } catch(e){ return ''; }
+  }
+  function update(){
+    var title = F.title.value.trim(), desc = F.desc.value.trim(), url = F.url.value.trim();
+    var image = F.image.value.trim(), handle = F.handle.value.trim();
+    var author = F.author.value.trim(), keywords = F.keywords.value.trim();
+    titleCount.textContent = F.title.value.length;
+    descCount.textContent = F.desc.value.length;
+
+    // SERP preview
+    serpUrl.textContent = url ? crumbOf(url) || url : 'example.com';
+    serpTitle.textContent = title || 'Your page title will appear here';
+    serpDesc.textContent = desc || 'Your meta description will appear here. Fill in the description field above to preview how it may look in search results.';
+
+    // Social preview
+    socTitle.textContent = title || 'Your page title will appear here';
+    socDesc.textContent = desc || 'Your meta description will appear here.';
+    socDomain.textContent = (url && domainOf(url)) || 'example.com';
+    if (image) {
+      if (socImg.getAttribute('src') !== image) socImg.setAttribute('src', image);
+      socImg.classList.remove('hidden');
+    } else {
+      socImg.classList.add('hidden');
+      socImg.removeAttribute('src');
+    }
+
+    // Generated HTML
+    var lines = [];
+    if (title) lines.push('<title>' + esc(title) + '</title>');
+    if (desc) lines.push('<meta name="description" content="' + esc(desc) + '">');
+    if (keywords) lines.push('<meta name="keywords" content="' + esc(keywords) + '">');
+    if (author) lines.push('<meta name="author" content="' + esc(author) + '">');
+    lines.push('<meta name="robots" content="' + esc(F.robots.value) + '">');
+    if (url) lines.push('<link rel="canonical" href="' + esc(url) + '">');
+    lines.push('<meta name="theme-color" content="' + esc(F.theme.value) + '">');
+    lines.push('');
+    lines.push('<!-- Open Graph -->');
+    lines.push('<meta property="og:type" content="' + esc(F.type.value) + '">');
+    if (title) lines.push('<meta property="og:title" content="' + esc(title) + '">');
+    if (desc) lines.push('<meta property="og:description" content="' + esc(desc) + '">');
+    if (url) lines.push('<meta property="og:url" content="' + esc(url) + '">');
+    if (image) lines.push('<meta property="og:image" content="' + esc(image) + '">');
+    lines.push('');
+    lines.push('<!-- Twitter Card -->');
+    lines.push('<meta name="twitter:card" content="' + esc(F.twitter.value) + '">');
+    if (handle) lines.push('<meta name="twitter:site" content="' + esc(handle.charAt(0) === '@' ? handle : '@' + handle) + '">');
+    if (title) lines.push('<meta name="twitter:title" content="' + esc(title) + '">');
+    if (desc) lines.push('<meta name="twitter:description" content="' + esc(desc) + '">');
+    if (image) lines.push('<meta name="twitter:image" content="' + esc(image) + '">');
+    output.textContent = lines.join('\n');
+  }
+  socImg.addEventListener('error', function(){ socImg.classList.add('hidden'); });
+  Object.keys(F).forEach(function(k){
+    F[k].addEventListener('input', update);
+    F[k].addEventListener('change', update);
+  });
+  T360.qs('#copy-btn').addEventListener('click', function(){
+    if (!output.textContent.trim()) { T360.toast('Nothing to copy yet'); return; }
+    T360.copyText(output.textContent, this);
+  });
+  T360.qs('#clear-btn').addEventListener('click', function(){
+    Object.keys(F).forEach(function(k){ if (k !== 'theme' && k !== 'type' && k !== 'twitter' && k !== 'robots') F[k].value = ''; });
+    F.theme.value = '#7c3aed'; F.type.value = 'website'; F.twitter.value = 'summary'; F.robots.value = 'index, follow';
+    update();
+    F.title.focus();
+  });
+  update();
+})();
+</script>
+</body>
+</html>

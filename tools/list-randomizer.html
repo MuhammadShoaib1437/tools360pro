@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>List Randomizer — Shuffle Lists &amp; Pick Random Winners | Tool360</title>
+<meta name="description" content="Shuffle any list or pick random winners fairly with secure browser randomness. Free online list randomizer — one item per line, nothing is uploaded.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="list-randomizer" data-category="generators">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#generators">Generators</a> <span class="sep">›</span> <span aria-current="page">List Randomizer</span></nav>
+  <h1>List Randomizer</h1>
+  <p class="lede">Paste a list — one item per line — then shuffle it into a random order or pick random winners, fairly and in seconds.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — nothing is uploaded</p>
+  <section class="workspace card">
+    <div class="field">
+      <label for="input">Your list — one item per line</label>
+      <textarea id="input" class="textarea" rows="9" placeholder="Alice&#10;Bob&#10;Charlie&#10;Diana&#10;Ethan" spellcheck="false"></textarea>
+    </div>
+    <div class="stat-row">
+      <div class="stat">
+        <b id="item-count">0</b>
+        <span>Items</span>
+      </div>
+    </div>
+    <div class="options-bar">
+      <button type="button" id="btn-shuffle" class="btn btn-primary">Shuffle list</button>
+      <div class="field" style="max-width:150px;">
+        <label for="pick-n">Winners to pick</label>
+        <input id="pick-n" class="input" type="number" value="1" min="1" step="1">
+      </div>
+      <button type="button" id="btn-pick" class="btn">Pick winners</button>
+    </div>
+    <label class="switch-row" for="opt-numbered"><input type="checkbox" id="opt-numbered" checked> Number the output lines (1. item)</label>
+
+    <div class="result-panel">
+      <p id="output-label" style="margin:0 0 10px;font-weight:700;">No result yet — shuffle the list or pick winners.</p>
+      <pre class="out-box" id="output"></pre>
+      <div class="options-bar" style="margin-bottom:0;">
+        <button type="button" id="copy-btn" class="btn btn-ghost btn-sm">Copy result</button>
+        <button type="button" id="download-btn" class="btn btn-ghost btn-sm">Download .txt</button>
+        <button type="button" id="clear-btn" class="btn btn-ghost btn-sm">Clear all</button>
+      </div>
+    </div>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the List Randomizer</h2>
+    <ol class="steps"><li>Type or paste your list in the box, with one item on each line — blank lines are ignored and the item count updates as you type.</li><li>Click Shuffle list to put every item into a random order, or set how many winners to pick and click Pick winners.</li><li>Use the numbering option to turn line numbers like “1. item” on or off in the result.</li><li>Copy the result exactly as shown, or download it as a .txt file.</li></ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>How random is the shuffle?</summary><p>The shuffle uses the Fisher–Yates algorithm with randomness from your browser's cryptographic generator (crypto.getRandomValues) and rejection sampling, so every ordering is equally likely and there is no bias towards any position.</p></details>
+    <details><summary>Can the same item win twice when I pick winners?</summary><p>No. Winners are picked without replacement: the list is shuffled and the first N items are taken, so each entry can only be picked once in a single draw.</p></details>
+    <details><summary>What happens to duplicate lines and blank lines?</summary><p>Blank lines are ignored. Duplicates are kept as separate entries — if the same name appears on two lines, it counts as two entries and could appear twice in a shuffled list or win as either entry. Remove duplicate lines first if you want each item to count only once.</p></details>
+    <details><summary>What does Copy copy — with or without the numbers?</summary><p>Copy copies exactly what is displayed in the result box, including the line numbers when numbering is switched on. Turn numbering off before copying if you want the plain items only.</p></details>
+    <details><summary>Is my list uploaded anywhere?</summary><p>No. Your list is shuffled and picked entirely in your browser. Nothing is uploaded, logged or stored — the list disappears when you leave the page.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var input = T360.qs('#input');
+  var itemCount = T360.qs('#item-count');
+  var btnShuffle = T360.qs('#btn-shuffle');
+  var pickN = T360.qs('#pick-n');
+  var btnPick = T360.qs('#btn-pick');
+  var optNumbered = T360.qs('#opt-numbered');
+  var output = T360.qs('#output');
+  var outputLabel = T360.qs('#output-label');
+  var copyBtn = T360.qs('#copy-btn');
+  var downloadBtn = T360.qs('#download-btn');
+  var clearBtn = T360.qs('#clear-btn');
+
+  var lastResult = null;
+  var lastLabel = '';
+
+  function randInt(max){
+    // Uniform integer in [0, max) using crypto.getRandomValues with rejection sampling
+    var limit = Math.floor(4294967296 / max) * max;
+    var arr = new Uint32Array(1);
+    while (true) {
+      crypto.getRandomValues(arr);
+      if (arr[0] < limit) return arr[0] % max;
+    }
+  }
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = randInt(i + 1);
+      var tmp = a[i];
+      a[i] = a[j];
+      a[j] = tmp;
+    }
+    return a;
+  }
+  function getItems(){
+    return input.value.split(/\r?\n/).map(function(line){ return line.trim(); }).filter(function(line){ return line !== ''; });
+  }
+  function updateCount(){
+    itemCount.textContent = getItems().length;
+  }
+  function showResult(items, label){
+    lastResult = items.slice();
+    lastLabel = label;
+    var lines = optNumbered.checked
+      ? items.map(function(item, i){ return (i + 1) + '. ' + item; })
+      : items.slice();
+    output.textContent = lines.join('\n');
+    outputLabel.textContent = label;
+  }
+  function reshownResult(){
+    if (!lastResult) return;
+    var lines = optNumbered.checked
+      ? lastResult.map(function(item, i){ return (i + 1) + '. ' + item; })
+      : lastResult.slice();
+    output.textContent = lines.join('\n');
+    outputLabel.textContent = lastLabel;
+  }
+  function requireItems(){
+    var items = getItems();
+    if (!items.length) {
+      T360.toast('Add at least one item to the list first');
+      return null;
+    }
+    return items;
+  }
+
+  input.addEventListener('input', updateCount);
+  optNumbered.addEventListener('change', reshownResult);
+
+  btnShuffle.addEventListener('click', function(){
+    var items = requireItems();
+    if (!items) return;
+    var shuffled = shuffle(items);
+    showResult(shuffled, 'Shuffled list — ' + shuffled.length + (shuffled.length === 1 ? ' item' : ' items'));
+  });
+
+  btnPick.addEventListener('click', function(){
+    var items = requireItems();
+    if (!items) return;
+    var n = parseInt(pickN.value, 10);
+    if (isNaN(n) || n < 1) n = 1;
+    if (n > items.length) {
+      n = items.length;
+      pickN.value = n;
+      T360.toast('Only ' + items.length + (items.length === 1 ? ' item' : ' items') + ' in the list — picking ' + n);
+    }
+    var winners = shuffle(items).slice(0, n);
+    showResult(winners, 'Winners — ' + winners.length + ' of ' + items.length);
+  });
+
+  copyBtn.addEventListener('click', function(){
+    if (!lastResult || !output.textContent) { T360.toast('Shuffle or pick winners first'); return; }
+    T360.copyText(output.textContent, this);
+  });
+
+  downloadBtn.addEventListener('click', function(){
+    if (!lastResult || !output.textContent) { T360.toast('Shuffle or pick winners first'); return; }
+    var blob = new Blob([output.textContent], { type: 'text/plain;charset=utf-8' });
+    T360.download(blob, 'randomized-list.txt');
+  });
+
+  clearBtn.addEventListener('click', function(){
+    input.value = '';
+    pickN.value = 1;
+    lastResult = null;
+    lastLabel = '';
+    output.textContent = '';
+    outputLabel.textContent = 'No result yet — shuffle the list or pick winners.';
+    updateCount();
+    input.focus();
+  });
+
+  updateCount();
+})();
+</script>
+</body>
+</html>

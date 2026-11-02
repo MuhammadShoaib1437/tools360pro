@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rotate &amp; Organize PDF — Rotate, Reorder and Delete PDF Pages Free | Tool360</title>
+<meta name="description" content="Rotate, reorder and delete pages in a PDF file, free and in your browser. Preview every page, drag pages into order, and download the organized PDF — nothing is uploaded.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  #thumb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-top:16px}
+  .page-card{background:var(--surface-2);border:1px solid var(--border);border-radius:13px;padding:12px;display:flex;flex-direction:column;gap:9px}
+  .page-card.dragging{opacity:.45}
+  .page-card.dragover-card{border-color:var(--acc)}
+  .thumb-wrap{height:190px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--surface);border:1px solid var(--border);border-radius:9px;cursor:grab}
+  .thumb-wrap img{max-width:150px;max-height:170px;transition:transform .2s ease;box-shadow:var(--shadow)}
+  .page-label{font-weight:700;font-size:.9rem;text-align:center}
+  .page-rot{color:var(--muted);font-size:.79rem;font-weight:600;text-align:center;min-height:1.1em}
+  .page-actions{display:flex;gap:5px;justify-content:center;flex-wrap:wrap}
+</style>
+</head>
+<body data-tool="rotate-pdf" data-category="pdf">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#pdf">PDF Tools</a> <span class="sep">›</span> <span aria-current="page">Rotate &amp; Organize PDF</span></nav>
+  <h1>Rotate &amp; Organize PDF</h1>
+  <p class="lede">Rotate pages left or right, drag them into a new order, delete the ones you don't need — then download the organized PDF.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your files never leave this device</p>
+
+  <section class="workspace card">
+    <div class="dropzone" id="dz" role="button" tabindex="0" aria-label="Add a PDF file">
+      <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5.5"/><path d="M6.5 10.5 12 5l5.5 5.5"/><path d="M4 20h16"/></svg>
+      <div class="dz-title">Drop your PDF file here</div>
+      <div class="dz-sub">or click to browse · one PDF file · every page is shown as a preview below</div>
+    </div>
+    <input type="file" id="file-input" accept="application/pdf,.pdf" hidden>
+    <div class="file-list" id="file-list"></div>
+    <p class="error-text hidden" id="err"></p>
+    <div class="progress hidden" id="progress"><i></i></div>
+    <div id="thumb-grid"></div>
+    <p class="error-text hidden" id="empty-hint">All pages have been deleted — reset to restore the original document, or add the PDF again.</p>
+    <div class="stat-row">
+      <div class="stat"><b id="stat-original">0</b><span>Original pages</span></div>
+      <div class="stat"><b id="stat-output">0</b><span>Pages in output</span></div>
+    </div>
+    <div class="options-bar">
+      <button class="btn btn-primary btn-lg" id="download-btn" disabled>Download organized PDF</button>
+      <button class="btn btn-ghost" id="reset-btn" disabled>Reset order &amp; rotations</button>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the Rotate &amp; Organize PDF tool</h2>
+    <ol class="steps">
+      <li>Drop one PDF file onto the box above, or click it to browse your device — every page appears as a thumbnail.</li>
+      <li>Use the ↺ and ↻ buttons on a page to rotate it, the ◀ ▶ buttons (or drag and drop) to reorder it, and ✕ to delete it.</li>
+      <li>Check the page counts, and use <b>Reset order &amp; rotations</b> at any time to start over from the original.</li>
+      <li>Press <b>Download organized PDF</b> to save the result. Your original file is never modified or uploaded.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my PDF uploaded to a server?</summary><p>No. The previews and the final document are built entirely in your browser using JavaScript. Your file never leaves your device, and nothing is stored anywhere.</p></details>
+    <details><summary>Does rotating a page change its quality?</summary><p>No. Pages are copied into the new document exactly as they are — only the page rotation, order and selection change. Text, images and vector graphics keep their original quality.</p></details>
+    <details><summary>Can I undo a deleted page?</summary><p>Yes — press <b>Reset order &amp; rotations</b> to restore every original page in its original order with no rotations applied. Deleting pages here never touches your original file.</p></details>
+    <details><summary>How do I reorder pages on a touch screen?</summary><p>Every thumbnail has ◀ and ▶ buttons that move the page one position earlier or later, so reordering works without drag and drop.</p></details>
+    <details><summary>My file won't load. Why?</summary><p>The file may be corrupted or password-protected. Encrypted PDFs need to be unlocked with their password in a PDF editor first — this tool cannot open them.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script src="../assets/vendor/pdf-lib.min.js"></script>
+<script src="../assets/vendor/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = "../assets/vendor/pdf.worker.min.js";
+(function () {
+  var dz = T360.qs("#dz"), input = T360.qs("#file-input"), list = T360.qs("#file-list"),
+      grid = T360.qs("#thumb-grid"), err = T360.qs("#err"), progress = T360.qs("#progress"),
+      downloadBtn = T360.qs("#download-btn"), resetBtn = T360.qs("#reset-btn"),
+      emptyHint = T360.qs("#empty-hint");
+  var originalBytes = null, originalCount = 0, fileName = "";
+  var pages = []; // {orig: original index, rot: added rotation 0/90/180/270, thumb: dataURL}
+  var dragIndex = null;
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function showErr(msg) { err.textContent = msg; err.classList.toggle("hidden", !msg); }
+
+  function render() {
+    list.innerHTML = fileName ? '<div class="file-chip"><div class="fc-main"><div class="fc-name">' + esc(fileName) + '</div><div class="fc-meta">' + originalCount + (originalCount === 1 ? " page" : " pages") + "</div></div></div>" : "";
+    grid.innerHTML = pages.map(function (p, i) {
+      return '<div class="page-card" draggable="true" data-i="' + i + '">' +
+        '<div class="thumb-wrap"><img alt="Page ' + (p.orig + 1) + ' preview" src="' + p.thumb + '" style="transform:rotate(' + p.rot + 'deg)"></div>' +
+        '<div class="page-label">Page ' + (p.orig + 1) + "</div>" +
+        '<div class="page-rot">' + (p.rot ? "Rotated " + p.rot + "°" : "") + "</div>" +
+        '<div class="page-actions">' +
+        '<button class="chip-btn" data-act="left" data-i="' + i + '" aria-label="Move page left" title="Move left" ' + (i === 0 ? "disabled" : "") + ">◀</button>" +
+        '<button class="chip-btn" data-act="rotl" data-i="' + i + '" aria-label="Rotate left" title="Rotate left (counterclockwise)">↺</button>' +
+        '<button class="chip-btn" data-act="rotr" data-i="' + i + '" aria-label="Rotate right" title="Rotate right (clockwise)">↻</button>' +
+        '<button class="chip-btn" data-act="del" data-i="' + i + '" aria-label="Delete page" title="Delete page">✕</button>' +
+        '<button class="chip-btn" data-act="right" data-i="' + i + '" aria-label="Move page right" title="Move right" ' + (i === pages.length - 1 ? "disabled" : "") + ">▶</button>" +
+        "</div></div>";
+    }).join("");
+    T360.qs("#stat-original").textContent = originalCount;
+    T360.qs("#stat-output").textContent = pages.length;
+    downloadBtn.disabled = pages.length === 0;
+    resetBtn.disabled = !originalBytes;
+    emptyHint.classList.toggle("hidden", !(originalBytes && pages.length === 0));
+  }
+
+  async function loadFile(f) {
+    if (!f) return;
+    if (!/\.pdf$/i.test(f.name) && f.type !== "application/pdf") { showErr("“" + f.name + "” is not a PDF file."); return; }
+    showErr(""); pages = []; originalBytes = null; originalCount = 0; fileName = f.name; render();
+    downloadBtn.disabled = true; resetBtn.disabled = true;
+    progress.classList.remove("hidden");
+    var bar = progress.querySelector("i"); bar.style.width = "5%";
+    try {
+      originalBytes = await f.arrayBuffer();
+      var pdf = await pdfjsLib.getDocument({ data: originalBytes.slice(0) }).promise;
+      originalCount = pdf.numPages;
+      var built = [];
+      for (var n = 1; n <= pdf.numPages; n++) {
+        var page = await pdf.getPage(n);
+        var base = page.getViewport({ scale: 1 });
+        var vp = page.getViewport({ scale: 180 / base.width });
+        var canvas = document.createElement("canvas");
+        canvas.width = Math.ceil(vp.width); canvas.height = Math.ceil(vp.height);
+        await page.render({ canvasContext: canvas.getContext("2d"), viewport: vp }).promise;
+        built.push({ orig: n - 1, rot: 0, thumb: canvas.toDataURL("image/png") });
+        bar.style.width = Math.round((n / pdf.numPages) * 100) + "%";
+      }
+      pages = built;
+      T360.toast("PDF loaded — " + originalCount + (originalCount === 1 ? " page" : " pages"));
+    } catch (e) {
+      originalBytes = null; originalCount = 0; pages = [];
+      showErr("Could not read that PDF — it may be corrupted or password-protected.");
+    }
+    progress.classList.add("hidden"); bar.style.width = "0";
+    render();
+  }
+
+  dz.addEventListener("click", function () { input.click(); });
+  dz.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+  input.addEventListener("change", function () { loadFile(input.files[0]); input.value = ""; });
+  ["dragenter", "dragover"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("dragover"); }); });
+  ["dragleave", "drop"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove("dragover"); }); });
+  dz.addEventListener("drop", function (e) { if (e.dataTransfer.files.length) loadFile(e.dataTransfer.files[0]); });
+
+  grid.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-act]"); if (!b || b.disabled) return;
+    var i = +b.getAttribute("data-i"), act = b.getAttribute("data-act");
+    if (act === "rotl") pages[i].rot = (pages[i].rot + 270) % 360;
+    if (act === "rotr") pages[i].rot = (pages[i].rot + 90) % 360;
+    if (act === "del") pages.splice(i, 1);
+    if (act === "left" && i > 0) { var t = pages[i - 1]; pages[i - 1] = pages[i]; pages[i] = t; }
+    if (act === "right" && i < pages.length - 1) { var t2 = pages[i + 1]; pages[i + 1] = pages[i]; pages[i] = t2; }
+    render();
+  });
+  grid.addEventListener("dragstart", function (e) {
+    var card = e.target.closest(".page-card"); if (!card) return;
+    dragIndex = +card.getAttribute("data-i");
+    card.classList.add("dragging");
+    if (e.dataTransfer) { e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/plain", String(dragIndex)); } catch (ex) {} }
+  });
+  grid.addEventListener("dragover", function (e) {
+    var card = e.target.closest(".page-card"); if (!card || dragIndex === null) return;
+    e.preventDefault();
+    T360.qsa(".page-card", grid).forEach(function (c) { c.classList.remove("dragover-card"); });
+    card.classList.add("dragover-card");
+  });
+  grid.addEventListener("drop", function (e) {
+    var card = e.target.closest(".page-card"); if (!card || dragIndex === null) return;
+    e.preventDefault();
+    var to = +card.getAttribute("data-i");
+    if (to !== dragIndex) { var moved = pages.splice(dragIndex, 1)[0]; pages.splice(to, 0, moved); }
+    dragIndex = null; render();
+  });
+  grid.addEventListener("dragend", function () { dragIndex = null; render(); });
+
+  resetBtn.addEventListener("click", function () {
+    if (!originalBytes) return;
+    showErr("");
+    // Re-render every thumbnail from the saved bytes so deleted pages come back too.
+    loadFileFromBytes();
+  });
+
+  async function loadFileFromBytes() {
+    // Re-render every thumbnail from the saved bytes to fully restore deleted pages.
+    progress.classList.remove("hidden");
+    var bar = progress.querySelector("i");
+    try {
+      var pdf = await pdfjsLib.getDocument({ data: originalBytes.slice(0) }).promise;
+      var built = [];
+      for (var n = 1; n <= pdf.numPages; n++) {
+        var page = await pdf.getPage(n);
+        var base = page.getViewport({ scale: 1 });
+        var vp = page.getViewport({ scale: 180 / base.width });
+        var canvas = document.createElement("canvas");
+        canvas.width = Math.ceil(vp.width); canvas.height = Math.ceil(vp.height);
+        await page.render({ canvasContext: canvas.getContext("2d"), viewport: vp }).promise;
+        built.push({ orig: n - 1, rot: 0, thumb: canvas.toDataURL("image/png") });
+        bar.style.width = Math.round((n / pdf.numPages) * 100) + "%";
+      }
+      pages = built;
+      T360.toast("Reset to the original document");
+    } catch (e) { showErr("Could not reset — please add the PDF again."); }
+    progress.classList.add("hidden"); bar.style.width = "0";
+    render();
+  }
+
+  downloadBtn.addEventListener("click", async function () {
+    if (!originalBytes || pages.length === 0) return;
+    showErr(""); downloadBtn.disabled = true; downloadBtn.textContent = "Building…";
+    try {
+      var src = await PDFLib.PDFDocument.load(originalBytes.slice(0));
+      var out = await PDFLib.PDFDocument.create();
+      var indices = pages.map(function (p) { return p.orig; });
+      var copied = await out.copyPages(src, indices);
+      copied.forEach(function (cp, k) {
+        var existing = src.getPage(pages[k].orig).getRotation().angle || 0;
+        cp.setRotation(PDFLib.degrees((existing + pages[k].rot) % 360));
+        out.addPage(cp);
+      });
+      var bytes = await out.save();
+      T360.download(new Blob([bytes], { type: "application/pdf" }), "organized.pdf");
+      T360.toast("Organized PDF downloaded");
+    } catch (e) {
+      showErr("Something went wrong while building the PDF. The file may be damaged.");
+    }
+    downloadBtn.disabled = pages.length === 0; downloadBtn.textContent = "Download organized PDF";
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

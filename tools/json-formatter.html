@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON Formatter &amp; Validator — Free Online JSON Formatter &amp; Validator | Tool360</title>
+<meta name="description" content="Format, validate and minify JSON online for free. Pretty-print with 2 or 4 spaces, catch errors with line numbers, 100% private in your browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="json-formatter" data-category="developer">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#developer">Developer Tools</a> <span class="sep">›</span> <span aria-current="page">JSON Formatter &amp; Validator</span></nav>
+  <h1>JSON Formatter &amp; Validator</h1>
+  <p class="lede">Pretty-print, validate and minify JSON instantly with clear error locations.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your code and data never leave this device</p>
+  <section class="workspace card">
+    <div class="options-bar">
+      <div class="field">
+        <label for="indentSelect">Indent</label>
+        <select id="indentSelect" class="select">
+          <option value="2" selected>2 spaces</option>
+          <option value="4">4 spaces</option>
+          <option value="tab">Tab</option>
+        </select>
+      </div>
+      <button type="button" id="formatBtn" class="btn btn-primary">Format</button>
+      <button type="button" id="minifyBtn" class="btn">Minify</button>
+      <button type="button" id="validateBtn" class="btn">Validate only</button>
+      <button type="button" id="clearBtn" class="btn btn-ghost">Clear</button>
+      <button type="button" id="sampleBtn" class="btn btn-ghost">Sample</button>
+      <button type="button" id="copyBtn" class="btn">Copy output</button>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label for="inputArea">Input JSON</label>
+        <textarea id="inputArea" class="textarea" rows="14" style="font-family:ui-monospace,monospace" placeholder='Paste your JSON here, e.g. {"name":"Tool360","valid":true}' spellcheck="false"></textarea>
+      </div>
+      <div class="field">
+        <label for="outputArea">Output</label>
+        <textarea id="outputArea" class="textarea out-box" rows="14" readonly placeholder="Formatted output will appear here" spellcheck="false"></textarea>
+      </div>
+    </div>
+
+    <div id="messageBox" class="hidden" style="margin-top:12px"></div>
+
+    <div class="result-panel" id="statsPanel" style="margin-top:12px">
+      <div class="stat-row">
+        <div class="stat"><strong>Size:</strong> <span id="sizeStat">0 B → 0 B</span></div>
+        <div class="stat"><strong>Characters:</strong> <span id="charStat">0</span></div>
+        <div class="stat"><strong>Type:</strong> <span id="typeStat">—</span></div>
+        <div class="stat"><strong>Keys / Items:</strong> <span id="countStat">—</span></div>
+      </div>
+      <p id="validateInfo" class="success-text hidden" style="margin-top:8px"></p>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the JSON Formatter &amp; Validator</h2>
+    <ol class="steps">
+      <li>Paste your JSON into the Input box on the left, or click Sample to load a demo object.</li>
+      <li>Choose your indent style (2 spaces, 4 spaces, or Tab) from the dropdown.</li>
+      <li>Click Format to pretty-print, Minify to compress, or Validate only to check for errors without changing the output.</li>
+      <li>Review any error message with its line and column, fix the input, then click Copy output to use the result.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my JSON data uploaded to a server?</summary><p>No. This tool runs entirely in your browser using JavaScript. Your code and data are never uploaded, stored, or sent anywhere — everything stays on this device.</p></details>
+    <details><summary>What does Validate only do?</summary><p>Validate only checks whether your input is valid JSON without reformatting it. If valid, it shows the character count, the top-level type (object, array, string, number, boolean, or null), and for objects or arrays, how many keys or items it contains.</p></details>
+    <details><summary>How are error line and column numbers found?</summary><p>When the browser reports a position (for example “position 42”), the tool counts the characters before that point in your input to calculate the exact line and column, so you can jump straight to the problem.</p></details>
+    <details><summary>What is the difference between Format and Minify?</summary><p>Format adds line breaks and indentation to make JSON readable. Minify removes all unnecessary whitespace to produce the smallest possible single-line output, which is useful for APIs and config files.</p></details>
+    <details><summary>Does this tool support large JSON files?</summary><p>Yes, for typical API responses and config files. Very large inputs (several megabytes) may format more slowly because all processing happens locally in your browser tab.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var input = T360.qs('#inputArea');
+  var output = T360.qs('#outputArea');
+  var indentSelect = T360.qs('#indentSelect');
+  var messageBox = T360.qs('#messageBox');
+  var sizeStat = T360.qs('#sizeStat');
+  var charStat = T360.qs('#charStat');
+  var typeStat = T360.qs('#typeStat');
+  var countStat = T360.qs('#countStat');
+  var validateInfo = T360.qs('#validateInfo');
+
+  function getIndent(){
+    var v = indentSelect.value;
+    if(v === 'tab') return '\t';
+    return parseInt(v, 10);
+  }
+  function byteSize(str){
+    return new Blob([str]).size;
+  }
+  function formatBytes(n){
+    if(window.T360 && T360.formatBytes) return T360.formatBytes(n);
+    return n + ' B';
+  }
+  function clearMessage(){
+    messageBox.className = 'hidden';
+    messageBox.textContent = '';
+    validateInfo.classList.add('hidden');
+    validateInfo.textContent = '';
+  }
+  function showError(msg){
+    messageBox.className = 'error-text';
+    messageBox.textContent = msg;
+  }
+  function getLineCol(text, position){
+    var upto = text.slice(0, position);
+    var lines = upto.split('\n');
+    var line = lines.length;
+    var col = lines[lines.length-1].length + 1;
+    return {line: line, column: col};
+  }
+  function describeType(val){
+    if(val === null) return 'null';
+    if(Array.isArray(val)) return 'array';
+    return typeof val;
+  }
+  function updateStats(parsed, hasParsed){
+    var inBytes = byteSize(input.value);
+    var outBytes = byteSize(output.value);
+    sizeStat.textContent = formatBytes(inBytes) + ' → ' + formatBytes(outBytes);
+    charStat.textContent = String(input.value.length);
+    if(hasParsed){
+      var t = describeType(parsed);
+      typeStat.textContent = t;
+      if(Array.isArray(parsed)) countStat.textContent = String(parsed.length) + ' items';
+      else if(parsed !== null && typeof parsed === 'object') countStat.textContent = String(Object.keys(parsed).length) + ' keys';
+      else countStat.textContent = '—';
+    } else {
+      typeStat.textContent = '—';
+      countStat.textContent = '—';
+    }
+  }
+  function parseInput(){
+    var raw = input.value;
+    if(!raw.trim()){
+      showError('Input is empty. Paste some JSON first, or click Sample to load an example.');
+      updateStats(null, false);
+      return null;
+    }
+    try {
+      var parsed = JSON.parse(raw);
+      return parsed;
+    } catch(e){
+      var msg = 'Invalid JSON: ' + e.message;
+      var m = e.message.match(/position\s+(\d+)/i);
+      if(m){
+        var pos = parseInt(m[1], 10);
+        var lc = getLineCol(raw, pos);
+        msg += ' — at line ' + lc.line + ', column ' + lc.column + ' (position ' + pos + ').';
+      }
+      showError(msg);
+      updateStats(null, false);
+      return undefined;
+    }
+  }
+
+  T360.qs('#formatBtn').addEventListener('click', function(){
+    clearMessage();
+    var parsed = parseInput();
+    if(parsed === undefined || parsed === null && input.value.trim() === '') {
+      // parseInput already handled empty/invalid; distinguish valid null JSON
+      if(input.value.trim() === 'null' && parsed === null){
+        // valid JSON null, fall through
+      } else if(parsed === undefined) return;
+      else if(parsed === null && input.value.trim() !== 'null') return;
+    }
+    // Re-parse safely to handle JSON null correctly
+    try { parsed = JSON.parse(input.value); } catch(e){ return; }
+    output.value = JSON.stringify(parsed, null, getIndent());
+    updateStats(parsed, true);
+  });
+
+  T360.qs('#minifyBtn').addEventListener('click', function(){
+    clearMessage();
+    try {
+      var parsed = JSON.parse(input.value);
+      if(!input.value.trim()){ showError('Input is empty. Paste some JSON first, or click Sample to load an example.'); return; }
+      output.value = JSON.stringify(parsed);
+      updateStats(parsed, true);
+    } catch(e){
+      var raw = input.value;
+      if(!raw.trim()){ showError('Input is empty. Paste some JSON first, or click Sample to load an example.'); updateStats(null,false); return; }
+      var msg = 'Invalid JSON: ' + e.message;
+      var m = e.message.match(/position\s+(\d+)/i);
+      if(m){ var pos = parseInt(m[1],10); var lc = getLineCol(raw, pos); msg += ' — at line ' + lc.line + ', column ' + lc.column + ' (position ' + pos + ').'; }
+      showError(msg);
+      updateStats(null, false);
+    }
+  });
+
+  T360.qs('#validateBtn').addEventListener('click', function(){
+    clearMessage();
+    if(!input.value.trim()){ showError('Input is empty. Paste some JSON first, or click Sample to load an example.'); updateStats(null,false); return; }
+    try {
+      var parsed = JSON.parse(input.value);
+      var t = describeType(parsed);
+      var extra = '';
+      if(Array.isArray(parsed)) extra = ', ' + parsed.length + ' items';
+      else if(parsed !== null && typeof parsed === 'object') extra = ', ' + Object.keys(parsed).length + ' keys';
+      validateInfo.textContent = 'Valid JSON — ' + input.value.length + ' characters, top-level type: ' + t + extra + '.';
+      validateInfo.classList.remove('hidden');
+      updateStats(parsed, true);
+    } catch(e){
+      var raw = input.value;
+      var msg = 'Invalid JSON: ' + e.message;
+      var m = e.message.match(/position\s+(\d+)/i);
+      if(m){ var pos = parseInt(m[1],10); var lc = getLineCol(raw, pos); msg += ' — at line ' + lc.line + ', column ' + lc.column + ' (position ' + pos + ').'; }
+      showError(msg);
+      updateStats(null, false);
+    }
+  });
+
+  T360.qs('#clearBtn').addEventListener('click', function(){
+    input.value = '';
+    output.value = '';
+    clearMessage();
+    updateStats(null, false);
+    input.focus();
+  });
+
+  T360.qs('#sampleBtn').addEventListener('click', function(){
+    clearMessage();
+    var sample = {
+      name: "Tool360",
+      version: "1.0",
+      free: true,
+      tools: ["JSON Formatter", "Base64 Encoder", "UUID Generator"],
+      stats: { categories: 8, offline: true },
+      author: { name: "Demo", role: "Example" }
+    };
+    input.value = JSON.stringify(sample);
+    output.value = JSON.stringify(sample, null, getIndent());
+    updateStats(sample, true);
+  });
+
+  T360.qs('#copyBtn').addEventListener('click', function(e){
+    if(!output.value){ T360.toast('Nothing to copy — format some JSON first'); return; }
+    T360.copyText(output.value, e.currentTarget);
+  });
+
+  input.addEventListener('input', function(){
+    // Keep size stat live without forcing a parse
+    var inBytes = byteSize(input.value);
+    var outBytes = byteSize(output.value);
+    sizeStat.textContent = formatBytes(inBytes) + ' → ' + formatBytes(outBytes);
+    charStat.textContent = String(input.value.length);
+  });
+
+  updateStats(null, false);
+})();
+</script>
+</body>
+</html>

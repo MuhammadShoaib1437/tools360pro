@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crop Image — Crop Photos Online Free | Tool360</title>
+<meta name="description" content="Crop images online free with a draggable crop box and aspect presets. Set exact pixel coordinates, export PNG, JPEG or WebP — no uploads, no sign-up.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+#stage-wrap{position:relative;margin-top:16px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--surface-2);line-height:0}
+#stage-img{width:100%;height:auto;display:block;user-select:none;-webkit-user-drag:none}
+#crop-box{position:absolute;border:2px solid var(--acc);box-shadow:0 0 0 9999px rgba(10,10,20,.45);cursor:move;touch-action:none;box-sizing:border-box}
+#crop-box::before,#crop-box::after{content:"";position:absolute;background:color-mix(in srgb,var(--acc) 55%,transparent);pointer-events:none}
+#crop-box::before{left:33.333%;right:33.333%;top:0;bottom:0;border-left:1px solid color-mix(in srgb,var(--acc) 55%,transparent);border-right:1px solid color-mix(in srgb,var(--acc) 55%,transparent)}
+#crop-box::after{top:33.333%;bottom:33.333%;left:0;right:0;border-top:1px solid color-mix(in srgb,var(--acc) 55%,transparent);border-bottom:1px solid color-mix(in srgb,var(--acc) 55%,transparent)}
+.crop-handle{position:absolute;width:16px;height:16px;background:var(--surface);border:2px solid var(--acc);border-radius:4px;z-index:2;touch-action:none}
+.handle-nw{left:-9px;top:-9px;cursor:nwse-resize}
+.handle-ne{right:-9px;top:-9px;cursor:nesw-resize}
+.handle-sw{left:-9px;bottom:-9px;cursor:nesw-resize}
+.handle-se{right:-9px;bottom:-9px;cursor:nwse-resize}
+</style>
+</head>
+<body data-tool="crop-image" data-category="image">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#image">Image Tools</a> <span class="sep">›</span> <span aria-current="page">Crop Image</span></nav>
+  <h1>Crop Image</h1>
+  <p class="lede">Crop a photo with a draggable box, aspect presets or exact pixel values — exported from the full-resolution original.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your files never leave this device</p>
+
+  <section class="workspace card">
+    <div class="dropzone" id="dz" role="button" tabindex="0" aria-label="Add an image">
+      <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5.5"/><path d="M6.5 10.5 12 5l5.5 5.5"/><path d="M4 20h16"/></svg>
+      <div class="dz-title">Drop your image here</div>
+      <div class="dz-sub">or click to browse · JPG, PNG, WebP and more</div>
+    </div>
+    <input type="file" id="file-input" accept="image/*" hidden>
+    <p class="error-text hidden" id="err"></p>
+
+    <div id="editor" class="hidden">
+      <p style="margin:14px 0 0;font-weight:700;font-size:.9rem" id="orig-info">Original: —</p>
+      <div id="stage-wrap">
+        <img id="stage-img" alt="Image to crop">
+        <div id="crop-box" aria-label="Crop area">
+          <span class="crop-handle handle-nw" data-handle="nw"></span>
+          <span class="crop-handle handle-ne" data-handle="ne"></span>
+          <span class="crop-handle handle-sw" data-handle="sw"></span>
+          <span class="crop-handle handle-se" data-handle="se"></span>
+        </div>
+      </div>
+
+      <div class="options-bar">
+        <div class="field"><label>Aspect ratio</label>
+          <div class="seg" id="preset-seg">
+            <button type="button" data-ratio="free" class="active">Free</button>
+            <button type="button" data-ratio="1:1">1:1</button>
+            <button type="button" data-ratio="4:3">4:3</button>
+            <button type="button" data-ratio="3:2">3:2</button>
+            <button type="button" data-ratio="16:9">16:9</button>
+            <button type="button" data-ratio="3:4">3:4</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="options-bar">
+        <div class="field"><label for="in-x">X (px)</label><input type="number" class="input" id="in-x" min="0" step="1"></div>
+        <div class="field"><label for="in-y">Y (px)</label><input type="number" class="input" id="in-y" min="0" step="1"></div>
+        <div class="field"><label for="in-w">Width (px)</label><input type="number" class="input" id="in-w" min="1" step="1"></div>
+        <div class="field"><label for="in-h">Height (px)</label><input type="number" class="input" id="in-h" min="1" step="1"></div>
+      </div>
+
+      <div class="options-bar" style="margin-bottom:0">
+        <div class="field"><label for="format-select">Output format</label>
+          <select class="select" id="format-select">
+            <option value="image/png">PNG</option>
+            <option value="image/jpeg">JPEG</option>
+            <option value="image/webp">WebP</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-lg" id="download-btn" type="button">Download cropped image</button>
+        <button class="btn btn-ghost" id="reset-btn" type="button">Use a different image</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the Crop Image tool</h2>
+    <ol class="steps">
+      <li>Drop an image onto the box above, or click to browse for one.</li>
+      <li>Drag the crop box to move it, or drag a corner handle to resize it. Pick an aspect preset to lock the shape.</li>
+      <li>Fine-tune with the X, Y, width and height fields — all values are in the original image's pixels and stay in sync with the box.</li>
+      <li>Choose PNG, JPEG or WebP and download. The crop is cut from the full-resolution original, not the preview.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my image uploaded to a server?</summary><p>No. The image is loaded and cropped on a canvas in your browser. Your file never leaves your device.</p></details>
+    <details><summary>Will cropping reduce the quality of my image?</summary><p>No. The download is drawn from the original image at its natural resolution using the exact pixel coordinates shown, so the cropped area keeps its original quality. JPEG and WebP exports use high-quality encoding.</p></details>
+    <details><summary>What do the X and Y values mean?</summary><p>X and Y are the position of the crop box's top-left corner, measured in pixels from the top-left corner of the original image. Width and height are the size of the cropped area in pixels.</p></details>
+    <details><summary>What happens to transparency when I export as JPEG?</summary><p>JPEG has no transparency, so transparent areas are filled with white before export. Choose PNG or WebP if you need to keep transparency.</p></details>
+    <details><summary>How do the aspect presets work?</summary><p>A preset locks the crop box to that width-to-height ratio. Changing a preset adjusts the box around its current centre, and resizing by a corner keeps the ratio until you switch back to Free.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function () {
+  var dz = T360.qs("#dz"), input = T360.qs("#file-input"), err = T360.qs("#err"),
+      editor = T360.qs("#editor"), stageImg = T360.qs("#stage-img"), cropBox = T360.qs("#crop-box"),
+      inX = T360.qs("#in-x"), inY = T360.qs("#in-y"), inW = T360.qs("#in-w"), inH = T360.qs("#in-h"),
+      formatSel = T360.qs("#format-select");
+  var img = new Image(), loaded = false;
+  var natW = 0, natH = 0;
+  var crop = { x: 0, y: 0, w: 0, h: 0 }; /* natural pixels */
+  var ratio = null; /* null = free */
+  var MIN = 10;
+
+  function showErr(m) { err.textContent = m; err.classList.toggle("hidden", !m); }
+  function getScale() { return natW ? stageImg.clientWidth / natW : 1; }
+
+  function clampCrop() {
+    crop.w = Math.max(MIN, Math.min(crop.w, natW));
+    crop.h = Math.max(MIN, Math.min(crop.h, natH));
+    crop.x = Math.max(0, Math.min(crop.x, natW - crop.w));
+    crop.y = Math.max(0, Math.min(crop.y, natH - crop.h));
+  }
+  function render() {
+    if (!loaded) return;
+    clampCrop();
+    var s = getScale();
+    cropBox.style.left = (crop.x * s) + "px";
+    cropBox.style.top = (crop.y * s) + "px";
+    cropBox.style.width = (crop.w * s) + "px";
+    cropBox.style.height = (crop.h * s) + "px";
+    inX.value = Math.round(crop.x);
+    inY.value = Math.round(crop.y);
+    inW.value = Math.round(crop.w);
+    inH.value = Math.round(crop.h);
+  }
+  function enforceRatioFromWidth() {
+    if (!ratio) return;
+    crop.h = crop.w / ratio;
+    if (crop.h > natH) { crop.h = natH; crop.w = crop.h * ratio; }
+    if (crop.y + crop.h > natH) crop.y = natH - crop.h;
+  }
+  function enforceRatioFromHeight() {
+    if (!ratio) return;
+    crop.w = crop.h * ratio;
+    if (crop.w > natW) { crop.w = natW; crop.h = crop.w / ratio; }
+    if (crop.x + crop.w > natW) crop.x = natW - crop.w;
+  }
+
+  /* Presets */
+  T360.qsa("#preset-seg button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      T360.qsa("#preset-seg button").forEach(function (b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      var r = btn.getAttribute("data-ratio");
+      if (r === "free" || !r) { ratio = null; return; }
+      var parts = r.split(":"); ratio = parseFloat(parts[0]) / parseFloat(parts[1]);
+      if (!loaded) return;
+      var cx = crop.x + crop.w / 2, cy = crop.y + crop.h / 2;
+      crop.h = crop.w / ratio;
+      if (crop.h > natH) { crop.h = natH; crop.w = crop.h * ratio; }
+      if (crop.w > natW) { crop.w = natW; crop.h = crop.w / ratio; }
+      crop.x = cx - crop.w / 2; crop.y = cy - crop.h / 2;
+      render();
+    });
+  });
+
+  /* Numeric inputs (natural pixels) */
+  function bindInput(el, fn) {
+    el.addEventListener("input", function () {
+      if (!loaded) return;
+      var v = parseFloat(el.value);
+      if (isNaN(v)) return;
+      fn(v);
+      render();
+    });
+  }
+  bindInput(inX, function (v) { crop.x = v; });
+  bindInput(inY, function (v) { crop.y = v; });
+  bindInput(inW, function (v) { crop.w = v; enforceRatioFromWidth(); });
+  bindInput(inH, function (v) { crop.h = v; enforceRatioFromHeight(); });
+
+  /* Drag: move + corner resize (pointer events) */
+  var drag = null;
+  cropBox.addEventListener("pointerdown", function (e) {
+    if (!loaded) return;
+    var handle = e.target.getAttribute && e.target.getAttribute("data-handle");
+    drag = {
+      mode: handle || "move", handle: handle,
+      startX: e.clientX, startY: e.clientY,
+      orig: { x: crop.x, y: crop.y, w: crop.w, h: crop.h },
+      scale: getScale()
+    };
+    cropBox.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  cropBox.addEventListener("pointermove", function (e) {
+    if (!drag) return;
+    var dx = (e.clientX - drag.startX) / drag.scale;
+    var dy = (e.clientY - drag.startY) / drag.scale;
+    var o = drag.orig;
+    if (drag.mode === "move") {
+      crop.x = o.x + dx; crop.y = o.y + dy;
+    } else {
+      var x = o.x, y = o.y, w = o.w, h = o.h;
+      if (drag.handle.indexOf("e") >= 0) w = o.w + dx;
+      if (drag.handle.indexOf("s") >= 0) h = o.h + dy;
+      if (drag.handle.indexOf("w") >= 0) { x = o.x + dx; w = o.w - dx; }
+      if (drag.handle.indexOf("n") >= 0) { y = o.y + dy; h = o.h - dy; }
+      if (w < MIN) { if (drag.handle.indexOf("w") >= 0) x -= (MIN - w); w = MIN; }
+      if (h < MIN) { if (drag.handle.indexOf("n") >= 0) y -= (MIN - h); h = MIN; }
+      if (ratio) {
+        /* Keep ratio: drive height from width, anchoring the opposite corner. */
+        var nh = w / ratio;
+        if (drag.handle.indexOf("n") >= 0) y = (o.y + o.h) - nh;
+        h = nh;
+      }
+      crop.x = x; crop.y = y; crop.w = w; crop.h = h;
+    }
+    render();
+  });
+  function endDrag() { drag = null; }
+  cropBox.addEventListener("pointerup", endDrag);
+  cropBox.addEventListener("pointercancel", endDrag);
+  window.addEventListener("resize", render);
+
+  /* Load */
+  function loadFile(f) {
+    if (!f.type || f.type.indexOf("image/") !== 0) { showErr("Please choose an image file."); return; }
+    showErr("");
+    var url = URL.createObjectURL(f);
+    img.onload = function () {
+      natW = img.naturalWidth; natH = img.naturalHeight; loaded = true;
+      stageImg.src = url;
+      T360.qs("#orig-info").textContent = "Original: " + natW + " × " + natH + " px";
+      crop = { x: Math.round(natW * 0.1), y: Math.round(natH * 0.1), w: Math.round(natW * 0.8), h: Math.round(natH * 0.8) };
+      if (ratio) enforceRatioFromWidth();
+      editor.classList.remove("hidden");
+      dz.classList.add("hidden");
+      requestAnimationFrame(render);
+    };
+    img.onerror = function () { showErr("That image could not be read."); };
+    img.src = url;
+  }
+  dz.addEventListener("click", function () { input.click(); });
+  dz.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+  input.addEventListener("change", function () { if (input.files[0]) loadFile(input.files[0]); input.value = ""; });
+  ["dragenter", "dragover"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("dragover"); }); });
+  ["dragleave", "drop"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove("dragover"); }); });
+  dz.addEventListener("drop", function (e) { if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+
+  /* Download: crop from the ORIGINAL at natural coordinates */
+  T360.qs("#download-btn").addEventListener("click", function () {
+    if (!loaded) return;
+    var sx = Math.round(crop.x), sy = Math.round(crop.y),
+        sw = Math.max(1, Math.round(crop.w)), sh = Math.max(1, Math.round(crop.h));
+    var type = formatSel.value;
+    var ext = type === "image/png" ? "png" : type === "image/webp" ? "webp" : "jpg";
+    var c = document.createElement("canvas"); c.width = sw; c.height = sh;
+    var ctx = c.getContext("2d");
+    if (type === "image/jpeg") { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, sw, sh); }
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+    c.toBlob(function (blob) {
+      if (!blob) { T360.toast("Export failed — try PNG"); return; }
+      T360.download(blob, "cropped." + ext);
+    }, type, 0.92);
+  });
+  T360.qs("#reset-btn").addEventListener("click", function () {
+    loaded = false; editor.classList.add("hidden"); dz.classList.remove("hidden");
+  });
+})();
+</script>
+</body>
+</html>

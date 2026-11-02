@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Number Base Converter — Binary, Octal, Decimal &amp; Hex | Tool360</title>
+<meta name="description" content="Convert numbers between binary, octal, decimal and hexadecimal instantly, with support for very large integers. Free online number base converter, no sign-up.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+.base-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+.base-row .field{min-width:0}
+.input[aria-invalid="true"]{border-color:var(--err);box-shadow:0 0 0 3px color-mix(in srgb,var(--err) 20%,transparent)}
+</style>
+</head>
+<body data-tool="number-base-converter" data-category="converters">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#converters">Converters</a> <span class="sep">›</span> <span aria-current="page">Number Base Converter</span></nav>
+  <h1>Number Base Converter</h1>
+  <p class="lede">Type a number in any base — binary, octal, decimal or hexadecimal — and see it converted to the other three instantly, even for very large integers.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — nothing is uploaded</p>
+  <section class="workspace card">
+    <div class="base-row" style="margin-bottom:14px">
+      <div class="field">
+        <label for="in-bin">Binary (base 2)</label>
+        <input id="in-bin" class="input mono" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="e.g. 1010">
+      </div>
+      <button type="button" class="btn btn-sm" data-copy="in-bin">Copy</button>
+    </div>
+    <div class="base-row" style="margin-bottom:14px">
+      <div class="field">
+        <label for="in-oct">Octal (base 8)</label>
+        <input id="in-oct" class="input mono" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="e.g. 12">
+      </div>
+      <button type="button" class="btn btn-sm" data-copy="in-oct">Copy</button>
+    </div>
+    <div class="base-row" style="margin-bottom:14px">
+      <div class="field">
+        <label for="in-dec">Decimal (base 10)</label>
+        <input id="in-dec" class="input mono" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="e.g. 10">
+      </div>
+      <button type="button" class="btn btn-sm" data-copy="in-dec">Copy</button>
+    </div>
+    <div class="base-row">
+      <div class="field">
+        <label for="in-hex">Hexadecimal (base 16)</label>
+        <input id="in-hex" class="input mono" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="e.g. A">
+      </div>
+      <button type="button" class="btn btn-sm" data-copy="in-hex">Copy</button>
+    </div>
+    <p id="err" class="error-text hidden" role="alert"></p>
+    <div class="options-bar">
+      <button id="clear-btn" type="button" class="btn btn-ghost">Clear all</button>
+    </div>
+    <div class="result-panel">Negative numbers are supported with a leading minus sign (for example <span class="mono">-FF</span>). Conversions use arbitrary-precision integers, so there is no size limit from floating-point rounding.</div>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Number Base Converter</h2>
+    <ol class="steps">
+      <li>Type or paste a number into any one of the four fields — binary, octal, decimal or hexadecimal.</li>
+      <li>The other three fields update live with the same value in their bases.</li>
+      <li>Use the Copy button next to a field to copy that representation to your clipboard.</li>
+      <li>Use Clear all to empty every field and start again.</li>
+    </ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Which digits are allowed in each base?</summary><p>Binary uses only 0 and 1. Octal uses 0–7. Decimal uses 0–9. Hexadecimal uses 0–9 plus the letters A–F (upper or lower case). If you type a character outside the field’s base, an error names the allowed digits and the other fields keep their last valid values.</p></details>
+    <details><summary>How large a number can I convert?</summary><p>Conversions use JavaScript BigInt arithmetic, which handles integers of arbitrary size exactly. Unlike a normal calculator, values beyond 2<sup>53</sup> are not rounded.</p></details>
+    <details><summary>Are negative numbers supported?</summary><p>Yes. Start any field with a minus sign, for example -255 in decimal, and the converted values in the other bases will also carry the minus sign.</p></details>
+    <details><summary>Why did the other fields not update when I typed?</summary><p>That happens when the current input is not valid in its base yet — for example the letter G in the hexadecimal field. Fix or clear the invalid character and the conversion resumes.</p></details>
+    <details><summary>Is my input uploaded anywhere?</summary><p>No. Everything is calculated locally in your browser and nothing is sent or stored.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var qs = T360.qs, qsa = T360.qsa;
+  var errEl = qs('#err');
+  var FIELDS = [
+    { id: 'in-bin', base: 2,  name: 'Binary',      allowed: 'Binary only allows the digits 0 and 1 (with an optional leading minus sign).', re: /^-?[01]+$/, prefix: '0b' },
+    { id: 'in-oct', base: 8,  name: 'Octal',       allowed: 'Octal only allows the digits 0 to 7 (with an optional leading minus sign).', re: /^-?[0-7]+$/, prefix: '0o' },
+    { id: 'in-dec', base: 10, name: 'Decimal',     allowed: 'Decimal only allows the digits 0 to 9 (with an optional leading minus sign).', re: /^-?[0-9]+$/, prefix: '' },
+    { id: 'in-hex', base: 16, name: 'Hexadecimal', allowed: 'Hexadecimal only allows the digits 0 to 9 and the letters A to F (with an optional leading minus sign).', re: /^-?[0-9a-fA-F]+$/, prefix: '0x' }
+  ];
+  var updating = false;
+
+  function showError(msg){
+    if (msg){ errEl.textContent = msg; errEl.classList.remove('hidden'); }
+    else { errEl.textContent = ''; errEl.classList.add('hidden'); }
+  }
+  function parseValue(raw, field){
+    var neg = raw.charAt(0) === '-';
+    var digits = neg ? raw.slice(1) : raw;
+    var v;
+    if (field.base === 10) v = BigInt(digits);
+    else v = BigInt(field.prefix + digits);
+    return neg ? -v : v;
+  }
+  function formatValue(v, base){
+    if (base === 16) return v.toString(16).toUpperCase();
+    return v.toString(base);
+  }
+  function handleInput(source){
+    if (updating) return;
+    var raw = source.el.value.trim();
+    qsa('.input[aria-invalid]').forEach(function(el){ el.removeAttribute('aria-invalid'); });
+    if (raw === '' || raw === '-'){
+      updating = true;
+      FIELDS.forEach(function(f){ if (f.el !== source.el) f.el.value = ''; });
+      updating = false;
+      if (raw === '') showError('');
+      else showError(source.allowed);
+      if (raw === '-') source.el.setAttribute('aria-invalid', 'true');
+      return;
+    }
+    if (!source.re.test(raw)){
+      source.el.setAttribute('aria-invalid', 'true');
+      showError(source.allowed);
+      return;
+    }
+    showError('');
+    var value;
+    try { value = parseValue(raw, source); } catch(e){ showError(source.allowed); source.el.setAttribute('aria-invalid','true'); return; }
+    updating = true;
+    FIELDS.forEach(function(f){
+      if (f.el !== source.el) f.el.value = formatValue(value, f.base);
+    });
+    updating = false;
+  }
+  FIELDS.forEach(function(f){
+    f.el = qs('#' + f.id);
+    f.el.addEventListener('input', function(){ handleInput(f); });
+  });
+  qs('#clear-btn').addEventListener('click', function(){
+    FIELDS.forEach(function(f){ f.el.value = ''; f.el.removeAttribute('aria-invalid'); });
+    showError('');
+    FIELDS[2].el.focus();
+  });
+  qsa('[data-copy]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = document.getElementById(btn.getAttribute('data-copy'));
+      if (!target || target.value === ''){ T360.toast('Nothing to copy yet'); return; }
+      T360.copyText(target.value, btn);
+    });
+  });
+})();
+</script>
+</body>
+</html>

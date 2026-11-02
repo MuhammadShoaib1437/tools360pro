@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tip &amp; Bill Split Calculator — Work Out Tips &amp; Split Bills | Tool360</title>
+<meta name="description" content="Calculate a tip, the total bill with tip, and how much each person pays when splitting. Preset tip percentages or a custom amount. Free, no sign-up needed.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="tip-calculator" data-category="calculators">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#calculators">Calculators</a> <span class="sep">›</span> <span aria-current="page">Tip &amp; Bill Split Calculator</span></nav>
+  <h1>Tip &amp; Bill Split Calculator</h1>
+  <p class="lede">Enter the bill, choose a tip percentage, and split the total fairly between everyone at the table — all updated live.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — nothing is uploaded</p>
+  <section class="workspace card">
+    <div class="grid-2">
+      <div class="field">
+        <label for="bill">Bill amount</label>
+        <input id="bill" class="input" type="number" min="0" step="any" placeholder="e.g. 85.50">
+      </div>
+      <div class="field">
+        <label for="people">Number of people</label>
+        <input id="people" class="input" type="number" value="1" min="1" step="1">
+      </div>
+    </div>
+    <div class="field" style="margin-top:14px">
+      <label>Tip percentage</label>
+      <div id="tip-seg" class="seg" role="group" aria-label="Tip percentage">
+        <button type="button" data-tip="0">0%</button>
+        <button type="button" data-tip="5">5%</button>
+        <button type="button" data-tip="10">10%</button>
+        <button type="button" data-tip="15" class="active">15%</button>
+        <button type="button" data-tip="18">18%</button>
+        <button type="button" data-tip="20">20%</button>
+        <button type="button" data-tip="25">25%</button>
+      </div>
+    </div>
+    <div class="field" style="margin-top:14px;max-width:260px">
+      <label for="tip-custom">Custom tip %</label>
+      <input id="tip-custom" class="input" type="number" min="0" step="any" placeholder="Type to use a custom %">
+    </div>
+    <div class="stat-row">
+      <div class="stat"><b id="tip-out">0.00</b><span>Tip amount</span></div>
+      <div class="stat"><b id="total-out">0.00</b><span>Total with tip</span></div>
+      <div class="stat"><b id="per-person-out">0.00</b><span>Each pays</span></div>
+      <div class="stat"><b id="tip-per-out">0.00</b><span>Tip per person</span></div>
+    </div>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Tip &amp; Bill Split Calculator</h2>
+    <ol class="steps">
+      <li>Enter the bill amount before tip in the Bill amount field.</li>
+      <li>Pick a preset tip percentage, or type your own in the Custom tip % field.</li>
+      <li>Set how many people are splitting the bill.</li>
+      <li>Read the tip, the total, and what each person pays in the tiles — everything updates live.</li>
+    </ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>How is the tip calculated?</summary><p>The tip is the bill amount multiplied by the tip percentage divided by 100. For example, a 15% tip on a bill of 100 is 100 × 15 ÷ 100 = 15, giving a total of 115.</p></details>
+    <details><summary>How does splitting work?</summary><p>The total (bill plus tip) is divided equally by the number of people for the “Each pays” figure, and the tip alone is divided the same way for “Tip per person”. Amounts are rounded to two decimal places, so small rounding differences of a cent can occur when splitting.</p></details>
+    <details><summary>What tip percentage should I choose?</summary><p>Customs vary widely by country and setting, and this tool does not prescribe one — the presets simply cover common choices from 0% to 25%. Pick what fits your situation, or type any custom percentage.</p></details>
+    <details><summary>What happens if I type a custom tip?</summary><p>Typing in the Custom tip % field deselects the preset buttons and uses your value instead. Clear the custom field and tap a preset to go back to a preset percentage.</p></details>
+    <details><summary>Is my bill amount uploaded anywhere?</summary><p>No. The calculation runs entirely in your browser and nothing is sent or stored.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var qs = T360.qs, qsa = T360.qsa;
+  var billEl = qs('#bill'), peopleEl = qs('#people'), customEl = qs('#tip-custom');
+  var segBtns = qsa('#tip-seg button');
+  var tipOut = qs('#tip-out'), totalOut = qs('#total-out'), perPersonOut = qs('#per-person-out'), tipPerOut = qs('#tip-per-out');
+  var selectedTip = 15;
+
+  function money(n){
+    return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function currentTipPct(){
+    if (customEl.value !== ''){
+      var c = parseFloat(customEl.value);
+      return isNaN(c) || c < 0 ? 0 : c;
+    }
+    return selectedTip;
+  }
+  function calculate(){
+    var bill = parseFloat(billEl.value);
+    if (isNaN(bill) || bill < 0) bill = 0;
+    var people = parseInt(peopleEl.value, 10);
+    if (isNaN(people) || people < 1) people = 1;
+    var tipPct = currentTipPct();
+    var tip = bill * tipPct / 100;
+    var total = bill + tip;
+    tipOut.textContent = money(tip);
+    totalOut.textContent = money(total);
+    perPersonOut.textContent = money(total / people);
+    tipPerOut.textContent = money(tip / people);
+  }
+  segBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      segBtns.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      selectedTip = parseFloat(btn.getAttribute('data-tip')) || 0;
+      customEl.value = '';
+      calculate();
+    });
+  });
+  customEl.addEventListener('input', function(){
+    if (customEl.value !== ''){
+      segBtns.forEach(function(b){ b.classList.remove('active'); });
+    } else {
+      // Restore the last selected preset highlight
+      segBtns.forEach(function(b){ b.classList.toggle('active', parseFloat(b.getAttribute('data-tip')) === selectedTip); });
+    }
+    calculate();
+  });
+  billEl.addEventListener('input', calculate);
+  peopleEl.addEventListener('input', function(){
+    var p = parseInt(peopleEl.value, 10);
+    if (!isNaN(p) && p < 1) peopleEl.value = 1;
+    calculate();
+  });
+  peopleEl.addEventListener('change', function(){
+    var p = parseInt(peopleEl.value, 10);
+    if (isNaN(p) || p < 1) peopleEl.value = 1;
+    calculate();
+  });
+  calculate();
+})();
+</script>
+</body>
+</html>

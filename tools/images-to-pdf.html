@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Images to PDF — Convert JPG &amp; PNG to PDF Free | Tool360</title>
+<meta name="description" content="Convert JPG, PNG and WebP images into a single PDF in your browser. Choose page size and margins, reorder images, and download — free with no uploads.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="images-to-pdf" data-category="pdf">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#pdf">PDF Tools</a> <span class="sep">›</span> <span aria-current="page">Images to PDF</span></nav>
+  <h1>Images to PDF</h1>
+  <p class="lede">Turn a set of images into one tidy PDF document, one image per page.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your files never leave this device</p>
+
+  <section class="workspace card">
+    <div class="dropzone" id="dz" role="button" tabindex="0" aria-label="Add images">
+      <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5.5"/><path d="M6.5 10.5 12 5l5.5 5.5"/><path d="M4 20h16"/></svg>
+      <div class="dz-title">Drop your images here</div>
+      <div class="dz-sub">or click to browse · JPG, PNG, WebP, GIF or BMP</div>
+    </div>
+    <input type="file" id="file-input" accept="image/*" multiple hidden>
+    <div class="file-list" id="file-list"></div>
+    <p class="error-text hidden" id="err"></p>
+
+    <div class="options-bar">
+      <div class="field"><label for="page-size">Page size</label>
+        <select class="select" id="page-size">
+          <option value="fit">Fit to image</option>
+          <option value="a4" selected>A4 (210 × 297 mm)</option>
+          <option value="letter">Letter (8.5 × 11 in)</option>
+        </select>
+      </div>
+      <div class="field"><label for="margin">Margin</label>
+        <select class="select" id="margin">
+          <option value="0">None</option>
+          <option value="24" selected>Small</option>
+          <option value="48">Large</option>
+        </select>
+      </div>
+    </div>
+    <div class="options-bar">
+      <button class="btn btn-primary btn-lg" id="build-btn" disabled>Create PDF</button>
+      <button class="btn btn-ghost" id="clear-btn" disabled>Clear all</button>
+    </div>
+    <div class="result-panel hidden" id="result">
+      <div class="stat-row" style="margin-top:0">
+        <div class="stat"><b id="r-pages">0</b><span>Pages</span></div>
+        <div class="stat"><b id="r-size">—</b><span>PDF size</span></div>
+      </div>
+      <div class="options-bar" style="margin-bottom:0">
+        <button class="btn btn-primary" id="download-btn">Download PDF</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the Images to PDF tool</h2>
+    <ol class="steps">
+      <li>Drop your images onto the box above, or click it to browse. JPG and PNG keep their original quality; other formats are converted automatically.</li>
+      <li>Reorder images with the arrow buttons — each image becomes one page, in list order.</li>
+      <li>Pick a page size and margin. “Fit to image” sizes every page exactly to its picture.</li>
+      <li>Press <b>Create PDF</b> and download the result.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Are my images uploaded to a server?</summary><p>No. The PDF is assembled entirely in your browser. Your images never leave your device.</p></details>
+    <details><summary>Which image formats are supported?</summary><p>JPG and PNG are embedded directly at full quality. WebP, GIF and BMP images are converted to PNG in your browser first, then added to the PDF.</p></details>
+    <details><summary>What page size should I choose?</summary><p>Choose A4 or Letter for documents you plan to print. Choose “Fit to image” for photo collections, where each page should match its picture exactly with no white borders.</p></details>
+    <details><summary>Can I put more than one image on a page?</summary><p>Not in this tool — each image gets its own full page, which keeps print output predictable. The order of pages follows the order of your list.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script src="../assets/vendor/pdf-lib.min.js"></script>
+<script>
+(function () {
+  var dz = T360.qs("#dz"), input = T360.qs("#file-input"), list = T360.qs("#file-list"),
+      buildBtn = T360.qs("#build-btn"), clearBtn = T360.qs("#clear-btn"),
+      err = T360.qs("#err"), result = T360.qs("#result");
+  var items = []; // {file, name, size, url, kind: 'jpg'|'png'|'other', bytes}
+  var lastBlob = null;
+
+  function showErr(m) { err.textContent = m; err.classList.toggle("hidden", !m); }
+  function render() {
+    list.innerHTML = items.map(function (f, i) {
+      return '<div class="file-chip"><img src="' + f.url + '" alt="">' +
+        '<div class="fc-main"><div class="fc-name">' + f.name.replace(/</g, "&lt;") + '</div>' +
+        '<div class="fc-meta">' + T360.formatBytes(f.size) + "</div></div>" +
+        '<div class="fc-actions">' +
+        '<button class="chip-btn" data-act="up" data-i="' + i + '" aria-label="Move up" ' + (i === 0 ? "disabled" : "") + ">↑</button>" +
+        '<button class="chip-btn" data-act="down" data-i="' + i + '" aria-label="Move down" ' + (i === items.length - 1 ? "disabled" : "") + ">↓</button>" +
+        '<button class="chip-btn" data-act="rm" data-i="' + i + '" aria-label="Remove">✕</button></div></div>';
+    }).join("");
+    buildBtn.disabled = items.length === 0;
+    clearBtn.disabled = items.length === 0;
+  }
+  async function addFiles(fileObjs) {
+    showErr("");
+    for (var k = 0; k < fileObjs.length; k++) {
+      var f = fileObjs[k];
+      if (!/^image\//.test(f.type)) { showErr("“" + f.name + "” is not an image and was skipped."); continue; }
+      var kind = f.type === "image/jpeg" ? "jpg" : f.type === "image/png" ? "png" : "other";
+      items.push({ file: f, name: f.name, size: f.size, url: URL.createObjectURL(f), kind: kind, bytes: await f.arrayBuffer() });
+    }
+    render();
+  }
+  dz.addEventListener("click", function () { input.click(); });
+  dz.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+  input.addEventListener("change", function () { addFiles(Array.prototype.slice.call(input.files)); input.value = ""; });
+  ["dragenter", "dragover"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("dragover"); }); });
+  ["dragleave", "drop"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove("dragover"); }); });
+  dz.addEventListener("drop", function (e) { if (e.dataTransfer.files.length) addFiles(Array.prototype.slice.call(e.dataTransfer.files)); });
+  list.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-act]"); if (!b) return;
+    var i = +b.getAttribute("data-i"), act = b.getAttribute("data-act");
+    if (act === "rm") { URL.revokeObjectURL(items[i].url); items.splice(i, 1); }
+    if (act === "up" && i > 0) { var t = items[i - 1]; items[i - 1] = items[i]; items[i] = t; }
+    if (act === "down" && i < items.length - 1) { var t2 = items[i + 1]; items[i + 1] = items[i]; items[i] = t2; }
+    render();
+  });
+  clearBtn.addEventListener("click", function () {
+    items.forEach(function (f) { URL.revokeObjectURL(f.url); });
+    items = []; lastBlob = null; result.classList.add("hidden"); render();
+  });
+
+  function imageToPngBytes(item) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () {
+        var c = document.createElement("canvas");
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        c.getContext("2d").drawImage(img, 0, 0);
+        c.toBlob(function (b) {
+          if (!b) return reject(new Error("convert failed"));
+          b.arrayBuffer().then(resolve, reject);
+        }, "image/png");
+      };
+      img.onerror = reject;
+      img.src = item.url;
+    });
+  }
+  buildBtn.addEventListener("click", async function () {
+    showErr(""); buildBtn.disabled = true; buildBtn.textContent = "Building…";
+    try {
+      var pdf = await PDFLib.PDFDocument.create();
+      var sizeMode = T360.qs("#page-size").value;
+      var margin = +T360.qs("#margin").value;
+      for (var k = 0; k < items.length; k++) {
+        var item = items[k], embedded;
+        if (item.kind === "jpg") embedded = await pdf.embedJpg(item.bytes);
+        else if (item.kind === "png") embedded = await pdf.embedPng(item.bytes);
+        else embedded = await pdf.embedPng(await imageToPngBytes(item));
+        var iw = embedded.width, ih = embedded.height;
+        var pw, ph;
+        if (sizeMode === "fit") { pw = iw + margin * 2; ph = ih + margin * 2; }
+        else if (sizeMode === "a4") { pw = 595.28; ph = 841.89; }
+        else { pw = 612; ph = 792; }
+        /* Portrait/landscape follows the image for fixed page sizes */
+        if (sizeMode !== "fit" && iw > ih && pw < ph) { var tmp = pw; pw = ph; ph = tmp; }
+        var page = pdf.addPage([pw, ph]);
+        var availW = pw - margin * 2, availH = ph - margin * 2;
+        var scale = Math.min(availW / iw, availH / ih);
+        if (sizeMode === "fit") scale = 1;
+        var dw = iw * scale, dh = ih * scale;
+        page.drawImage(embedded, { x: (pw - dw) / 2, y: (ph - dh) / 2, width: dw, height: dh });
+      }
+      var bytes = await pdf.save();
+      lastBlob = new Blob([bytes], { type: "application/pdf" });
+      T360.qs("#r-pages").textContent = items.length;
+      T360.qs("#r-size").textContent = T360.formatBytes(lastBlob.size);
+      result.classList.remove("hidden");
+      T360.toast("PDF created");
+    } catch (e) {
+      showErr("Something went wrong building the PDF. One of the images may be damaged or in an unsupported format.");
+    }
+    buildBtn.disabled = items.length === 0; buildBtn.textContent = "Create PDF";
+  });
+  T360.qs("#download-btn").addEventListener("click", function () { if (lastBlob) T360.download(lastBlob, "images.pdf"); });
+  render();
+})();
+</script>
+</body>
+</html>

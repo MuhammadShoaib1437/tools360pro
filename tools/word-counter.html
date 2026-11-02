@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Counter — Free Online Word Counter | Tool360</title>
+<meta name="description" content="Count words, characters, sentences and reading time instantly with our free online word counter. Private, fast and works entirely in your browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="word-counter" data-category="text">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#text">Text Tools</a> <span class="sep">›</span> <span aria-current="page">Word Counter</span></nav>
+  <h1>Word Counter</h1>
+  <p class="lede">Count words, characters and reading time as you type — no sign-up, no upload, just instant results.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your files and text never leave this device</p>
+  <section class="workspace card">
+    <div class="field">
+      <label for="input">Your text</label>
+      <textarea id="input" class="textarea" rows="10" placeholder="Start typing or paste your text here to see live counts..."></textarea>
+    </div>
+    <div class="options-bar">
+      <button type="button" id="btn-paste" class="btn btn-ghost">Paste from clipboard</button>
+      <button type="button" id="btn-copy" class="btn btn-ghost">Copy text</button>
+      <button type="button" id="btn-clear" class="btn btn-ghost">Clear</button>
+    </div>
+    <div class="stat-row" style="margin-top:1rem;flex-wrap:wrap;gap:.75rem;">
+      <div class="stat"><b id="stat-words">0</b><span> Words</span></div>
+      <div class="stat"><b id="stat-chars">0</b><span> Characters</span></div>
+      <div class="stat"><b id="stat-chars-nospace">0</b><span> Characters (no spaces)</span></div>
+      <div class="stat"><b id="stat-sentences">0</b><span> Sentences</span></div>
+      <div class="stat"><b id="stat-paragraphs">0</b><span> Paragraphs</span></div>
+      <div class="stat"><b id="stat-reading">0 min</b><span> Reading time</span></div>
+      <div class="stat"><b id="stat-speaking">0 min</b><span> Speaking time</span></div>
+    </div>
+    <div class="result-panel" style="margin-top:1rem;">
+      <p>Longest word: <b id="longest-word">—</b></p>
+      <p>Average word length: <b id="avg-length">0</b> characters</p>
+    </div>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Word Counter</h2>
+    <ol class="steps"><li>Type or paste your text into the box above — counts update instantly as you write.</li><li>Check the live stats for words, characters, sentences, paragraphs, reading time and speaking time.</li><li>Use Copy text to copy your text to the clipboard, or Clear to start over.</li><li>Use Paste from clipboard to quickly load text you have copied from elsewhere.</li></ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my text uploaded?</summary><p>No. This word counter runs entirely in your browser using JavaScript. Your text is never sent to a server, stored, or shared — it stays on your device.</p></details>
+    <details><summary>How is reading time calculated?</summary><p>Reading time is estimated at 200 words per minute, which is an average adult reading speed. Speaking time uses 130 words per minute, a typical pace for presentations and narration.</p></details>
+    <details><summary>How are sentences and paragraphs counted?</summary><p>Sentences are counted by splitting on full stops, exclamation marks and question marks. Paragraphs are counted by splitting on blank lines, so two line breaks start a new paragraph.</p></details>
+    <details><summary>Does the character count include spaces?</summary><p>Both counts are shown. “Characters” includes every character including spaces, while “Characters (no spaces)” removes all whitespace so you can meet strict limits.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var input = T360.qs('#input');
+  var el = {
+    words: T360.qs('#stat-words'),
+    chars: T360.qs('#stat-chars'),
+    charsNoSpace: T360.qs('#stat-chars-nospace'),
+    sentences: T360.qs('#stat-sentences'),
+    paragraphs: T360.qs('#stat-paragraphs'),
+    reading: T360.qs('#stat-reading'),
+    speaking: T360.qs('#stat-speaking'),
+    longest: T360.qs('#longest-word'),
+    avg: T360.qs('#avg-length')
+  };
+  function formatTime(minutes){
+    if (!minutes || minutes <= 0) return '0 min';
+    if (minutes < 1) {
+      var sec = Math.ceil(minutes * 60);
+      return sec + ' sec';
+    }
+    var rounded = Math.round(minutes * 10) / 10;
+    // Show whole minutes without decimal where possible
+    if (Number.isInteger(rounded)) return rounded + ' min';
+    return rounded + ' min';
+  }
+  function update(){
+    var text = input.value;
+    var trimmed = text.trim();
+    var wordsArr = trimmed === '' ? [] : trimmed.split(/\s+/).filter(Boolean);
+    var wordCount = wordsArr.length;
+    var charCount = text.length;
+    var charNoSpace = text.replace(/\s/g, '').length;
+    var sentenceCount = 0;
+    if (trimmed !== '') {
+      sentenceCount = text.split(/[.!?]+/).map(function(s){ return s.trim(); }).filter(function(s){ return s.length > 0; }).length;
+    }
+    var paraCount = 0;
+    if (trimmed !== '') {
+      paraCount = trimmed.split(/\n\s*\n/).map(function(p){ return p.trim(); }).filter(function(p){ return p.length > 0; }).length;
+    }
+    var readingMin = wordCount / 200;
+    var speakingMin = wordCount / 130;
+    el.words.textContent = wordCount;
+    el.chars.textContent = charCount;
+    el.charsNoSpace.textContent = charNoSpace;
+    el.sentences.textContent = sentenceCount;
+    el.paragraphs.textContent = paraCount;
+    el.reading.textContent = formatTime(readingMin);
+    el.speaking.textContent = formatTime(speakingMin);
+    if (wordCount === 0) {
+      el.longest.textContent = '—';
+      el.avg.textContent = '0';
+    } else {
+      var longest = '';
+      var totalLen = 0;
+      wordsArr.forEach(function(w){
+        // Strip surrounding punctuation for length comparison display, keep original word
+        if (w.length > longest.length) longest = w;
+        totalLen += w.length;
+      });
+      el.longest.textContent = longest;
+      el.avg.textContent = (totalLen / wordCount).toFixed(1);
+    }
+  }
+  input.addEventListener('input', update);
+  T360.qs('#btn-clear').addEventListener('click', function(){
+    input.value = '';
+    update();
+    input.focus();
+  });
+  T360.qs('#btn-copy').addEventListener('click', function(){
+    var btn = this;
+    if (!input.value) { T360.toast('Nothing to copy yet'); return; }
+    T360.copyText(input.value, btn);
+  });
+  T360.qs('#btn-paste').addEventListener('click', function(){
+    if (!navigator.clipboard || !navigator.clipboard.readText) {
+      T360.toast('Clipboard paste is not available in this browser');
+      return;
+    }
+    navigator.clipboard.readText().then(function(text){
+      input.value = text;
+      update();
+      T360.toast('Pasted from clipboard');
+    }).catch(function(){
+      T360.toast('Could not read clipboard — check browser permission');
+    });
+  });
+  update();
+})();
+</script>
+</body>
+</html>

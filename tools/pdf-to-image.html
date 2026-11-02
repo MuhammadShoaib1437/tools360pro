@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF to Image — Convert PDF Pages to PNG or JPG Free | Tool360</title>
+<meta name="description" content="Convert PDF pages to PNG or JPG images, free and in your browser. Choose the resolution, preview every page, and download images one by one or all at once — nothing is uploaded.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  #results{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px}
+  .img-card{background:var(--surface-2);border:1px solid var(--border);border-radius:13px;padding:12px;display:flex;flex-direction:column;gap:9px}
+  .img-card img{width:100%;max-height:260px;object-fit:contain;background:var(--surface);border:1px solid var(--border);border-radius:9px}
+  .img-meta{color:var(--muted);font-size:.83rem;font-weight:600;text-align:center}
+  .img-card .btn{align-self:center}
+</style>
+</head>
+<body data-tool="pdf-to-image" data-category="pdf">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#pdf">PDF Tools</a> <span class="sep">›</span> <span aria-current="page">PDF to Image</span></nav>
+  <h1>PDF to Image</h1>
+  <p class="lede">Turn every page of a PDF into a PNG or JPG image you can download, share or drop into other documents.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your files never leave this device</p>
+
+  <section class="workspace card">
+    <div class="dropzone" id="dz" role="button" tabindex="0" aria-label="Add a PDF file">
+      <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5.5"/><path d="M6.5 10.5 12 5l5.5 5.5"/><path d="M4 20h16"/></svg>
+      <div class="dz-title">Drop your PDF file here</div>
+      <div class="dz-sub">or click to browse · one PDF file · every page becomes an image</div>
+    </div>
+    <input type="file" id="file-input" accept="application/pdf,.pdf" hidden>
+    <div class="file-list" id="file-list"></div>
+    <p class="error-text hidden" id="err"></p>
+    <div class="options-bar">
+      <div class="field">
+        <label>Image format</label>
+        <div class="seg" id="format-seg">
+          <button type="button" data-format="png" class="active">PNG</button>
+          <button type="button" data-format="jpg">JPG</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="scale-select">Resolution</label>
+        <select class="select" id="scale-select">
+          <option value="1">1× (72 DPI)</option>
+          <option value="2" selected>2× (144 DPI)</option>
+          <option value="3">3× (216 DPI)</option>
+        </select>
+      </div>
+    </div>
+    <div class="progress hidden" id="progress"><i></i></div>
+    <div class="options-bar">
+      <button class="btn btn-primary btn-lg" id="convert-btn" disabled>Convert pages to images</button>
+      <button class="btn btn-ghost" id="download-all" disabled>Download all images</button>
+    </div>
+    <div id="results"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the PDF to Image tool</h2>
+    <ol class="steps">
+      <li>Drop one PDF file onto the box above, or click it to browse your device.</li>
+      <li>Choose PNG or JPG, and pick a resolution — higher resolutions give larger, sharper images.</li>
+      <li>Press <b>Convert pages to images</b> and wait while each page is rendered in your browser.</li>
+      <li>Download images one at a time from each preview, or use <b>Download all images</b> to save them all.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my PDF uploaded to a server?</summary><p>No. Pages are rendered entirely in your browser using JavaScript. Your file never leaves your device, and nothing is stored anywhere.</p></details>
+    <details><summary>Should I choose PNG or JPG?</summary><p>PNG keeps sharp edges and supports crisp text, but files are usually larger. JPG produces smaller files and is a good fit for pages that are mostly photos. JPG images are rendered on a white background, since JPG has no transparency.</p></details>
+    <details><summary>What does the resolution setting do?</summary><p>It scales how big each page image is. 1× renders at about 72 DPI (screen size), 2× at about 144 DPI, and 3× at about 216 DPI for print-quality images. Higher resolutions take longer and produce bigger files.</p></details>
+    <details><summary>Can I convert just one page?</summary><p>Every page is converted and shown as a preview — simply download only the pages you need, or use Download all to save the full set.</p></details>
+    <details><summary>My file won't load. Why?</summary><p>The file may be corrupted or password-protected. Encrypted PDFs need to be unlocked with their password in a PDF editor first — this tool cannot open them.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script src="../assets/vendor/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = "../assets/vendor/pdf.worker.min.js";
+(function () {
+  var dz = T360.qs("#dz"), input = T360.qs("#file-input"), list = T360.qs("#file-list"),
+      err = T360.qs("#err"), progress = T360.qs("#progress"),
+      convertBtn = T360.qs("#convert-btn"), downloadAllBtn = T360.qs("#download-all"),
+      resultsEl = T360.qs("#results"), scaleSelect = T360.qs("#scale-select"),
+      formatSeg = T360.qs("#format-seg");
+  var pdfBytes = null, pdfDoc = null, pageCount = 0, format = "png";
+  var results = []; // {blob, url, name, w, h}
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function showErr(msg) { err.textContent = msg; err.classList.toggle("hidden", !msg); }
+  function canvasBlob(canvas, type, q) {
+    return new Promise(function (resolve) { canvas.toBlob(resolve, type, q); });
+  }
+  function clearResults() {
+    results.forEach(function (r) { URL.revokeObjectURL(r.url); });
+    results = []; resultsEl.innerHTML = "";
+    downloadAllBtn.disabled = true;
+  }
+
+  formatSeg.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-format]"); if (!b) return;
+    format = b.getAttribute("data-format");
+    T360.qsa("button", formatSeg).forEach(function (x) { x.classList.toggle("active", x === b); });
+  });
+
+  async function loadFile(f) {
+    if (!f) return;
+    if (!/\.pdf$/i.test(f.name) && f.type !== "application/pdf") { showErr("“" + f.name + "” is not a PDF file."); return; }
+    showErr(""); clearResults(); pdfDoc = null; pdfBytes = null; pageCount = 0;
+    convertBtn.disabled = true;
+    list.innerHTML = "";
+    try {
+      pdfBytes = await f.arrayBuffer();
+      pdfDoc = await pdfjsLib.getDocument({ data: pdfBytes.slice(0) }).promise;
+      pageCount = pdfDoc.numPages;
+      list.innerHTML = '<div class="file-chip"><div class="fc-main"><div class="fc-name">' + esc(f.name) + '</div><div class="fc-meta">' + T360.formatBytes(f.size) + " · " + pageCount + (pageCount === 1 ? " page" : " pages") + "</div></div></div>";
+      convertBtn.disabled = false;
+      T360.toast("PDF loaded — " + pageCount + (pageCount === 1 ? " page" : " pages"));
+    } catch (e) {
+      showErr("Could not read that PDF — it may be corrupted or password-protected.");
+    }
+  }
+
+  dz.addEventListener("click", function () { input.click(); });
+  dz.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+  input.addEventListener("change", function () { loadFile(input.files[0]); input.value = ""; });
+  ["dragenter", "dragover"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("dragover"); }); });
+  ["dragleave", "drop"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove("dragover"); }); });
+  dz.addEventListener("drop", function (e) { if (e.dataTransfer.files.length) loadFile(e.dataTransfer.files[0]); });
+
+  convertBtn.addEventListener("click", async function () {
+    if (!pdfDoc) return;
+    showErr(""); clearResults();
+    convertBtn.disabled = true; convertBtn.textContent = "Converting…";
+    progress.classList.remove("hidden");
+    var bar = progress.querySelector("i"); bar.style.width = "0";
+    var scale = parseFloat(scaleSelect.value) || 1;
+    var isJpg = format === "jpg";
+    var mime = isJpg ? "image/jpeg" : "image/png";
+    var ext = isJpg ? "jpg" : "png";
+    try {
+      // Re-open the document so a detached buffer can never break a second run.
+      var doc = await pdfjsLib.getDocument({ data: pdfBytes.slice(0) }).promise;
+      for (var n = 1; n <= doc.numPages; n++) {
+        var page = await doc.getPage(n);
+        var vp = page.getViewport({ scale: scale });
+        var canvas = document.createElement("canvas");
+        canvas.width = Math.ceil(vp.width); canvas.height = Math.ceil(vp.height);
+        var ctx = canvas.getContext("2d");
+        if (isJpg) { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+        await page.render({ canvasContext: ctx, viewport: vp }).promise;
+        var blob = await canvasBlob(canvas, mime, 0.92);
+        if (!blob) throw new Error("render failed");
+        var item = { blob: blob, url: URL.createObjectURL(blob), name: "page-" + n + "." + ext, w: canvas.width, h: canvas.height };
+        results.push(item);
+        var idx = results.length - 1;
+        var card = document.createElement("div");
+        card.className = "img-card";
+        card.innerHTML = '<img alt="Page ' + n + ' preview" src="' + item.url + '">' +
+          '<div class="img-meta">Page ' + n + " — " + item.w + "×" + item.h + " px — " + T360.formatBytes(blob.size) + "</div>" +
+          '<button class="btn btn-primary btn-sm" data-dl="' + idx + '">Download page ' + n + "</button>";
+        resultsEl.appendChild(card);
+        bar.style.width = Math.round((n / doc.numPages) * 100) + "%";
+      }
+      downloadAllBtn.disabled = results.length === 0;
+      T360.toast(results.length + (results.length === 1 ? " image" : " images") + " ready");
+    } catch (e) {
+      showErr("Something went wrong while converting. The file may be damaged.");
+    }
+    progress.classList.add("hidden"); bar.style.width = "0";
+    convertBtn.disabled = !pdfDoc; convertBtn.textContent = "Convert pages to images";
+  });
+
+  resultsEl.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-dl]"); if (!b) return;
+    var item = results[+b.getAttribute("data-dl")];
+    if (item) T360.download(item.blob, item.name);
+  });
+
+  downloadAllBtn.addEventListener("click", async function () {
+    if (!results.length) return;
+    downloadAllBtn.disabled = true; downloadAllBtn.textContent = "Downloading…";
+    for (var i = 0; i < results.length; i++) {
+      T360.download(results[i].blob, results[i].name);
+      await new Promise(function (r) { setTimeout(r, 300); });
+    }
+    downloadAllBtn.disabled = false; downloadAllBtn.textContent = "Download all images";
+    T360.toast("Downloads started for " + results.length + (results.length === 1 ? " image" : " images"));
+  });
+})();
+</script>
+</body>
+</html>

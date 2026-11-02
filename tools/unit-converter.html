@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit Converter — Free Online Unit Converter | Tool360</title>
+<meta name="description" content="Convert length, weight, temperature, area, volume, speed, data and time instantly. Free online unit converter with accurate formulas, no sign-up needed.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="unit-converter" data-category="converters">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#converters">Converters</a> <span class="sep">›</span> <span aria-current="page">Unit Converter</span></nav>
+  <h1>Unit Converter</h1>
+  <p class="lede">Convert length, weight, temperature, area, volume, speed, data storage and time between metric and imperial units instantly.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your inputs never leave this device</p>
+  <section class="workspace card">
+    <div class="field">
+      <label for="uc-category">Category</label>
+      <select id="uc-category" class="select">
+        <option value="length">Length</option>
+        <option value="weight">Weight</option>
+        <option value="temperature">Temperature</option>
+        <option value="area">Area</option>
+        <option value="volume">Volume</option>
+        <option value="speed">Speed</option>
+        <option value="data">Data Storage</option>
+        <option value="time">Time</option>
+      </select>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label for="uc-from-value">From</label>
+        <input id="uc-from-value" class="input" type="number" value="1" step="any" placeholder="Enter value">
+        <select id="uc-from-unit" class="select" aria-label="From unit"></select>
+      </div>
+      <div class="field">
+        <label for="uc-to-value">To</label>
+        <input id="uc-to-value" class="input" type="text" readonly placeholder="Result">
+        <select id="uc-to-unit" class="select" aria-label="To unit"></select>
+      </div>
+    </div>
+    <div class="options-bar">
+      <button id="uc-swap" type="button" class="btn btn-ghost">&#8646; Swap units</button>
+    </div>
+    <div class="result-panel">
+      <div id="uc-sentence" class="stat">—</div>
+      <div id="uc-rate">Select units to see the conversion rate.</div>
+    </div>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Unit Converter</h2>
+    <ol class="steps">
+      <li>Pick a category such as Length, Weight or Temperature from the dropdown at the top.</li>
+      <li>Enter the value you want to convert and choose the source unit on the left.</li>
+      <li>Choose the target unit on the right — the result updates live as you type.</li>
+      <li>Use the Swap button to reverse the conversion without retyping anything.</li>
+    </ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is this unit converter accurate?</summary><p>Yes. Linear conversions use standard international conversion factors (for example, 1 inch = 0.0254 metres exactly), and temperature uses the standard Celsius, Fahrenheit and Kelvin formulas. Results are rounded sensibly to avoid floating-point noise.</p></details>
+    <details><summary>Are my inputs uploaded or stored anywhere?</summary><p>No. This converter runs entirely in your browser — your inputs are never uploaded, logged or stored. Everything is calculated locally on your device with JavaScript.</p></details>
+    <details><summary>What is the difference between Kibibyte and Kilobyte?</summary><p>A Kilobyte (KB) is 1,000 bytes using the decimal system, while a Kibibyte (KiB) is 1,024 bytes using the binary system. This converter includes both so you can convert storage sizes either way.</p></details>
+    <details><summary>How is temperature converted differently?</summary><p>Temperature scales do not share a common zero point, so they cannot use a simple multiplier. This tool converts via Celsius: Fahrenheit to Celsius is (°F − 32) × 5/9, Celsius to Fahrenheit is °C × 9/5 + 32, and Kelvin is Celsius + 273.15.</p></details>
+    <details><summary>Can I convert very large or very small values?</summary><p>Yes. You can enter any number, including decimals and negative values where they make sense (such as temperatures below zero). Results are shown with up to 6 decimal places, with trailing zeros trimmed.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var DATA = {
+    length: { label: 'Length', units: [
+      ['Millimetre', 0.001], ['Centimetre', 0.01], ['Metre', 1], ['Kilometre', 1000],
+      ['Inch', 0.0254], ['Foot', 0.3048], ['Yard', 0.9144], ['Mile', 1609.344]
+    ]},
+    weight: { label: 'Weight', units: [
+      ['Gram', 0.001], ['Kilogram', 1], ['Tonne', 1000],
+      ['Ounce', 0.028349523125], ['Pound', 0.45359237], ['Stone', 6.35029318]
+    ]},
+    temperature: { label: 'Temperature', units: [
+      ['Celsius', null], ['Fahrenheit', null], ['Kelvin', null]
+    ]},
+    area: { label: 'Area', units: [
+      ['Square Metre', 1], ['Square Centimetre', 0.0001], ['Square Kilometre', 1e6], ['Hectare', 10000],
+      ['Square Foot', 0.09290304], ['Square Yard', 0.83612736], ['Acre', 4046.8564224], ['Square Mile', 2589988.110336]
+    ]},
+    volume: { label: 'Volume', units: [
+      ['Millilitre', 0.001], ['Litre', 1], ['Cubic Metre', 1000],
+      ['US Gallon', 3.785411784], ['US Cup', 0.236588237], ['US Fluid Ounce', 0.02957353], ['Imperial Gallon', 4.54609]
+    ]},
+    speed: { label: 'Speed', units: [
+      ['Metres per second', 1], ['Kilometres per hour', 0.277777778], ['Miles per hour', 0.44704],
+      ['Knot', 0.514444444], ['Feet per second', 0.3048]
+    ]},
+    data: { label: 'Data Storage', units: [
+      ['Byte', 1], ['Kilobyte', 1000], ['Megabyte', 1e6], ['Gigabyte', 1e9], ['Terabyte', 1e12],
+      ['Bit', 0.125], ['Kibibyte', 1024], ['Mebibyte', 1048576]
+    ]},
+    time: { label: 'Time', units: [
+      ['Second', 1], ['Minute', 60], ['Hour', 3600], ['Day', 86400], ['Week', 604800], ['Year', 31557600]
+    ]}
+  };
+
+  var catSel = document.getElementById('uc-category');
+  var fromVal = document.getElementById('uc-from-value');
+  var toVal = document.getElementById('uc-to-value');
+  var fromUnit = document.getElementById('uc-from-unit');
+  var toUnit = document.getElementById('uc-to-unit');
+  var sentence = document.getElementById('uc-sentence');
+  var rateEl = document.getElementById('uc-rate');
+  var swapBtn = document.getElementById('uc-swap');
+
+  function plural(name, val){
+    // Names are already in their standard (plural-friendly) form; keep as-is except singular handling for 1.
+    return name;
+  }
+  function fmt(n){
+    if (!isFinite(n)) return '—';
+    var p = parseFloat(n.toPrecision(10));
+    // Up to 6 decimal places for display
+    var s;
+    if (Math.abs(p) !== 0 && (Math.abs(p) >= 1e12 || Math.abs(p) < 0.000001)) {
+      s = p.toExponential(6);
+      // trim trailing zeros in mantissa
+      s = s.replace(/(\.\d*?)0+e/, '$1e').replace(/\.e/, 'e');
+    } else {
+      s = String(parseFloat(p.toFixed(6)));
+    }
+    return s;
+  }
+  function toCelsius(v, unit){
+    if (unit === 'Celsius') return v;
+    if (unit === 'Fahrenheit') return (v - 32) * 5 / 9;
+    if (unit === 'Kelvin') return v - 273.15;
+    return v;
+  }
+  function fromCelsius(c, unit){
+    if (unit === 'Celsius') return c;
+    if (unit === 'Fahrenheit') return c * 9 / 5 + 32;
+    if (unit === 'Kelvin') return c + 273.15;
+    return c;
+  }
+  function populateUnits(){
+    var cat = DATA[catSel.value];
+    fromUnit.innerHTML = '';
+    toUnit.innerHTML = '';
+    cat.units.forEach(function(u, i){
+      var o1 = document.createElement('option'); o1.value = u[0]; o1.textContent = u[0];
+      var o2 = document.createElement('option'); o2.value = u[0]; o2.textContent = u[0];
+      fromUnit.appendChild(o1); toUnit.appendChild(o2);
+    });
+    // Sensible defaults per category
+    var defaults = {
+      length: ['Mile', 'Kilometre'],
+      weight: ['Kilogram', 'Pound'],
+      temperature: ['Celsius', 'Fahrenheit'],
+      area: ['Square Metre', 'Square Foot'],
+      volume: ['Litre', 'US Gallon'],
+      speed: ['Kilometres per hour', 'Miles per hour'],
+      data: ['Megabyte', 'Gigabyte'],
+      time: ['Hour', 'Minute']
+    };
+    var d = defaults[catSel.value];
+    if (d) { fromUnit.value = d[0]; toUnit.value = d[1]; }
+    else if (cat.units.length > 1) { toUnit.selectedIndex = 1; }
+  }
+  function factor(catKey, unitName){
+    var units = DATA[catKey].units;
+    for (var i = 0; i < units.length; i++) if (units[i][0] === unitName) return units[i][1];
+    return 1;
+  }
+  function convert(){
+    var catKey = catSel.value;
+    var raw = fromVal.value;
+    var v = parseFloat(raw);
+    var fu = fromUnit.value, tu = toUnit.value;
+    if (raw === '' || isNaN(v)) {
+      toVal.value = '';
+      sentence.textContent = '—';
+      // Still show the rate line
+      if (catKey === 'temperature') {
+        rateEl.textContent = 'Temperature uses formulas, not a fixed rate.';
+      } else {
+        var r = factor(catKey, fu) / factor(catKey, tu);
+        rateEl.textContent = '1 ' + fu + ' = ' + fmt(r) + ' ' + tu;
+      }
+      return;
+    }
+    var result, rate;
+    if (catKey === 'temperature') {
+      result = fromCelsius(toCelsius(v, fu), tu);
+      rate = null;
+    } else {
+      var base = v * factor(catKey, fu);
+      result = base / factor(catKey, tu);
+      rate = factor(catKey, fu) / factor(catKey, tu);
+    }
+    toVal.value = fmt(result);
+    sentence.innerHTML = '<b>' + fmt(v) + '</b> ' + fu + ' = <b>' + fmt(result) + '</b> ' + tu;
+    if (catKey === 'temperature') {
+      rateEl.textContent = 'Formula: °F = °C × 9/5 + 32 · K = °C + 273.15';
+    } else {
+      rateEl.textContent = '1 ' + fu + ' = ' + fmt(rate) + ' ' + tu;
+    }
+  }
+  catSel.addEventListener('change', function(){ populateUnits(); convert(); });
+  fromVal.addEventListener('input', convert);
+  fromUnit.addEventListener('change', convert);
+  toUnit.addEventListener('change', convert);
+  swapBtn.addEventListener('click', function(){
+    var tmp = fromUnit.value;
+    fromUnit.value = toUnit.value;
+    toUnit.value = tmp;
+    if (toVal.value !== '') fromVal.value = toVal.value.replace(/,/g, '');
+    convert();
+  });
+  populateUnits();
+  convert();
+})();
+</script>
+</body>
+</html>

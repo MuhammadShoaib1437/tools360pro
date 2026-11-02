@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resize Image — Change Image Size Online Free | Tool360</title>
+<meta name="description" content="Resize JPG, PNG and WebP images by pixels or percentage in your browser. Lock the aspect ratio, preview the result and download — free, private, no uploads.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="resize-image" data-category="image">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#image">Image Tools</a> <span class="sep">›</span> <span aria-current="page">Resize Image</span></nav>
+  <h1>Resize Image</h1>
+  <p class="lede">Change the pixel dimensions of an image — precisely, or by percentage.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your files never leave this device</p>
+
+  <section class="workspace card">
+    <div class="dropzone" id="dz" role="button" tabindex="0" aria-label="Add an image">
+      <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5.5"/><path d="M6.5 10.5 12 5l5.5 5.5"/><path d="M4 20h16"/></svg>
+      <div class="dz-title">Drop your image here</div>
+      <div class="dz-sub">or click to browse · JPG, PNG or WebP</div>
+    </div>
+    <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" hidden>
+    <p class="error-text hidden" id="err"></p>
+
+    <div id="editor" class="hidden">
+      <div class="options-bar">
+        <div class="field"><label>Quick scale</label>
+          <div class="seg" id="pct-seg">
+            <button type="button" data-pct="25">25%</button>
+            <button type="button" data-pct="50">50%</button>
+            <button type="button" data-pct="75">75%</button>
+            <button type="button" data-pct="100" class="active">100%</button>
+            <button type="button" data-pct="150">150%</button>
+            <button type="button" data-pct="200">200%</button>
+          </div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label for="w-input">Width (px)</label><input class="input" type="number" id="w-input" min="1"></div>
+        <div class="field"><label for="h-input">Height (px)</label><input class="input" type="number" id="h-input" min="1"></div>
+      </div>
+      <div class="switch-row"><input type="checkbox" id="lock" checked><label for="lock">Lock aspect ratio</label></div>
+      <div class="options-bar">
+        <div class="field"><label for="format">Output format</label>
+          <select class="select" id="format">
+            <option value="keep">Keep original</option>
+            <option value="image/jpeg">JPEG</option>
+            <option value="image/webp">WebP</option>
+            <option value="image/png">PNG</option>
+          </select>
+        </div>
+        <div class="field"><label for="quality">Quality (JPEG/WebP)</label>
+          <div class="range-wrap"><input type="range" id="quality" min="10" max="100" value="92"><output id="quality-out">92%</output></div>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top:6px">
+        <div>
+          <p style="margin:0 0 6px;font-weight:700;font-size:.9rem">Original · <span id="orig-meta" style="color:var(--muted);font-weight:600"></span></p>
+          <img id="orig-img" alt="Original image preview" style="width:100%;border-radius:12px;border:1px solid var(--border)">
+        </div>
+        <div>
+          <p style="margin:0 0 6px;font-weight:700;font-size:.9rem">Resized · <span id="out-meta" style="color:var(--muted);font-weight:600"></span></p>
+          <img id="out-img" alt="Resized image preview" style="width:100%;border-radius:12px;border:1px solid var(--border)">
+        </div>
+      </div>
+      <div class="options-bar" style="margin-bottom:0">
+        <button class="btn btn-primary btn-lg" id="download-btn">Download resized image</button>
+        <button class="btn btn-ghost" id="reset-btn">Use a different image</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the Resize Image tool</h2>
+    <ol class="steps">
+      <li>Drop a JPG, PNG or WebP image onto the box above, or click to browse.</li>
+      <li>Type a new width or height — with the aspect ratio locked, the other dimension follows automatically. Or use a percentage preset.</li>
+      <li>Choose an output format if you want one, then check the live preview.</li>
+      <li>Download the resized image.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my image uploaded anywhere?</summary><p>No. Resizing is done on a canvas in your browser. Your image never leaves your device.</p></details>
+    <details><summary>Can I enlarge an image with this tool?</summary><p>Yes — up to 200% with the presets, or any size you type. Note that enlarging cannot add detail that was not in the original, so large upscales will look softer.</p></details>
+    <details><summary>What does “lock aspect ratio” do?</summary><p>It keeps the width-to-height proportion the same as the original, so the picture is never stretched or squashed. Turn it off only if you deliberately want to change the shape.</p></details>
+    <details><summary>Which size do social platforms need?</summary><p>Common sizes: Instagram posts 1080×1080, YouTube thumbnails 1280×720, X (Twitter) posts 1600×900, Facebook posts 1200×630. Type the numbers straight into the width and height boxes.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function () {
+  var dz = T360.qs("#dz"), input = T360.qs("#file-input"), err = T360.qs("#err"), editor = T360.qs("#editor"),
+      wIn = T360.qs("#w-input"), hIn = T360.qs("#h-input"), lock = T360.qs("#lock"),
+      formatSel = T360.qs("#format"), quality = T360.qs("#quality"), qOut = T360.qs("#quality-out");
+  var img = new Image(), file = null, outBlob = null, outExt = "jpg", debounce = null;
+
+  function showErr(m) { err.textContent = m; err.classList.toggle("hidden", !m); }
+  function extFor(t) { return t === "image/png" ? "png" : t === "image/webp" ? "webp" : "jpg"; }
+  function outType() {
+    if (formatSel.value !== "keep") return formatSel.value;
+    return file.type === "image/png" ? "image/png" : file.type === "image/webp" ? "image/webp" : "image/jpeg";
+  }
+  function process() {
+    if (!file) return;
+    var w = Math.max(1, Math.round(+wIn.value || 0)), h = Math.max(1, Math.round(+hIn.value || 0));
+    if (!w || !h) return;
+    var type = outType();
+    var c = document.createElement("canvas"); c.width = w; c.height = h;
+    var ctx = c.getContext("2d");
+    if (type === "image/jpeg") { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h); }
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(img, 0, 0, w, h);
+    c.toBlob(function (blob) {
+      if (!blob) return;
+      outBlob = blob; outExt = extFor(type);
+      var prev = T360.qs("#out-img");
+      if (prev.src) URL.revokeObjectURL(prev.src);
+      prev.src = URL.createObjectURL(blob);
+      T360.qs("#out-meta").textContent = T360.formatBytes(blob.size) + " · " + w + "×" + h;
+    }, type, type === "image/png" ? undefined : +quality.value / 100);
+  }
+  function schedule() { clearTimeout(debounce); debounce = setTimeout(process, 130); }
+  function setPct(pct) {
+    if (!file) return;
+    wIn.value = Math.max(1, Math.round(img.naturalWidth * pct / 100));
+    hIn.value = Math.max(1, Math.round(img.naturalHeight * pct / 100));
+    T360.qsa("#pct-seg button").forEach(function (b) { b.classList.toggle("active", +b.getAttribute("data-pct") === pct); });
+    process();
+  }
+  wIn.addEventListener("input", function () {
+    if (lock.checked && file && img.naturalWidth) hIn.value = Math.max(1, Math.round(+wIn.value / img.naturalWidth * img.naturalHeight));
+    schedule();
+  });
+  hIn.addEventListener("input", function () {
+    if (lock.checked && file && img.naturalHeight) wIn.value = Math.max(1, Math.round(+hIn.value / img.naturalHeight * img.naturalWidth));
+    schedule();
+  });
+  T360.qs("#pct-seg").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-pct]"); if (b) setPct(+b.getAttribute("data-pct"));
+  });
+  quality.addEventListener("input", function () { qOut.textContent = quality.value + "%"; schedule(); });
+  formatSel.addEventListener("change", process);
+  function loadFile(f) {
+    if (!/^image\/(jpeg|png|webp)$/.test(f.type)) { showErr("Please choose a JPG, PNG or WebP image."); return; }
+    showErr(""); file = f;
+    var url = URL.createObjectURL(f);
+    img.onload = function () {
+      T360.qs("#orig-img").src = url;
+      T360.qs("#orig-meta").textContent = T360.formatBytes(f.size) + " · " + img.naturalWidth + "×" + img.naturalHeight;
+      wIn.value = img.naturalWidth; hIn.value = img.naturalHeight;
+      editor.classList.remove("hidden"); dz.classList.add("hidden");
+      process();
+    };
+    img.onerror = function () { showErr("That image could not be read."); };
+    img.src = url;
+  }
+  dz.addEventListener("click", function () { input.click(); });
+  dz.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+  input.addEventListener("change", function () { if (input.files[0]) loadFile(input.files[0]); input.value = ""; });
+  ["dragenter", "dragover"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("dragover"); }); });
+  ["dragleave", "drop"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove("dragover"); }); });
+  dz.addEventListener("drop", function (e) { if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+  T360.qs("#download-btn").addEventListener("click", function () {
+    if (outBlob && file) T360.download(outBlob, file.name.replace(/\.[^.]+$/, "") + "-" + wIn.value + "x" + hIn.value + "." + outExt);
+  });
+  T360.qs("#reset-btn").addEventListener("click", function () {
+    file = null; outBlob = null; editor.classList.add("hidden"); dz.classList.remove("hidden");
+  });
+})();
+</script>
+</body>
+</html>

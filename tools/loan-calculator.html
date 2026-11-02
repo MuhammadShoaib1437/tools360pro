@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loan / EMI Calculator — Monthly Payments &amp; Amortisation | Tool360</title>
+<meta name="description" content="Calculate your monthly loan payment (EMI), total interest and total cost, with a year-by-year summary and full monthly amortisation table. Free, no sign-up.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+.table-wrap{overflow-x:auto;margin-top:12px}
+table.loan-table{width:100%;border-collapse:collapse;font-size:.92rem}
+table.loan-table th,table.loan-table td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+table.loan-table th:first-child,table.loan-table td:first-child{text-align:left}
+table.loan-table th{color:var(--muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+details.monthly{margin-top:18px;border:1px solid var(--border);border-radius:13px;padding:14px 17px;background:var(--surface)}
+details.monthly summary{font-weight:700;cursor:pointer}
+</style>
+</head>
+<body data-tool="loan-calculator" data-category="calculators">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#calculators">Calculators</a> <span class="sep">›</span> <span aria-current="page">Loan / EMI Calculator</span></nav>
+  <h1>Loan / EMI Calculator</h1>
+  <p class="lede">Work out the monthly payment on a loan, how much interest you will pay in total, and how the balance falls month by month and year by year.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — nothing is uploaded</p>
+  <section class="workspace card">
+    <div class="grid-2">
+      <div class="field">
+        <label for="loan-amount">Loan amount</label>
+        <input id="loan-amount" class="input" type="number" value="100000" min="0" step="any" placeholder="e.g. 100000">
+      </div>
+      <div class="field">
+        <label for="loan-rate">Annual interest rate (%)</label>
+        <input id="loan-rate" class="input" type="number" value="10" min="0" step="any" placeholder="e.g. 10">
+      </div>
+      <div class="field">
+        <label for="loan-years">Term — years</label>
+        <input id="loan-years" class="input" type="number" value="1" min="0" step="1" placeholder="e.g. 5">
+      </div>
+      <div class="field">
+        <label for="loan-months">Term — extra months</label>
+        <input id="loan-months" class="input" type="number" value="0" min="0" step="1" placeholder="e.g. 6">
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><b id="emi-out">—</b><span>Monthly payment (EMI)</span></div>
+      <div class="stat"><b id="total-interest">—</b><span>Total interest</span></div>
+      <div class="stat"><b id="total-payment">—</b><span>Total payment</span></div>
+      <div class="stat"><b id="payoff-date">—</b><span>Payoff date</span></div>
+    </div>
+    <h2 style="margin-top:26px">Yearly summary</h2>
+    <div class="table-wrap">
+      <table id="year-table" class="loan-table">
+        <thead><tr><th>Year</th><th>Principal paid</th><th>Interest paid</th><th>Balance at year end</th></tr></thead>
+        <tbody id="year-tbody"></tbody>
+      </table>
+    </div>
+    <details class="monthly">
+      <summary>Monthly breakdown</summary>
+      <div class="table-wrap">
+        <table id="month-table" class="loan-table">
+          <thead><tr><th>#</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+          <tbody id="month-tbody"></tbody>
+        </table>
+      </div>
+      <p id="month-note" class="hidden" style="color:var(--muted);font-size:.9rem"></p>
+    </details>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Loan / EMI Calculator</h2>
+    <ol class="steps">
+      <li>Enter the amount you plan to borrow and the annual interest rate.</li>
+      <li>Set the term in years, adding any extra months in the second term field.</li>
+      <li>Read the monthly payment, total interest and total payment in the tiles — they update live as you type.</li>
+      <li>Check the yearly summary for the big picture, or open the monthly breakdown to see every single payment.</li>
+    </ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>How is the monthly payment (EMI) calculated?</summary><p>With the standard amortisation formula: EMI = P × r × (1 + r)<sup>n</sup> ÷ ((1 + r)<sup>n</sup> − 1), where P is the loan amount, r is the monthly rate (annual rate ÷ 1200) and n is the number of monthly payments. If the rate is 0%, the payment is simply P ÷ n.</p></details>
+    <details><summary>Does this calculator include fees, taxes or insurance?</summary><p>No. It covers principal and interest only, assuming a fixed rate and equal monthly payments. Lender fees, processing charges, taxes and insurance would be on top of these figures.</p></details>
+    <details><summary>Why does the interest share fall over time?</summary><p>Each payment first covers interest on the remaining balance, and the rest reduces the principal. As the balance falls, the interest part shrinks and more of each payment goes towards the principal.</p></details>
+    <details><summary>Can I model a loan with a partial year?</summary><p>Yes. Add the extra months in the “extra months” field — for example 2 years and 6 months gives a 30-month term.</p></details>
+    <details><summary>Are my figures uploaded or saved?</summary><p>No. All calculations run locally in your browser and nothing is sent or stored.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var qs = T360.qs;
+  var amountEl = qs('#loan-amount'), rateEl = qs('#loan-rate'), yearsEl = qs('#loan-years'), monthsEl = qs('#loan-months');
+  var emiOut = qs('#emi-out'), totalInterestEl = qs('#total-interest'), totalPaymentEl = qs('#total-payment'), payoffEl = qs('#payoff-date');
+  var yearTbody = qs('#year-tbody'), monthTbody = qs('#month-tbody'), monthNote = qs('#month-note');
+
+  function money(n){
+    return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function num(el){
+    var v = parseFloat(el.value);
+    return isNaN(v) ? 0 : v;
+  }
+  function calculate(){
+    var P = num(amountEl);
+    var annual = num(rateEl);
+    var years = Math.max(0, Math.floor(num(yearsEl)));
+    var months = Math.max(0, Math.floor(num(monthsEl)));
+    var n = years * 12 + months;
+    yearsEl.value = yearsEl.value === '' ? '' : years;
+    if (P <= 0 || n <= 0){
+      emiOut.textContent = '—'; totalInterestEl.textContent = '—'; totalPaymentEl.textContent = '—'; payoffEl.textContent = '—';
+      yearTbody.innerHTML = ''; monthTbody.innerHTML = '';
+      monthNote.classList.add('hidden'); monthNote.textContent = '';
+      return;
+    }
+    var r = annual / 1200;
+    var emi;
+    if (r === 0) emi = P / n;
+    else {
+      var f = Math.pow(1 + r, n);
+      emi = P * r * f / (f - 1);
+    }
+    var balance = P, totalInterest = 0, totalPayment = 0;
+    var yearRows = {}, yearOrder = [];
+    var monthRowsHtml = [];
+    var displayCap = 600;
+    for (var i = 1; i <= n; i++){
+      var interest = balance * r;
+      var principal = emi - interest;
+      var payment = emi;
+      if (i === n || principal >= balance){
+        principal = balance;
+        payment = principal + interest;
+      }
+      balance -= principal;
+      if (balance < 0.005 && i === n) balance = 0;
+      totalInterest += interest;
+      totalPayment += payment;
+      var yr = Math.ceil(i / 12);
+      if (!yearRows[yr]){ yearRows[yr] = { principal: 0, interest: 0, balance: balance }; yearOrder.push(yr); }
+      yearRows[yr].principal += principal;
+      yearRows[yr].interest += interest;
+      yearRows[yr].balance = balance;
+      if (i <= displayCap){
+        monthRowsHtml.push('<tr><td>' + i + '</td><td>' + money(payment) + '</td><td>' + money(principal) + '</td><td>' + money(interest) + '</td><td>' + money(Math.max(0, balance)) + '</td></tr>');
+      }
+    }
+    emiOut.textContent = money(emi);
+    totalInterestEl.textContent = money(totalInterest);
+    totalPaymentEl.textContent = money(totalPayment);
+    var payoff = new Date();
+    payoff.setMonth(payoff.getMonth() + n);
+    payoffEl.textContent = payoff.toLocaleString(undefined, { month: 'long', year: 'numeric' });
+    yearTbody.innerHTML = yearOrder.map(function(yr){
+      var row = yearRows[yr];
+      return '<tr><td>Year ' + yr + '</td><td>' + money(row.principal) + '</td><td>' + money(row.interest) + '</td><td>' + money(Math.max(0, row.balance)) + '</td></tr>';
+    }).join('');
+    monthTbody.innerHTML = monthRowsHtml.join('');
+    if (n > displayCap){
+      monthNote.textContent = 'Showing the first ' + displayCap + ' of ' + n.toLocaleString(undefined, { maximumFractionDigits: 0 }) + ' monthly payments.';
+      monthNote.classList.remove('hidden');
+    } else {
+      monthNote.classList.add('hidden'); monthNote.textContent = '';
+    }
+  }
+  [amountEl, rateEl, yearsEl, monthsEl].forEach(function(el){ el.addEventListener('input', calculate); el.addEventListener('change', calculate); });
+  calculate();
+})();
+</script>
+</body>
+</html>

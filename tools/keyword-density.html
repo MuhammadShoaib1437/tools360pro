@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keyword Density Checker — See how often words and phrases repeat | Tool360</title>
+<meta name="description" content="Check keyword density for 1, 2 and 3-word phrases in your text. Free online keyword density checker that runs entirely in your browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+.density-table{width:100%;border-collapse:collapse;font-size:.94rem}
+.density-table th,.density-table td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.density-table th{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+.density-table td.num,.density-table th.num{text-align:right;font-variant-numeric:tabular-nums}
+.density-table tr:last-child td{border-bottom:none}
+.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:13px;background:var(--surface)}
+.empty-row td{color:var(--muted);text-align:center;padding:20px 12px}
+</style>
+</head>
+<body data-tool="keyword-density" data-category="text">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#text">Text Tools</a> <span class="sep">›</span> <span aria-current="page">Keyword Density Checker</span></nav>
+  <h1>Keyword Density Checker</h1>
+  <p class="lede">See which words and phrases repeat most in your text, and how much of the total each one makes up.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your text never leaves this device</p>
+  <section class="workspace card">
+    <div class="field">
+      <label for="input">Your text</label>
+      <textarea id="input" class="textarea" rows="10" placeholder="Paste your article, page copy or draft here..."></textarea>
+    </div>
+    <div class="options-bar">
+      <div class="field">
+        <label>Phrase length</label>
+        <div class="seg" id="phrase-seg" role="group" aria-label="Phrase length">
+          <button type="button" data-n="1" class="active">1 word</button>
+          <button type="button" data-n="2">2 words</button>
+          <button type="button" data-n="3">3 words</button>
+        </div>
+      </div>
+      <label class="switch-row" for="opt-stop"><input type="checkbox" id="opt-stop"> Exclude common words</label>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><b id="total-words">0</b><span> Total words</span></div>
+      <div class="stat"><b id="unique-phrases">0</b><span> Unique phrases shown</span></div>
+    </div>
+    <div class="table-wrap" style="margin-top:1rem;">
+      <table class="density-table">
+        <thead><tr><th>Phrase</th><th class="num">Count</th><th class="num">Density</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="options-bar">
+      <button type="button" id="copy-btn" class="btn btn-primary">Copy results</button>
+      <button type="button" id="clear-btn" class="btn btn-ghost">Clear</button>
+    </div>
+    <p style="color:var(--muted);font-size:.88rem;margin:0;">“Exclude common words” applies to 1-word phrases only. Results show the top 50 phrases.</p>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Keyword Density Checker</h2>
+    <ol class="steps"><li>Paste your text into the box above — the table updates as you type.</li><li>Choose a phrase length of 1, 2 or 3 words to see single words or longer phrases.</li><li>Optionally tick “Exclude common words” for 1-word results, so words like “the” and “and” are left out. Density is calculated as: occurrences × words in the phrase ÷ total words × 100.</li><li>Use Copy results to copy the table as tab-separated values for a spreadsheet.</li></ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>How is keyword density calculated?</summary><p>Density % = occurrences × words in the phrase ÷ total words × 100. For example, a 2-word phrase that appears 5 times in a 500-word text has a density of 5 × 2 ÷ 500 × 100 = 2.00%.</p></details>
+    <details><summary>What counts as a word?</summary><p>Text is lowercased and words are extracted as runs of letters, numbers and apostrophes, so “don't” counts as one word and punctuation is ignored.</p></details>
+    <details><summary>Does “Exclude common words” work for phrases?</summary><p>No. The common-word filter applies to 1-word phrases only, because removing words from inside 2- and 3-word phrases would break the phrases themselves.</p></details>
+    <details><summary>Is there an ideal keyword density?</summary><p>There is no single proven ideal number. This tool simply reports the figures for your text so you can judge repetition for yourself and avoid wording that reads as forced or repetitive.</p></details>
+    <details><summary>Is my text uploaded?</summary><p>No. Counting happens entirely in your browser with JavaScript. Your text is never sent to a server.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var input = T360.qs('#input');
+  var tbody = T360.qs('#tbody');
+  var seg = T360.qs('#phrase-seg');
+  var stopChk = T360.qs('#opt-stop');
+  var totalEl = T360.qs('#total-words');
+  var uniqueEl = T360.qs('#unique-phrases');
+  var phraseLen = 1;
+  var lastRows = [];
+  var STOP = {};
+  'the a an and or but of to in on for with is are was were be been it its this that these those as at by from your you we our they their he she his her not no do does have has will would can could'.split(' ').forEach(function(w){ STOP[w] = true; });
+
+  function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function update(){
+    var words = (input.value.toLowerCase().match(/[a-z0-9']+/g) || []);
+    var total = words.length;
+    totalEl.textContent = total;
+    if (total === 0) {
+      lastRows = [];
+      uniqueEl.textContent = '0';
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="3">Paste some text to see keyword density.</td></tr>';
+      return;
+    }
+    var counts = {};
+    if (phraseLen === 1) {
+      words.forEach(function(w){
+        if (stopChk.checked && STOP[w]) return;
+        counts[w] = (counts[w] || 0) + 1;
+      });
+    } else {
+      for (var i = 0; i + phraseLen <= words.length; i++) {
+        var phrase = words.slice(i, i + phraseLen).join(' ');
+        counts[phrase] = (counts[phrase] || 0) + 1;
+      }
+    }
+    var rows = Object.keys(counts).map(function(p){
+      var c = counts[p];
+      return { phrase: p, count: c, density: (c * phraseLen / total * 100) };
+    }).sort(function(a, b){
+      if (b.count !== a.count) return b.count - a.count;
+      return a.phrase < b.phrase ? -1 : (a.phrase > b.phrase ? 1 : 0);
+    });
+    lastRows = rows.slice(0, 50);
+    uniqueEl.textContent = lastRows.length;
+    if (lastRows.length === 0) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="3">No phrases to show — try turning off “Exclude common words”.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = lastRows.map(function(r){
+      return '<tr><td>' + esc(r.phrase) + '</td><td class="num">' + r.count + '</td><td class="num">' + r.density.toFixed(2) + '%</td></tr>';
+    }).join('');
+  }
+  seg.addEventListener('click', function(e){
+    var btn = e.target.closest('button[data-n]');
+    if (!btn) return;
+    T360.qsa('button', seg).forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    phraseLen = parseInt(btn.getAttribute('data-n'), 10) || 1;
+    update();
+  });
+  input.addEventListener('input', update);
+  stopChk.addEventListener('change', update);
+  T360.qs('#copy-btn').addEventListener('click', function(){
+    if (!lastRows.length) { T360.toast('Nothing to copy yet'); return; }
+    var tsv = 'Phrase\tCount\tDensity %\n' + lastRows.map(function(r){
+      return r.phrase + '\t' + r.count + '\t' + r.density.toFixed(2);
+    }).join('\n');
+    T360.copyText(tsv, this);
+  });
+  T360.qs('#clear-btn').addEventListener('click', function(){
+    input.value = '';
+    update();
+    input.focus();
+  });
+  update();
+})();
+</script>
+</body>
+</html>

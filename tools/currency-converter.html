@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Currency Converter — Live Exchange Rates | Tool360</title>
+<meta name="description" content="Convert between world currencies using exchange rates from ExchangeRate-API via open.er-api.com. Free online currency converter with USD to PKR and more.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="currency-converter" data-category="converters">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#converters">Converters</a> <span class="sep">›</span> <span aria-current="page">Currency Converter</span></nav>
+  <h1>Currency Converter</h1>
+  <p class="lede">Convert between world currencies with exchange rates fetched from ExchangeRate-API. Enter an amount, pick your currencies, and the result updates live.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — nothing is uploaded</p>
+  <section class="workspace card">
+    <div class="field">
+      <label for="amount">Amount</label>
+      <input id="amount" class="input" type="number" value="1" min="0" step="any" placeholder="Enter amount">
+    </div>
+    <div class="grid-2" style="margin-top:14px">
+      <div class="field">
+        <label for="from-cur">From</label>
+        <select id="from-cur" class="select"></select>
+      </div>
+      <div class="field">
+        <label for="to-cur">To</label>
+        <select id="to-cur" class="select"></select>
+      </div>
+    </div>
+    <div class="options-bar">
+      <button id="swap-btn" type="button" class="btn btn-ghost">&#8646; Swap currencies</button>
+    </div>
+    <div id="result" class="result-panel">
+      <div id="result-main" class="stat">Loading rates…</div>
+      <div id="result-rate" style="margin-top:6px"></div>
+    </div>
+    <p id="rate-info" style="color:var(--muted);font-size:.9rem;margin:14px 0 0">Loading exchange rates…</p>
+    <p id="err" class="error-text hidden" role="alert"></p>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Currency Converter</h2>
+    <ol class="steps">
+      <li>Type the amount you want to convert in the Amount field.</li>
+      <li>Choose the currency you are converting from and the currency you are converting to.</li>
+      <li>Read the converted amount and the single-unit exchange rate in the result panel — both update live.</li>
+      <li>Use the Swap button to reverse the two currencies without re-entering the amount.</li>
+    </ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Where do the exchange rates come from?</summary><p>Rates are fetched from open.er-api.com, the free endpoint provided by ExchangeRate-API, with US dollars as the base currency. The “last updated” time shown under the result is the time reported by that API itself.</p></details>
+    <details><summary>Why might the rate I get at a bank or money changer differ?</summary><p>This converter uses mid-market style reference rates. Banks, card networks and money changers add their own margins and fees, so the amount you actually receive or pay will usually differ slightly.</p></details>
+    <details><summary>What happens if I am offline?</summary><p>The last successfully fetched rates are saved in your browser. If a new fetch fails and saved rates exist, the converter keeps working with those cached rates and tells you when they were saved.</p></details>
+    <details><summary>How is a conversion between two non-USD currencies calculated?</summary><p>Both rates are quoted against the US dollar, so the tool divides your amount by the “from” rate and multiplies by the “to” rate: amount ÷ rate(from) × rate(to).</p></details>
+    <details><summary>Is my amount uploaded or stored?</summary><p>Your amount is never sent anywhere — it is only used in calculations on this page. Only the public exchange-rate data is downloaded, and a copy of the rates (not your inputs) is cached in your browser for offline use.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var qs = T360.qs;
+  var amountEl = qs('#amount'), fromSel = qs('#from-cur'), toSel = qs('#to-cur');
+  var resultMain = qs('#result-main'), resultRate = qs('#result-rate'), rateInfo = qs('#rate-info'), errEl = qs('#err');
+  var rates = null, lastUpdatedUtc = '';
+
+  function fmtAmount(n){
+    return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function fmtRate(n){
+    var digits = (n !== 0 && Math.abs(n) < 0.01) ? 4 : 2;
+    // Single-rate line: up to 4 decimals for very small rates, otherwise sensible precision
+    return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+  }
+  function showError(msg){
+    if (msg){ errEl.textContent = msg; errEl.classList.remove('hidden'); }
+    else { errEl.textContent = ''; errEl.classList.add('hidden'); }
+  }
+  function populateSelects(codes){
+    fromSel.innerHTML = ''; toSel.innerHTML = '';
+    codes.forEach(function(code){
+      var o1 = document.createElement('option'); o1.value = code; o1.textContent = code;
+      var o2 = document.createElement('option'); o2.value = code; o2.textContent = code;
+      fromSel.appendChild(o1); toSel.appendChild(o2);
+    });
+    fromSel.value = codes.indexOf('USD') >= 0 ? 'USD' : codes[0];
+    toSel.value = codes.indexOf('PKR') >= 0 ? 'PKR' : (codes[1] || codes[0]);
+  }
+  function convert(){
+    if (!rates) return;
+    var from = fromSel.value, to = toSel.value;
+    var raw = amountEl.value;
+    var amount = parseFloat(raw);
+    if (raw === '' || isNaN(amount)){
+      resultMain.textContent = '—';
+      if (rates[from] && rates[to]){
+        var single = rates[to] / rates[from];
+        resultRate.textContent = '1 ' + from + ' = ' + fmtRate(single) + ' ' + to;
+      } else resultRate.textContent = '';
+      return;
+    }
+    if (!rates[from] || !rates[to]){ resultMain.textContent = '—'; resultRate.textContent = ''; return; }
+    var converted = amount / rates[from] * rates[to];
+    var singleRate = rates[to] / rates[from];
+    resultMain.innerHTML = '<b>' + fmtAmount(amount) + ' ' + from + ' = ' + fmtAmount(converted) + ' ' + to + '</b>';
+    resultRate.textContent = '1 ' + from + ' = ' + singleRate.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: (Math.abs(singleRate) < 0.01 ? 4 : 4) }) + ' ' + to + '  ·  1 ' + to + ' = ' + (1/singleRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 }) + ' ' + from;
+  }
+  function useData(data, cachedNote){
+    rates = data.rates;
+    lastUpdatedUtc = data.time_last_update_utc || '';
+    var codes = Object.keys(rates).sort();
+    populateSelects(codes);
+    var info = 'Rates from open.er-api.com (ExchangeRate-API) · Last updated: ' + (lastUpdatedUtc || 'unknown');
+    if (cachedNote) info += cachedNote;
+    rateInfo.textContent = info;
+    showError('');
+    convert();
+  }
+  function loadCache(){
+    try {
+      var rawCache = localStorage.getItem('t360:fx');
+      return rawCache ? JSON.parse(rawCache) : null;
+    } catch(e){ return null; }
+  }
+  function saveCache(data){
+    try { localStorage.setItem('t360:fx', JSON.stringify({ rates: data.rates, time_last_update_utc: data.time_last_update_utc, fetchedAt: Date.now() })); } catch(e){}
+  }
+  function onFetchFailure(){
+    var cache = loadCache();
+    if (cache && cache.rates){
+      var when = cache.fetchedAt ? new Date(cache.fetchedAt).toLocaleString(undefined, { maximumFractionDigits: 0 }) : 'an earlier visit';
+      useData(cache, ' · You\u2019re offline \u2014 showing cached rates saved ' + when);
+    } else {
+      resultMain.textContent = '—';
+      resultRate.textContent = '';
+      rateInfo.textContent = '';
+      showError('Could not load exchange rates. Check your connection and reload.');
+    }
+  }
+
+  amountEl.addEventListener('input', convert);
+  fromSel.addEventListener('change', convert);
+  toSel.addEventListener('change', convert);
+  qs('#swap-btn').addEventListener('click', function(){
+    var t = fromSel.value; fromSel.value = toSel.value; toSel.value = t; convert();
+  });
+
+  if (window.fetch){
+    fetch('https://open.er-api.com/v6/latest/USD')
+      .then(function(res){ if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+      .then(function(data){
+        if (!data || data.result !== 'success' || !data.rates) throw new Error('Bad response');
+        saveCache(data);
+        useData(data, '');
+      })
+      .catch(function(){ onFetchFailure(); });
+  } else {
+    onFetchFailure();
+  }
+})();
+</script>
+</body>
+</html>

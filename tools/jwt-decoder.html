@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JWT Decoder — Decode JWT headers and payloads | Tool360</title>
+<meta name="description" content="Decode and inspect JSON Web Tokens online for free. View the header, payload, claims and expiry of a JWT — decoding only, never verification, in your browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+.claims-table{width:100%;border-collapse:collapse;font-size:.92rem}
+.claims-table th,.claims-table td{border:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top;word-break:break-word}
+.claims-table th{background:var(--surface-2);font-size:.82rem}
+.claims-table td:first-child{font-family:var(--mono);font-weight:700;white-space:nowrap}
+.sig-note{color:var(--warn);font-weight:600;font-size:.93rem;margin-top:10px}
+</style>
+</head>
+<body data-tool="jwt-decoder" data-category="developer">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#developer">Developer Tools</a> <span class="sep">›</span> <span aria-current="page">JWT Decoder</span></nav>
+  <h1>JWT Decoder</h1>
+  <p class="lede">Paste a JSON Web Token to inspect its header, payload claims and expiry — decoded locally, never verified or uploaded.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — nothing is uploaded</p>
+
+  <section class="workspace card">
+    <div class="field">
+      <label for="input">JSON Web Token</label>
+      <textarea id="input" class="textarea mono" rows="5" placeholder="Paste a JWT here, e.g. eyJhbGciOi… .eyJzdWIiOi… .signature" spellcheck="false"></textarea>
+    </div>
+
+    <p id="err" class="error-text hidden"></p>
+    <p id="exp-status" style="font-weight:600;font-size:.95rem;margin-top:12px"></p>
+
+    <div class="grid-2" style="margin-top:16px">
+      <div class="field">
+        <label for="header-out">Header</label>
+        <pre class="out-box" id="header-out"></pre>
+      </div>
+      <div class="field">
+        <label for="payload-out">Payload</label>
+        <pre class="out-box" id="payload-out"></pre>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:16px">
+      <label>Claims</label>
+      <div style="overflow:auto">
+        <table class="claims-table">
+          <thead><tr><th>Claim</th><th>Value</th></tr></thead>
+          <tbody id="claims-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:16px">
+      <label for="sig-out">Signature (third segment, raw)</label>
+      <div class="out-box mono" id="sig-out"></div>
+      <p class="sig-note">The signature is shown for inspection only — it is NOT verified here. Never trust a token just because it decodes.</p>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the JWT Decoder</h2>
+    <ol class="steps">
+      <li>Copy a JSON Web Token from your app, API response, or developer tools.</li>
+      <li>Paste it into the token box — decoding happens live as you type or paste.</li>
+      <li>Read the decoded header and payload, and check the claims table for dates such as exp, iat, and nbf shown in UTC and your local time.</li>
+      <li>Check the expiry status line, and remember the signature below is shown for inspection only and is not verified.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Does decoding a JWT verify it?</summary><p>No. Decoding is not verifying. Anyone can create or change the header and payload of a token and it will still decode perfectly here. Verification means checking the cryptographic signature with the issuer's key, which this tool does not do — never trust a token just because it decodes.</p></details>
+    <details><summary>Is my token uploaded to a server?</summary><p>No. The token is decoded entirely in your browser using JavaScript. It is never uploaded, stored, or sent anywhere. Even so, avoid pasting production tokens into any tool on a shared machine.</p></details>
+    <details><summary>What are the three parts of a JWT?</summary><p>A JWT has three Base64URL-encoded segments separated by dots: the header (algorithm and token type), the payload (the claims), and the signature. This tool decodes the first two as JSON and shows the third segment as-is.</p></details>
+    <details><summary>What do exp, iat, and nbf mean?</summary><p>exp is the expiry time, iat is the time the token was issued, and nbf is the time before which the token must not be accepted. All three are Unix timestamps in seconds, and this tool also shows them as human-readable UTC and local dates.</p></details>
+    <details><summary>Why does my token fail to decode?</summary><p>Common causes are a token that does not have exactly three dot-separated segments, a segment that is not valid Base64URL, or a decoded segment that is not valid JSON — for example, a token that was truncated when copied.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var input = T360.qs('#input');
+  var err = T360.qs('#err');
+  var headerOut = T360.qs('#header-out');
+  var payloadOut = T360.qs('#payload-out');
+  var claimsTbody = T360.qs('#claims-tbody');
+  var expStatus = T360.qs('#exp-status');
+  var sigOut = T360.qs('#sig-out');
+
+  function showError(msg){
+    err.textContent = msg;
+    err.classList.remove('hidden');
+  }
+  function clearError(){
+    err.textContent = '';
+    err.classList.add('hidden');
+  }
+  function b64UrlDecode(segment){
+    if(!/^[A-Za-z0-9\-_]+={0,2}$/.test(segment)){
+      throw new Error('bad-base64');
+    }
+    var b64 = segment.replace(/-/g, '+').replace(/_/g, '/');
+    while(b64.length % 4 !== 0) b64 += '=';
+    var bin;
+    try { bin = atob(b64); } catch(e){ throw new Error('bad-base64'); }
+    var bytes = new Uint8Array(bin.length);
+    for(var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    try {
+      return new TextDecoder('utf-8', {fatal: true}).decode(bytes);
+    } catch(e){
+      throw new Error('bad-base64');
+    }
+  }
+  function decodeJsonSegment(segment, label){
+    var text = b64UrlDecode(segment);
+    try {
+      return JSON.parse(text);
+    } catch(e){
+      throw new Error('bad-json-' + label);
+    }
+  }
+  function formatClaimDate(seconds){
+    var d = new Date(seconds * 1000);
+    if(isNaN(d.getTime())) return '';
+    return d.toUTCString() + ' · Local: ' + d.toLocaleString();
+  }
+  function formatValue(val){
+    if(val !== null && typeof val === 'object') return JSON.stringify(val);
+    return String(val);
+  }
+  function clearOutputs(){
+    headerOut.textContent = '';
+    payloadOut.textContent = '';
+    claimsTbody.textContent = '';
+    sigOut.textContent = '';
+    expStatus.textContent = '';
+    expStatus.className = '';
+  }
+  function renderClaims(payload){
+    claimsTbody.textContent = '';
+    Object.keys(payload).forEach(function(key){
+      var val = payload[key];
+      var tr = document.createElement('tr');
+      var tdKey = document.createElement('td');
+      tdKey.textContent = key;
+      var tdVal = document.createElement('td');
+      var text = formatValue(val);
+      if((key === 'exp' || key === 'iat' || key === 'nbf') && typeof val === 'number'){
+        var human = formatClaimDate(val);
+        if(human) text += ' — ' + human;
+      }
+      tdVal.textContent = text;
+      tr.appendChild(tdKey);
+      tr.appendChild(tdVal);
+      claimsTbody.appendChild(tr);
+    });
+  }
+  function renderExpStatus(payload){
+    expStatus.className = '';
+    if(typeof payload.exp !== 'number'){
+      expStatus.textContent = 'No exp claim in this token.';
+      return;
+    }
+    var d = new Date(payload.exp * 1000);
+    if(isNaN(d.getTime())){
+      expStatus.textContent = 'No exp claim in this token.';
+      return;
+    }
+    var dateText = d.toUTCString() + ' · Local: ' + d.toLocaleString();
+    var diffMs = d.getTime() - Date.now();
+    if(diffMs <= 0){
+      expStatus.textContent = 'Token expired on ' + dateText;
+      expStatus.classList.add('error-text');
+    } else {
+      var totalMinutes = Math.floor(diffMs / 60000);
+      var days = Math.floor(totalMinutes / 1440);
+      var hours = Math.floor((totalMinutes - days * 1440) / 60);
+      var mins = totalMinutes - days * 1440 - hours * 60;
+      var rel = days > 0 ? ('in ' + days + 'd ' + hours + 'h') : (hours > 0 ? ('in ' + hours + 'h ' + mins + 'm') : ('in ' + mins + 'm'));
+      expStatus.textContent = 'Expires ' + dateText + ' (' + rel + ')';
+      expStatus.classList.add('success-text');
+    }
+  }
+  function decode(){
+    clearError();
+    var token = input.value.trim();
+    if(!token){ clearOutputs(); return; }
+    var parts = token.split('.');
+    if(parts.length !== 3){
+      clearOutputs();
+      showError('A JWT should have exactly 3 segments separated by dots (header.payload.signature). This input has ' + parts.length + (parts.length === 1 ? ' segment' : ' segments') + ' — check that the whole token was pasted.');
+      return;
+    }
+    var header, payload;
+    try {
+      header = decodeJsonSegment(parts[0], 'header');
+      payload = decodeJsonSegment(parts[1], 'payload');
+    } catch(e){
+      clearOutputs();
+      if(e.message === 'bad-base64'){
+        showError('A segment of this token is not valid Base64URL, so it cannot be decoded. Check for missing, extra, or non-Base64URL characters.');
+      } else if(e.message === 'bad-json-header'){
+        showError('The header segment decoded, but it is not valid JSON.');
+      } else if(e.message === 'bad-json-payload'){
+        showError('The payload segment decoded, but it is not valid JSON.');
+      } else {
+        showError('This token could not be decoded: ' + e.message);
+      }
+      return;
+    }
+    headerOut.textContent = JSON.stringify(header, null, 2);
+    payloadOut.textContent = JSON.stringify(payload, null, 2);
+    sigOut.textContent = parts[2] || '(empty)';
+    if(payload !== null && typeof payload === 'object' && !Array.isArray(payload)){
+      renderClaims(payload);
+      renderExpStatus(payload);
+    } else {
+      claimsTbody.textContent = '';
+      expStatus.textContent = 'No exp claim in this token.';
+      expStatus.className = '';
+    }
+  }
+
+  input.addEventListener('input', decode);
+  decode();
+})();
+</script>
+</body>
+</html>

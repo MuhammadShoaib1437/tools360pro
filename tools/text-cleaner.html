@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Cleaner — Remove extra spaces, blank lines and duplicate lines | Tool360</title>
+<meta name="description" content="Clean up messy text: remove extra spaces, blank lines, duplicate lines, line breaks and accents. Free online text cleaner that runs in your browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="text-cleaner" data-category="text">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#text">Text Tools</a> <span class="sep">›</span> <span aria-current="page">Text Cleaner</span></nav>
+  <h1>Text Cleaner</h1>
+  <p class="lede">Tidy messy text in one pass — extra spaces, blank lines, duplicates and accents cleaned up live as you type.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your text never leaves this device</p>
+  <section class="workspace card">
+    <div class="grid-2">
+      <div class="field">
+        <label for="input">Your text</label>
+        <textarea id="input" class="textarea" rows="11" placeholder="Paste messy text here..."></textarea>
+      </div>
+      <div class="field">
+        <label for="output">Cleaned text</label>
+        <textarea id="output" class="textarea" rows="11" readonly placeholder="Your cleaned text will appear here..."></textarea>
+      </div>
+    </div>
+    <div style="margin-top:14px;">
+      <label class="switch-row" for="opt-accents"><input type="checkbox" id="opt-accents"> Remove accents (é → e)</label>
+      <label class="switch-row" for="opt-dupes"><input type="checkbox" id="opt-dupes"> Remove duplicate lines</label>
+      <label class="switch-row" for="opt-breaks"><input type="checkbox" id="opt-breaks"> Remove line breaks (join into one line)</label>
+      <label class="switch-row" for="opt-blank"><input type="checkbox" id="opt-blank"> Remove blank lines</label>
+      <label class="switch-row" for="opt-spaces"><input type="checkbox" id="opt-spaces" checked> Remove extra spaces</label>
+      <label class="switch-row" for="opt-trim"><input type="checkbox" id="opt-trim" checked> Trim each line</label>
+    </div>
+    <p id="stats" style="color:var(--muted);font-weight:600;font-size:.93rem;margin:14px 0 0;">Before: 0 chars · 0 lines → After: 0 chars · 0 lines</p>
+    <div class="options-bar">
+      <button type="button" id="copy-btn" class="btn btn-primary">Copy cleaned text</button>
+      <button type="button" id="download-btn" class="btn btn-ghost">Download .txt</button>
+      <button type="button" id="clear-btn" class="btn btn-ghost">Clear</button>
+    </div>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Text Cleaner</h2>
+    <ol class="steps"><li>Paste your text into the left box.</li><li>Tick the clean-ups you want — accents, duplicate lines, line breaks, blank lines, extra spaces and trimming are applied in that fixed order.</li><li>The cleaned text updates live in the right box, with before/after character and line counts underneath.</li><li>Copy the cleaned text or download it as cleaned.txt.</li></ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>In what order are the clean-ups applied?</summary><p>Always in the same fixed order: remove accents → remove duplicate lines → remove line breaks → remove blank lines → remove extra spaces → trim. A fixed order means the same input and options always give the same result.</p></details>
+    <details><summary>How are duplicate lines detected?</summary><p>Lines are compared after trimming leading and trailing whitespace. The first occurrence is kept exactly as it was written; later lines that match it (ignoring surrounding spaces) are removed.</p></details>
+    <details><summary>What does “Remove accents” do?</summary><p>It converts characters like é, ü and ñ to their plain base letters (e, u, n) by stripping diacritic marks. This is useful for systems that only accept plain ASCII-style text.</p></details>
+    <details><summary>What does “Remove extra spaces” change?</summary><p>Runs of spaces and tabs on a line collapse into a single space. Line breaks themselves are only removed if you also tick “Remove line breaks”.</p></details>
+    <details><summary>Is my text uploaded?</summary><p>No. Cleaning happens entirely in your browser with JavaScript. Your text never leaves this device.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var input = T360.qs('#input');
+  var output = T360.qs('#output');
+  var stats = T360.qs('#stats');
+  var opts = {
+    accents: T360.qs('#opt-accents'),
+    dupes: T360.qs('#opt-dupes'),
+    breaks: T360.qs('#opt-breaks'),
+    blank: T360.qs('#opt-blank'),
+    spaces: T360.qs('#opt-spaces'),
+    trim: T360.qs('#opt-trim')
+  };
+  function lineCount(t){
+    return t === '' ? 0 : t.split('\n').length;
+  }
+  function clean(text){
+    var t = text;
+    // 1. accents
+    if (opts.accents.checked) {
+      t = t.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+    // Split into lines for the line-based steps
+    var lines = t.split('\n');
+    // 2. duplicate lines (trimmed comparison, keep first original)
+    if (opts.dupes.checked) {
+      var seen = {};
+      lines = lines.filter(function(line){
+        var key = line.trim();
+        if (seen[key]) return false;
+        seen[key] = true;
+        return true;
+      });
+    }
+    // 3. line breaks
+    if (opts.breaks.checked) {
+      lines = [lines.join(' ')];
+    }
+    // 4. blank lines
+    if (opts.blank.checked) {
+      lines = lines.filter(function(line){ return line.trim() !== ''; });
+    }
+    // 5. extra spaces (per line: collapse spaces/tabs)
+    if (opts.spaces.checked) {
+      lines = lines.map(function(line){ return line.replace(/[ \t]+/g, ' '); });
+    }
+    // 6. trim each line and the whole text
+    if (opts.trim.checked) {
+      lines = lines.map(function(line){ return line.trim(); });
+      t = lines.join('\n').trim();
+    } else {
+      t = lines.join('\n');
+    }
+    return t;
+  }
+  function update(){
+    var before = input.value;
+    var after = clean(before);
+    output.value = after;
+    stats.textContent = 'Before: ' + before.length + ' chars · ' + lineCount(before) + ' lines → After: ' + after.length + ' chars · ' + lineCount(after) + ' lines';
+  }
+  input.addEventListener('input', update);
+  Object.keys(opts).forEach(function(k){ opts[k].addEventListener('change', update); });
+  T360.qs('#copy-btn').addEventListener('click', function(){
+    if (!output.value) { T360.toast('Nothing to copy yet'); return; }
+    T360.copyText(output.value, this);
+  });
+  T360.qs('#download-btn').addEventListener('click', function(){
+    if (!output.value) { T360.toast('Nothing to download yet'); return; }
+    var blob = new Blob([output.value], { type: 'text/plain;charset=utf-8' });
+    T360.download(blob, 'cleaned.txt');
+  });
+  T360.qs('#clear-btn').addEventListener('click', function(){
+    input.value = '';
+    update();
+    input.focus();
+  });
+  update();
+})();
+</script>
+</body>
+</html>

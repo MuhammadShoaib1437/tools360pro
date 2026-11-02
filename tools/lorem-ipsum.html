@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lorem Ipsum Generator — Generate placeholder paragraphs, sentences and words | Tool360</title>
+<meta name="description" content="Generate lorem ipsum placeholder text as paragraphs, sentences or words. Free online generator that runs entirely in your browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="lorem-ipsum" data-category="text">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#text">Text Tools</a> <span class="sep">›</span> <span aria-current="page">Lorem Ipsum Generator</span></nav>
+  <h1>Lorem Ipsum Generator</h1>
+  <p class="lede">Create classic placeholder text for layouts and mock-ups — by paragraph, sentence or exact word count.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your text never leaves this device</p>
+  <section class="workspace card">
+    <div class="options-bar">
+      <div class="field" style="max-width:160px;">
+        <label for="amount">Amount</label>
+        <input id="amount" class="input" type="number" value="3" min="1" max="100">
+      </div>
+      <div class="field">
+        <label>Generate</label>
+        <div class="seg" id="type-seg" role="group" aria-label="Output type">
+          <button type="button" data-type="paragraphs" class="active">Paragraphs</button>
+          <button type="button" data-type="sentences">Sentences</button>
+          <button type="button" data-type="words">Words</button>
+        </div>
+      </div>
+      <label class="switch-row" for="opt-start"><input type="checkbox" id="opt-start" checked> Start with “Lorem ipsum dolor sit amet”</label>
+    </div>
+    <div class="options-bar">
+      <button type="button" id="generate-btn" class="btn btn-primary">Generate</button>
+      <button type="button" id="copy-btn" class="btn btn-ghost">Copy text</button>
+    </div>
+    <div class="field">
+      <label for="output">Placeholder text</label>
+      <textarea id="output" class="textarea" rows="12" readonly></textarea>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><b id="stat-words">0</b><span> Words</span></div>
+      <div class="stat"><b id="stat-chars">0</b><span> Characters</span></div>
+    </div>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Lorem Ipsum Generator</h2>
+    <ol class="steps"><li>Enter how much text you need (1–100) and choose Paragraphs, Sentences or Words.</li><li>Leave “Start with Lorem ipsum…” ticked if you want the classic opening, or untick it for fully random text.</li><li>Click Generate — new random text is created every time.</li><li>Copy the placeholder text and paste it into your design or document.</li></ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>What is lorem ipsum?</summary><p>Lorem ipsum is placeholder text used in design and publishing to preview layouts without finished copy. It is based on scrambled Latin text, so readers focus on the layout instead of the meaning.</p></details>
+    <details><summary>How is the text generated?</summary><p>Sentences of 5–14 words are built at random from the classic lorem ipsum vocabulary. Paragraphs contain 3–6 sentences. In Words mode you get exactly the number of words you asked for.</p></details>
+    <details><summary>Can I use this text in my projects?</summary><p>Yes — it is standard dummy text with no meaning, commonly used in mock-ups, templates and drafts before real content is ready.</p></details>
+    <details><summary>Is anything uploaded?</summary><p>No. The text is generated entirely in your browser with JavaScript.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var amountEl = T360.qs('#amount');
+  var seg = T360.qs('#type-seg');
+  var startChk = T360.qs('#opt-start');
+  var output = T360.qs('#output');
+  var mode = 'paragraphs';
+  var BANK = ('lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat duis aute irure in reprehenderit voluptate velit esse cillum eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt culpa qui officia deserunt mollit anim id est laborum perspiciatis unde omnis iste natus error voluptatem accusantium doloremque laudantium totam rem aperiam eaque ipsa quae ab illo inventore veritatis quasi architecto beatae vitae dicta explicabo nemo ipsam quia voluptas aspernatur odit aut fugit consequuntur magni dolores eos ratione sequi nesciunt neque porro quisquam numquam eius modi tempora incidunt magnam quaerat minima nostrum exercitationem corporis suscipit laboriosam aliquid consequatur autem vel eum iure quam nihil molestiae illum quo').split(' ');
+  var OPENING = ['lorem','ipsum','dolor','sit','amet','consectetur','adipiscing','elit','sed','do','eiusmod','tempor','incididunt','ut','labore','et','dolore','magna','aliqua','enim','ad','minim','veniam','quis','nostrud','exercitation','ullamco','laboris','nisi','aliquip','ex','ea','commodo','consequat'];
+
+  function randInt(min, max){ return min + Math.floor(Math.random() * (max - min + 1)); }
+  function randWord(){ return BANK[Math.floor(Math.random() * BANK.length)]; }
+  function cap(w){ return w.charAt(0).toUpperCase() + w.slice(1); }
+
+  function makeSentence(first){
+    var len = randInt(5, 14);
+    var words = [];
+    var i;
+    if (first) {
+      // Classic opening: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, ..."
+      var head = ['Lorem','ipsum','dolor','sit','amet,','consectetur','adipiscing','elit,'];
+      words = head.slice(0, Math.min(head.length, len));
+      for (i = words.length; i < len; i++) words.push(randWord());
+      return words.join(' ') + '.';
+    }
+    for (i = 0; i < len; i++) words.push(randWord());
+    words[0] = cap(words[0]);
+    return words.join(' ') + '.';
+  }
+  function makeParagraph(first){
+    var n = randInt(3, 6);
+    var out = [];
+    for (var i = 0; i < n; i++) out.push(makeSentence(first && i === 0));
+    return out.join(' ');
+  }
+  function makeWords(n, start){
+    var words = [];
+    var i;
+    if (start) {
+      for (i = 0; i < n && i < OPENING.length; i++) words.push(OPENING[i]);
+    }
+    while (words.length < n) words.push(randWord());
+    if (words.length) words[0] = cap(words[0]);
+    return words.join(' ');
+  }
+  function generate(){
+    var n = parseInt(amountEl.value, 10);
+    if (isNaN(n)) n = 3;
+    n = Math.max(1, Math.min(100, n));
+    amountEl.value = n;
+    var start = startChk.checked;
+    var text = '';
+    var i;
+    if (mode === 'paragraphs') {
+      var paras = [];
+      for (i = 0; i < n; i++) paras.push(makeParagraph(start && i === 0));
+      text = paras.join('\n\n');
+    } else if (mode === 'sentences') {
+      var sents = [];
+      for (i = 0; i < n; i++) sents.push(makeSentence(start && i === 0));
+      text = sents.join(' ');
+    } else {
+      text = makeWords(n, start);
+    }
+    output.value = text;
+    var wc = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+    T360.qs('#stat-words').textContent = wc;
+    T360.qs('#stat-chars').textContent = text.length;
+  }
+  seg.addEventListener('click', function(e){
+    var btn = e.target.closest('button[data-type]');
+    if (!btn) return;
+    T360.qsa('button', seg).forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    mode = btn.getAttribute('data-type');
+    generate();
+  });
+  T360.qs('#generate-btn').addEventListener('click', generate);
+  amountEl.addEventListener('change', generate);
+  startChk.addEventListener('change', generate);
+  T360.qs('#copy-btn').addEventListener('click', function(){
+    if (!output.value) { T360.toast('Nothing to copy yet'); return; }
+    T360.copyText(output.value, this);
+  });
+  generate();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Age Calculator — Free Online Age Calculator | Tool360</title>
+<meta name="description" content="Calculate your exact age in years, months and days, plus total days lived and your next birthday. Free online age calculator, accurate and instant.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="age-calculator" data-category="calculators">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#calculators">Calculators</a> <span class="sep">›</span> <span aria-current="page">Age Calculator</span></nav>
+  <h1>Age Calculator</h1>
+  <p class="lede">Find your exact age in years, months and days — plus total days lived and when your next birthday falls.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your inputs never leave this device</p>
+  <section class="workspace card">
+    <div class="grid-2">
+      <div class="field">
+        <label for="ac-dob">Date of birth</label>
+        <input id="ac-dob" class="input" type="date">
+      </div>
+      <div class="field">
+        <label for="ac-target">Age at date</label>
+        <input id="ac-target" class="input" type="date">
+      </div>
+    </div>
+    <div class="options-bar">
+      <button id="ac-calc" type="button" class="btn btn-primary">Calculate age</button>
+      <button id="ac-today" type="button" class="btn btn-ghost">Reset target to today</button>
+    </div>
+    <p id="ac-error" class="error-text hidden"></p>
+    <div id="ac-results" class="hidden">
+      <div class="stat-row">
+        <div class="stat"><b id="ac-years">0</b><span>Years</span></div>
+        <div class="stat"><b id="ac-months">0</b><span>Months</span></div>
+        <div class="stat"><b id="ac-days">0</b><span>Days</span></div>
+      </div>
+      <div class="result-panel">
+        <div class="stat-row">
+          <div class="stat"><b id="ac-total-days">—</b><span>Total days</span></div>
+          <div class="stat"><b id="ac-total-weeks">—</b><span>Total weeks</span></div>
+          <div class="stat"><b id="ac-total-months">—</b><span>Total months</span></div>
+        </div>
+        <p id="ac-next-birthday" style="margin-bottom:0"></p>
+      </div>
+    </div>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Age Calculator</h2>
+    <ol class="steps">
+      <li>Enter your date of birth in the first field.</li>
+      <li>Leave the second field as today to get your current age, or pick any other date to calculate age at that date.</li>
+      <li>Click Calculate age — or just change a date, the result updates automatically.</li>
+      <li>Read your age in years, months and days, along with total days lived and your next birthday countdown.</li>
+    </ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>How is age in years, months and days calculated?</summary><p>The calculator subtracts your birth date from the target date, borrowing days from the previous month and months from the previous year when needed — the same way you would work it out on a calendar — so leap years and different month lengths are handled correctly.</p></details>
+    <details><summary>Is my date of birth uploaded or stored?</summary><p>No. This calculator runs entirely in your browser — your inputs are never uploaded, logged or stored. Your dates stay on your device.</p></details>
+    <details><summary>Can I calculate age at a past or future date?</summary><p>Yes. Change the “Age at date” field to any date after your birth date — for example, to check your age on a wedding date, a school cut-off date, or a future birthday.</p></details>
+    <details><summary>How does the next birthday countdown work?</summary><p>The tool finds the next occurrence of your birth month and day on or after the target date, then shows that date, its weekday, and how many days remain. If today is your birthday, it shows 0 days remaining.</p></details>
+    <details><summary>What happens with a 29 February birthday?</summary><p>In non-leap years, a 29 February birthday is treated as falling on 1 March for the next-birthday calculation, which is the common convention. The years/months/days age still uses exact calendar borrowing.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var dobEl = document.getElementById('ac-dob');
+  var targetEl = document.getElementById('ac-target');
+  var errEl = document.getElementById('ac-error');
+  var resEl = document.getElementById('ac-results');
+
+  function todayStr(){
+    var t = new Date();
+    var m = String(t.getMonth() + 1).padStart(2, '0');
+    var d = String(t.getDate()).padStart(2, '0');
+    return t.getFullYear() + '-' + m + '-' + d;
+  }
+  function parseLocal(str){
+    // Parse YYYY-MM-DD as a local date (avoids UTC shift from new Date(str))
+    var p = str.split('-');
+    return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+  }
+  function daysInMonth(year, monthIndex){
+    return new Date(year, monthIndex + 1, 0).getDate();
+  }
+  function fmtDate(d){
+    return d.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  }
+  function weekdayName(d){
+    return d.toLocaleDateString(undefined, { weekday: 'long' });
+  }
+
+  targetEl.value = todayStr();
+
+  function calculate(){
+    errEl.classList.add('hidden'); errEl.textContent = '';
+    if (!dobEl.value || !targetEl.value) { resEl.classList.add('hidden'); return; }
+    var dob = parseLocal(dobEl.value);
+    var target = parseLocal(targetEl.value);
+    if (isNaN(dob.getTime()) || isNaN(target.getTime())) { resEl.classList.add('hidden'); return; }
+    if (dob > target) {
+      errEl.textContent = 'Date of birth must be on or before the “Age at date”. Please check the dates.';
+      errEl.classList.remove('hidden');
+      resEl.classList.add('hidden');
+      return;
+    }
+
+    // Years / months / days with calendar borrowing
+    var years = target.getFullYear() - dob.getFullYear();
+    var months = target.getMonth() - dob.getMonth();
+    var days = target.getDate() - dob.getDate();
+    if (days < 0) {
+      months--;
+      // Borrow days from the month before the target month
+      var prevMonth = target.getMonth() - 1;
+      var prevYear = target.getFullYear();
+      if (prevMonth < 0) { prevMonth = 11; prevYear--; }
+      days += daysInMonth(prevYear, prevMonth);
+    }
+    if (months < 0) { years--; months += 12; }
+
+    // Totals
+    var msPerDay = 86400000;
+    var totalDays = Math.round((target - dob) / msPerDay);
+    var totalWeeks = Math.floor(totalDays / 7);
+    var remDays = totalDays % 7;
+    var totalMonths = years * 12 + months;
+
+    // Next birthday: next occurrence of birth month/day strictly on/after target
+    var nbYear = target.getFullYear();
+    function makeBirthday(year){
+      var bm = dob.getMonth(), bd = dob.getDate();
+      // Feb 29 -> Mar 1 in non-leap years
+      if (bm === 1 && bd === 29 && daysInMonth(year, 1) !== 29) return new Date(year, 2, 1);
+      return new Date(year, bm, bd);
+    }
+    var nextBday = makeBirthday(nbYear);
+    if (nextBday < target) nextBday = makeBirthday(nbYear + 1);
+    var daysToBday = Math.round((nextBday - target) / msPerDay);
+    var turningAge = nextBday.getFullYear() - dob.getFullYear();
+
+    document.getElementById('ac-years').textContent = years;
+    document.getElementById('ac-months').textContent = months;
+    document.getElementById('ac-days').textContent = days;
+    document.getElementById('ac-total-days').textContent = totalDays.toLocaleString();
+    document.getElementById('ac-total-weeks').textContent = totalWeeks.toLocaleString() + ' weeks, ' + remDays + (remDays === 1 ? ' day' : ' days');
+    document.getElementById('ac-total-months').textContent = totalMonths.toLocaleString();
+    document.getElementById('ac-next-birthday').innerHTML =
+      'Next birthday: <b>' + fmtDate(nextBday) + '</b> — in <b>' + daysToBday + (daysToBday === 1 ? ' day' : ' days') + '</b>' +
+      (daysToBday === 0 ? ' (today — happy birthday!)' : '') +
+      ', turning <b>' + turningAge + '</b> on a ' + weekdayName(nextBday) + '.';
+    resEl.classList.remove('hidden');
+  }
+
+  dobEl.addEventListener('change', calculate);
+  dobEl.addEventListener('input', calculate);
+  targetEl.addEventListener('change', calculate);
+  targetEl.addEventListener('input', calculate);
+  document.getElementById('ac-calc').addEventListener('click', calculate);
+  document.getElementById('ac-today').addEventListener('click', function(){ targetEl.value = todayStr(); calculate(); });
+  calculate();
+})();
+</script>
+</body>
+</html>

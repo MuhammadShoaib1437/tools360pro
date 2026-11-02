@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Gradient &amp; Shadow Generator — Build gradients and box shadows visually | Tool360</title>
+<meta name="description" content="Design CSS linear and radial gradients and box shadows with a live preview. Adjust colours, stops, angle and shadow values, then copy the CSS.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+.preview-box{height:180px;border-radius:var(--radius);border:1px solid var(--border)}
+.stop-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.stop-row .range-wrap{flex:1;min-width:160px}
+.shadow-stage{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:44px 20px;display:flex;align-items:center;justify-content:center}
+#shadow-preview{width:170px;height:115px;background:var(--surface);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--muted)}
+.num-input{width:84px}
+</style>
+</head>
+<body data-tool="css-gradient-generator" data-category="developer">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#developer">Developer Tools</a> <span class="sep">›</span> <span aria-current="page">CSS Gradient &amp; Shadow Generator</span></nav>
+  <h1>CSS Gradient &amp; Shadow Generator</h1>
+  <p class="lede">Build linear and radial gradients and soft box shadows with a live preview, then copy the CSS.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — nothing is uploaded</p>
+
+  <section class="workspace card">
+    <h2>Gradient builder</h2>
+    <div class="options-bar">
+      <div class="seg" id="grad-type" role="group" aria-label="Gradient type">
+        <button type="button" data-type="linear" class="active">Linear</button>
+        <button type="button" data-type="radial">Radial</button>
+      </div>
+      <div class="field" id="grad-angle-wrap">
+        <label for="grad-angle">Angle</label>
+        <div class="range-wrap">
+          <input type="range" id="grad-angle" min="0" max="360" value="90">
+          <input type="number" id="grad-angle-num" class="input num-input" min="0" max="360" value="90" aria-label="Angle in degrees">
+        </div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:6px">
+      <label for="grad-c1">Colour stop 1</label>
+      <div class="stop-row">
+        <input type="color" id="grad-c1" value="#7c3aed">
+        <div class="range-wrap"><input type="range" id="grad-p1" min="0" max="100" value="0"><output id="grad-p1-val">0%</output></div>
+      </div>
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label for="grad-c2">Colour stop 2</label>
+      <div class="stop-row">
+        <input type="color" id="grad-c2" value="#0891b2">
+        <div class="range-wrap"><input type="range" id="grad-p2" min="0" max="100" value="100"><output id="grad-p2-val">100%</output></div>
+      </div>
+    </div>
+    <div class="switch-row" style="margin-top:12px">
+      <input type="checkbox" id="grad-mid-on">
+      <label for="grad-mid-on">Add a middle colour stop</label>
+    </div>
+    <div class="field">
+      <label for="grad-c3">Middle colour stop</label>
+      <div class="stop-row">
+        <input type="color" id="grad-c3" value="#db2777" disabled>
+        <div class="range-wrap"><input type="range" id="grad-p3" min="0" max="100" value="50" disabled><output id="grad-p3-val">50%</output></div>
+      </div>
+    </div>
+
+    <div id="grad-preview" class="preview-box" style="margin-top:18px"></div>
+
+    <div class="field" style="margin-top:16px">
+      <label for="grad-css">Gradient CSS</label>
+      <pre class="out-box" id="grad-css"></pre>
+    </div>
+    <div class="options-bar">
+      <button type="button" id="grad-copy" class="btn btn-primary">Copy gradient CSS</button>
+    </div>
+
+    <hr style="margin:26px 0;border:none;border-top:1px solid var(--border)">
+
+    <h2>Box shadow builder</h2>
+    <div class="grid-2">
+      <div>
+        <div class="field">
+          <label for="sh-x">Horizontal offset</label>
+          <div class="range-wrap"><input type="range" id="sh-x" min="-50" max="50" value="0"><output id="sh-x-val">0px</output></div>
+        </div>
+        <div class="field" style="margin-top:10px">
+          <label for="sh-y">Vertical offset</label>
+          <div class="range-wrap"><input type="range" id="sh-y" min="-50" max="50" value="8"><output id="sh-y-val">8px</output></div>
+        </div>
+        <div class="field" style="margin-top:10px">
+          <label for="sh-blur">Blur radius</label>
+          <div class="range-wrap"><input type="range" id="sh-blur" min="0" max="80" value="24"><output id="sh-blur-val">24px</output></div>
+        </div>
+        <div class="field" style="margin-top:10px">
+          <label for="sh-spread">Spread radius</label>
+          <div class="range-wrap"><input type="range" id="sh-spread" min="-20" max="40" value="0"><output id="sh-spread-val">0px</output></div>
+        </div>
+        <div class="field" style="margin-top:10px">
+          <label for="sh-alpha">Shadow opacity</label>
+          <div class="range-wrap"><input type="range" id="sh-alpha" min="0" max="100" value="25"><output id="sh-alpha-val">25%</output></div>
+        </div>
+        <div class="stop-row" style="margin-top:12px">
+          <div class="field">
+            <label for="sh-color">Shadow colour</label>
+            <input type="color" id="sh-color" value="#14141f">
+          </div>
+          <div class="switch-row">
+            <input type="checkbox" id="sh-inset">
+            <label for="sh-inset">Inset shadow</label>
+          </div>
+        </div>
+      </div>
+      <div class="shadow-stage">
+        <div id="shadow-preview">Preview</div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:16px">
+      <label for="shadow-css">Box shadow CSS</label>
+      <pre class="out-box" id="shadow-css"></pre>
+    </div>
+    <div class="options-bar">
+      <button type="button" id="shadow-copy" class="btn btn-primary">Copy shadow CSS</button>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the CSS Gradient &amp; Shadow Generator</h2>
+    <ol class="steps">
+      <li>In the Gradient builder, pick Linear or Radial, then set the angle (linear only), colours, and stop positions — tick the middle-stop option for a third colour.</li>
+      <li>Watch the gradient preview update live, then click Copy gradient CSS to copy the background declaration.</li>
+      <li>In the Box shadow builder, adjust the offsets, blur, spread, colour, opacity, and the inset option.</li>
+      <li>Check the shadow on the preview card, then click Copy shadow CSS to copy the box-shadow declaration.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is anything uploaded to a server?</summary><p>No. The previews and CSS are generated entirely in your browser using JavaScript. Nothing is uploaded, stored, or sent anywhere.</p></details>
+    <details><summary>What is the difference between linear and radial gradients?</summary><p>A linear gradient blends colours along a straight line at the angle you set. A radial gradient blends colours outward from the centre in a circle, so it has no angle setting.</p></details>
+    <details><summary>What do the colour stop positions mean?</summary><p>A stop position is where that colour sits along the gradient, from 0% at the start to 100% at the end. CSS blends smoothly between neighbouring stops.</p></details>
+    <details><summary>What does an inset box shadow do?</summary><p>A normal box shadow falls outside the element's box. An inset shadow is drawn inside the box instead, which gives a pressed-in or inner-glow effect.</p></details>
+    <details><summary>Why does the shadow colour use rgba()?</summary><p>The opacity slider needs an alpha value, so the hex colour is converted to rgba() — for example, #14141f at 25% opacity becomes rgba(20, 20, 31, 0.25).</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  function hexToRgb(hex){
+    var h = String(hex).replace('#', '');
+    if(h.length === 3) h = h.charAt(0) + h.charAt(0) + h.charAt(1) + h.charAt(1) + h.charAt(2) + h.charAt(2);
+    var n = parseInt(h, 16);
+    if(isNaN(n)) return {r: 0, g: 0, b: 0};
+    return {r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255};
+  }
+
+  /* ---------- Gradient ---------- */
+  var gradType = 'linear';
+  var gradAngle = T360.qs('#grad-angle');
+  var gradAngleNum = T360.qs('#grad-angle-num');
+  var gradAngleWrap = T360.qs('#grad-angle-wrap');
+  var gradC1 = T360.qs('#grad-c1'), gradP1 = T360.qs('#grad-p1');
+  var gradC2 = T360.qs('#grad-c2'), gradP2 = T360.qs('#grad-p2');
+  var gradC3 = T360.qs('#grad-c3'), gradP3 = T360.qs('#grad-p3');
+  var gradMidOn = T360.qs('#grad-mid-on');
+  var gradPreview = T360.qs('#grad-preview');
+  var gradCss = T360.qs('#grad-css');
+
+  function stopText(color, pos){ return color.toLowerCase() + ' ' + pos + '%'; }
+  function updateGradient(){
+    T360.qs('#grad-p1-val').textContent = gradP1.value + '%';
+    T360.qs('#grad-p2-val').textContent = gradP2.value + '%';
+    T360.qs('#grad-p3-val').textContent = gradP3.value + '%';
+    gradC3.disabled = !gradMidOn.checked;
+    gradP3.disabled = !gradMidOn.checked;
+    var stops = [stopText(gradC1.value, gradP1.value)];
+    if(gradMidOn.checked) stops.push(stopText(gradC3.value, gradP3.value));
+    stops.push(stopText(gradC2.value, gradP2.value));
+    var value;
+    if(gradType === 'radial'){
+      value = 'radial-gradient(circle, ' + stops.join(', ') + ')';
+    } else {
+      value = 'linear-gradient(' + gradAngle.value + 'deg, ' + stops.join(', ') + ')';
+    }
+    gradPreview.style.background = value;
+    gradCss.textContent = 'background: ' + value + ';';
+  }
+  T360.qsa('#grad-type button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      gradType = btn.getAttribute('data-type');
+      T360.qsa('#grad-type button').forEach(function(b){ b.classList.toggle('active', b === btn); });
+      var isRadial = gradType === 'radial';
+      gradAngleWrap.classList.toggle('hidden', isRadial);
+      gradAngle.disabled = isRadial;
+      gradAngleNum.disabled = isRadial;
+      updateGradient();
+    });
+  });
+  gradAngle.addEventListener('input', function(){ gradAngleNum.value = gradAngle.value; updateGradient(); });
+  gradAngleNum.addEventListener('input', function(){
+    var v = parseInt(gradAngleNum.value, 10);
+    if(isNaN(v)) return;
+    v = Math.max(0, Math.min(360, v));
+    gradAngle.value = v;
+    updateGradient();
+  });
+  gradAngleNum.addEventListener('change', function(){ gradAngleNum.value = gradAngle.value; });
+  [gradC1, gradP1, gradC2, gradP2, gradC3, gradP3, gradMidOn].forEach(function(el){
+    el.addEventListener('input', updateGradient);
+    el.addEventListener('change', updateGradient);
+  });
+  T360.qs('#grad-copy').addEventListener('click', function(e){
+    T360.copyText(gradCss.textContent, e.currentTarget);
+  });
+
+  /* ---------- Box shadow ---------- */
+  var shX = T360.qs('#sh-x'), shY = T360.qs('#sh-y'), shBlur = T360.qs('#sh-blur'),
+      shSpread = T360.qs('#sh-spread'), shColor = T360.qs('#sh-color'),
+      shAlpha = T360.qs('#sh-alpha'), shInset = T360.qs('#sh-inset');
+  var shadowPreview = T360.qs('#shadow-preview');
+  var shadowCss = T360.qs('#shadow-css');
+
+  function updateShadow(){
+    T360.qs('#sh-x-val').textContent = shX.value + 'px';
+    T360.qs('#sh-y-val').textContent = shY.value + 'px';
+    T360.qs('#sh-blur-val').textContent = shBlur.value + 'px';
+    T360.qs('#sh-spread-val').textContent = shSpread.value + 'px';
+    T360.qs('#sh-alpha-val').textContent = shAlpha.value + '%';
+    var rgb = hexToRgb(shColor.value);
+    var alpha = parseFloat((parseInt(shAlpha.value, 10) / 100).toFixed(2));
+    var value = (shInset.checked ? 'inset ' : '') + shX.value + 'px ' + shY.value + 'px ' + shBlur.value + 'px ' + shSpread.value + 'px rgba(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ', ' + alpha + ')';
+    shadowPreview.style.boxShadow = value;
+    shadowCss.textContent = 'box-shadow: ' + value + ';';
+  }
+  [shX, shY, shBlur, shSpread, shColor, shAlpha, shInset].forEach(function(el){
+    el.addEventListener('input', updateShadow);
+    el.addEventListener('change', updateShadow);
+  });
+  T360.qs('#shadow-copy').addEventListener('click', function(e){
+    T360.copyText(shadowCss.textContent, e.currentTarget);
+  });
+
+  updateGradient();
+  updateShadow();
+})();
+</script>
+</body>
+</html>

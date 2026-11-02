@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Generator — Free Online QR Code Generator | Tool360</title>
+<meta name="description" content="Create QR codes for links and text instantly with custom size and colours. Free online QR code generator — download as PNG or SVG, fully private.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="qr-code-generator" data-category="generators">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#generators">Generators</a> <span class="sep">›</span> <span aria-current="page">QR Code Generator</span></nav>
+  <h1>QR Code Generator</h1>
+  <p class="lede">Turn any link or text into a scannable QR code in seconds and download it as PNG or SVG.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your files and text never leave this device</p>
+  <section class="workspace card">
+    <div class="grid-2">
+      <div>
+        <div class="field">
+          <label for="qr-text">Text or URL</label>
+          <input id="qr-text" class="input" type="text" value="https://" placeholder="https://example.com or any text">
+        </div>
+        <div class="field">
+          <label for="qr-size">Download size</label>
+          <select id="qr-size" class="select">
+            <option value="256">256 × 256 px</option>
+            <option value="512" selected>512 × 512 px</option>
+            <option value="1024">1024 × 1024 px</option>
+          </select>
+        </div>
+        <div class="options-bar">
+          <div class="field">
+            <label for="qr-fg">Foreground colour</label>
+            <input id="qr-fg" class="input" type="color" value="#000000" style="padding:.25rem;height:42px;">
+          </div>
+          <div class="field">
+            <label for="qr-bg">Background colour</label>
+            <input id="qr-bg" class="input" type="color" value="#ffffff" style="padding:.25rem;height:42px;">
+          </div>
+        </div>
+        <div class="options-bar" style="margin-top:1rem;">
+          <button type="button" id="btn-generate" class="btn btn-primary">Generate</button>
+          <button type="button" id="btn-png" class="btn btn-ghost">Download PNG</button>
+          <button type="button" id="btn-svg" class="btn btn-ghost">Download SVG</button>
+        </div>
+        <p id="qr-error" class="error-text hidden" role="alert"></p>
+        <p id="qr-success" class="success-text hidden">QR code ready — scan it with your phone camera to test it.</p>
+      </div>
+      <div class="result-panel" style="text-align:center;">
+        <canvas id="qr-canvas" width="512" height="512" style="max-width:100%;height:auto;width:280px;image-rendering:pixelated;"></canvas>
+        <p style="margin-top:.5rem;">Preview</p>
+      </div>
+    </div>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the QR Code Generator</h2>
+    <ol class="steps"><li>Enter a URL or any text in the box — the QR code updates live as you type.</li><li>Choose a download size and adjust the foreground and background colours if you like.</li><li>Check the preview and test it by scanning with your phone camera.</li><li>Download your QR code as a PNG for everyday use or SVG for crisp printing at any size.</li></ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my text or data uploaded?</summary><p>No. Your QR code is generated entirely in your browser. The text or link you enter is never uploaded to a server or stored anywhere.</p></details>
+    <details><summary>Do these QR codes expire?</summary><p>No. These are static QR codes that encode your text or link directly, so they keep working for as long as the destination link itself works. There is no tracking or redirect in between.</p></details>
+    <details><summary>PNG or SVG — which should I download?</summary><p>Use PNG for websites, documents and social posts. Use SVG for print, posters and signage, because it stays perfectly sharp at any size.</p></details>
+    <details><summary>Why will my QR code not scan?</summary><p>Make sure there is enough contrast between the foreground and background colours — dark modules on a light background scan most reliably. Very long text also creates a denser code that needs a larger print size.</p></details>
+    <details><summary>How much text can a QR code hold?</summary><p>It depends on the content, but roughly up to a few thousand characters. Shorter links make smaller, easier-to-scan codes, so shorten long URLs first where you can.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script src="../assets/vendor/qrcode.min.js"></script>
+<script>
+(function(){
+  var textInput = T360.qs('#qr-text');
+  var sizeSelect = T360.qs('#qr-size');
+  var fgInput = T360.qs('#qr-fg');
+  var bgInput = T360.qs('#qr-bg');
+  var canvas = T360.qs('#qr-canvas');
+  var ctx = canvas.getContext('2d');
+  var errorEl = T360.qs('#qr-error');
+  var successEl = T360.qs('#qr-success');
+  var currentQR = null;
+  var debounceTimer = null;
+
+  function showError(msg){
+    errorEl.textContent = msg;
+    errorEl.classList.remove('hidden');
+    successEl.classList.add('hidden');
+  }
+  function hideError(){
+    errorEl.textContent = '';
+    errorEl.classList.add('hidden');
+  }
+  function clearCanvas(){
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    currentQR = null;
+    successEl.classList.add('hidden');
+  }
+  function buildQR(text){
+    var qr = qrcode(0, 'M');
+    qr.addData(text);
+    qr.make();
+    return qr;
+  }
+  function render(){
+    var text = textInput.value;
+    var size = parseInt(sizeSelect.value, 10) || 512;
+    if (!text || text.trim() === '') {
+      showError('Enter some text or a URL to generate a QR code.');
+      clearCanvas();
+      return;
+    }
+    var qr;
+    try {
+      qr = buildQR(text);
+    } catch (e) {
+      showError('That text is too long to fit in a QR code. Try shortening it.');
+      clearCanvas();
+      return;
+    }
+    if (typeof qrcode === 'undefined') {
+      showError('QR library failed to load. Please refresh the page.');
+      return;
+    }
+    hideError();
+    currentQR = qr;
+    var count = qr.getModuleCount();
+    var quiet = 4;
+    var total = count + quiet * 2;
+    canvas.width = size;
+    canvas.height = size;
+    var cell = size / total;
+    // Background
+    ctx.fillStyle = bgInput.value;
+    ctx.fillRect(0, 0, size, size);
+    // Foreground modules
+    ctx.fillStyle = fgInput.value;
+    for (var r = 0; r < count; r++) {
+      for (var c = 0; c < count; c++) {
+        if (qr.isDark(r, c)) {
+          var x = Math.round((c + quiet) * cell);
+          var y = Math.round((r + quiet) * cell);
+          var w = Math.ceil(cell);
+          var h = Math.ceil(cell);
+          ctx.fillRect(x, y, w, h);
+        }
+      }
+    }
+    successEl.classList.remove('hidden');
+  }
+  function renderDebounced(){
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(render, 200);
+  }
+  function buildSVG(){
+    if (!currentQR) return null;
+    var count = currentQR.getModuleCount();
+    var quiet = 4;
+    var total = count + quiet * 2;
+    var size = parseInt(sizeSelect.value, 10) || 512;
+    var cell = 10;
+    var svgSize = total * cell;
+    var parts = [];
+    parts.push('<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 ' + svgSize + ' ' + svgSize + '">');
+    parts.push('<rect width="100%" height="100%" fill="' + bgInput.value + '"/>');
+    var d = '';
+    for (var r = 0; r < count; r++) {
+      for (var c = 0; c < count; c++) {
+        if (currentQR.isDark(r, c)) {
+          var x = (c + quiet) * cell;
+          var y = (r + quiet) * cell;
+          d += 'M' + x + ' ' + y + 'h' + cell + 'v' + cell + 'h-' + cell + 'z';
+        }
+      }
+    }
+    parts.push('<path d="' + d + '" fill="' + fgInput.value + '"/>');
+    parts.push('</svg>');
+    return parts.join('');
+  }
+  textInput.addEventListener('input', renderDebounced);
+  sizeSelect.addEventListener('change', render);
+  fgInput.addEventListener('input', renderDebounced);
+  bgInput.addEventListener('input', renderDebounced);
+  T360.qs('#btn-generate').addEventListener('click', render);
+  T360.qs('#btn-png').addEventListener('click', function(){
+    if (!currentQR) { T360.toast('Generate a QR code first'); render(); if (!currentQR) return; }
+    if (canvas.toBlob) {
+      canvas.toBlob(function(blob){
+        if (blob) T360.download(blob, 'qr-code.png');
+        else T360.toast('Could not create PNG');
+      }, 'image/png');
+    } else {
+      T360.download(canvas.toDataURL('image/png'), 'qr-code.png');
+    }
+  });
+  T360.qs('#btn-svg').addEventListener('click', function(){
+    if (!currentQR) { T360.toast('Generate a QR code first'); render(); if (!currentQR) return; }
+    var svg = buildSVG();
+    if (!svg) { T360.toast('Generate a QR code first'); return; }
+    var blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+    T360.download(blob, 'qr-code.svg');
+  });
+  // Guard if library missing
+  if (typeof qrcode === 'undefined') {
+    showError('QR library failed to load. Please refresh the page.');
+    clearCanvas();
+  } else {
+    render();
+  }
+})();
+</script>
+</body>
+</html>

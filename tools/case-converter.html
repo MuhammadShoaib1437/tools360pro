@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Converter — Free Online Case Converter | Tool360</title>
+<meta name="description" content="Convert text to UPPERCASE, lowercase, Title Case, camelCase, snake_case and more instantly. Free online case converter that runs in your browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="case-converter" data-category="text">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#text">Text Tools</a> <span class="sep">›</span> <span aria-current="page">Case Converter</span></nav>
+  <h1>Case Converter</h1>
+  <p class="lede">Switch your text between UPPERCASE, Title Case, camelCase and more with a single click.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your files and text never leave this device</p>
+  <section class="workspace card">
+    <div class="field">
+      <label for="input">Your text</label>
+      <textarea id="input" class="textarea" rows="7" placeholder="Type or paste your text here..."></textarea>
+    </div>
+    <div class="field">
+      <label>Convert to</label>
+      <div class="seg" id="mode-seg" role="group" aria-label="Case mode">
+        <button type="button" data-mode="upper" class="active">UPPERCASE</button>
+        <button type="button" data-mode="lower">lowercase</button>
+        <button type="button" data-mode="title">Title Case</button>
+        <button type="button" data-mode="sentence">Sentence case</button>
+        <button type="button" data-mode="alternating">aLtErNaTiNg</button>
+        <button type="button" data-mode="camel">camelCase</button>
+        <button type="button" data-mode="snake">snake_case</button>
+        <button type="button" data-mode="kebab">kebab-case</button>
+      </div>
+    </div>
+    <div class="field">
+      <label for="output">Result</label>
+      <textarea id="output" class="textarea" rows="7" readonly placeholder="Your converted text will appear here..."></textarea>
+    </div>
+    <div class="options-bar">
+      <button type="button" id="btn-copy" class="btn btn-primary">Copy result</button>
+      <button type="button" id="btn-download" class="btn btn-ghost">Download .txt</button>
+      <button type="button" id="btn-clear" class="btn btn-ghost">Clear</button>
+    </div>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Case Converter</h2>
+    <ol class="steps"><li>Type or paste your text into the top box.</li><li>Pick a case style from the buttons — UPPERCASE, Title Case, camelCase, snake_case and others.</li><li>Your converted text appears instantly in the result box below.</li><li>Copy the result or download it as a .txt file.</li></ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my text uploaded?</summary><p>No. The conversion happens entirely in your browser with JavaScript. Your text is never uploaded, stored or sent to any server.</p></details>
+    <details><summary>What is the difference between Title Case and Sentence case?</summary><p>Title Case capitalises the first letter of every word, which suits headings and titles. Sentence case capitalises only the first letter of each sentence, like normal writing.</p></details>
+    <details><summary>When would I use camelCase, snake_case or kebab-case?</summary><p>These are naming styles used in code and URLs. camelCase joins words with capitals (myVariableName), snake_case uses underscores (my_variable_name), and kebab-case uses hyphens (my-variable-name).</p></details>
+    <details><summary>Can I convert a large amount of text?</summary><p>Yes. There is no practical limit for normal documents because everything runs locally. Very large pastes may feel slower on older devices.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var input = T360.qs('#input');
+  var output = T360.qs('#output');
+  var seg = T360.qs('#mode-seg');
+  var currentMode = 'upper';
+
+  function toTitleCase(text){
+    return text.toLowerCase().replace(/(^|\s|[("'])(\S)/g, function(m, prefix, ch){
+      return prefix + ch.toUpperCase();
+    });
+    // Simpler robust approach below is used instead if needed; the regex above
+    // capitalises the first character of each whitespace-separated word.
+  }
+  function titleCase(text){
+    return text.split(/(\s+)/).map(function(part){
+      if (/^\s+$/.test(part) || part === '') return part;
+      // Handle words that may contain punctuation: capitalise first letter found
+      var lower = part.toLowerCase();
+      return lower.replace(/[a-z]/, function(c){ return c.toUpperCase(); });
+    }).join('');
+  }
+  function sentenceCase(text){
+    var lower = text.toLowerCase();
+    return lower.replace(/(^\s*[a-z])|([.!?]\s*[a-z])/g, function(m){
+      return m.toUpperCase();
+    });
+  }
+  function alternatingCase(text){
+    var out = '';
+    var upper = true;
+    for (var i = 0; i < text.length; i++){
+      var ch = text[i];
+      if (/[a-zA-Z]/.test(ch)){
+        out += upper ? ch.toUpperCase() : ch.toLowerCase();
+        upper = !upper;
+      } else {
+        out += ch;
+      }
+    }
+    return out;
+  }
+  function splitWords(text){
+    return text.split(/[^a-zA-Z0-9]+/).filter(function(w){ return w.length > 0; });
+  }
+  function capitalizeWord(w){
+    if (!w) return w;
+    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+  }
+  function camelCase(text){
+    var words = splitWords(text);
+    if (words.length === 0) return '';
+    return words.map(function(w, i){
+      return i === 0 ? w.toLowerCase() : capitalizeWord(w);
+    }).join('');
+  }
+  function snakeCase(text){
+    return splitWords(text).map(function(w){ return w.toLowerCase(); }).join('_');
+  }
+  function kebabCase(text){
+    return splitWords(text).map(function(w){ return w.toLowerCase(); }).join('-');
+  }
+  function convert(text, mode){
+    switch(mode){
+      case 'upper': return text.toUpperCase();
+      case 'lower': return text.toLowerCase();
+      case 'title': return titleCase(text);
+      case 'sentence': return sentenceCase(text);
+      case 'alternating': return alternatingCase(text);
+      case 'camel': return camelCase(text);
+      case 'snake': return snakeCase(text);
+      case 'kebab': return kebabCase(text);
+      default: return text;
+    }
+  }
+  function update(){
+    output.value = convert(input.value, currentMode);
+  }
+  seg.addEventListener('click', function(e){
+    var btn = e.target.closest('button[data-mode]');
+    if (!btn) return;
+    T360.qsa('button', seg).forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    currentMode = btn.getAttribute('data-mode');
+    update();
+  });
+  input.addEventListener('input', update);
+  T360.qs('#btn-copy').addEventListener('click', function(){
+    if (!output.value) { T360.toast('Nothing to copy yet'); return; }
+    T360.copyText(output.value, this);
+  });
+  T360.qs('#btn-download').addEventListener('click', function(){
+    if (!output.value) { T360.toast('Nothing to download yet'); return; }
+    var blob = new Blob([output.value], { type: 'text/plain;charset=utf-8' });
+    T360.download(blob, 'converted-text.txt');
+  });
+  T360.qs('#btn-clear').addEventListener('click', function(){
+    input.value = '';
+    update();
+    input.focus();
+  });
+  update();
+})();
+</script>
+</body>
+</html>

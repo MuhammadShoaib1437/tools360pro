@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merge PDF — Combine PDF Files Online Free | Tool360</title>
+<meta name="description" content="Merge two or more PDF files into one document, free and in your browser. Reorder files, see page counts, and download the combined PDF — nothing is uploaded.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="merge-pdf" data-category="pdf">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#pdf">PDF Tools</a> <span class="sep">›</span> <span aria-current="page">Merge PDF</span></nav>
+  <h1>Merge PDF</h1>
+  <p class="lede">Combine several PDF files into a single document, in the order you choose.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your files never leave this device</p>
+
+  <section class="workspace card">
+    <div class="dropzone" id="dz" role="button" tabindex="0" aria-label="Add PDF files">
+      <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5.5"/><path d="M6.5 10.5 12 5l5.5 5.5"/><path d="M4 20h16"/></svg>
+      <div class="dz-title">Drop your PDF files here</div>
+      <div class="dz-sub">or click to browse · PDF files only · add as many as you like</div>
+    </div>
+    <input type="file" id="file-input" accept="application/pdf,.pdf" multiple hidden>
+    <div class="file-list" id="file-list"></div>
+    <p class="error-text hidden" id="err"></p>
+    <div class="progress hidden" id="progress"><i></i></div>
+    <div class="options-bar">
+      <button class="btn btn-primary btn-lg" id="merge-btn" disabled>Merge PDFs</button>
+      <button class="btn btn-ghost" id="clear-btn" disabled>Clear all</button>
+    </div>
+    <div class="result-panel hidden" id="result">
+      <div class="stat-row" style="margin-top:0">
+        <div class="stat"><b id="r-files">0</b><span>Files merged</span></div>
+        <div class="stat"><b id="r-pages">0</b><span>Total pages</span></div>
+        <div class="stat"><b id="r-size">—</b><span>Merged size</span></div>
+      </div>
+      <div class="options-bar" style="margin-bottom:0">
+        <button class="btn btn-primary" id="download-btn">Download merged PDF</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the Merge PDF tool</h2>
+    <ol class="steps">
+      <li>Drop two or more PDF files onto the box above, or click it to browse your device.</li>
+      <li>Use the up and down arrows on each file to set the order the documents should appear in.</li>
+      <li>Press <b>Merge PDFs</b> — the combined file is built right in your browser.</li>
+      <li>Download the merged PDF. Your originals are never modified or uploaded.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Are my PDF files uploaded to a server?</summary><p>No. The merge happens entirely in your browser using JavaScript. Your files never leave your device, and nothing is stored anywhere.</p></details>
+    <details><summary>How many files can I merge at once?</summary><p>There is no fixed count limit — you can add as many PDFs as you like. Very large batches are limited only by your device's memory, because everything is processed locally.</p></details>
+    <details><summary>Will the quality of my PDFs change?</summary><p>No. Pages are copied into the new document exactly as they are — text, images and vector graphics keep their original quality.</p></details>
+    <details><summary>Can I change the order before merging?</summary><p>Yes. Every file in the list has up and down arrows so you can arrange the documents in any order before you merge.</p></details>
+    <details><summary>One of my files won't load. Why?</summary><p>The file may be corrupted or password-protected. Encrypted PDFs need to be unlocked with their password in a PDF editor first — this tool cannot open them.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script src="../assets/vendor/pdf-lib.min.js"></script>
+<script>
+(function () {
+  var dz = T360.qs("#dz"), input = T360.qs("#file-input"), list = T360.qs("#file-list"),
+      mergeBtn = T360.qs("#merge-btn"), clearBtn = T360.qs("#clear-btn"),
+      err = T360.qs("#err"), result = T360.qs("#result"), progress = T360.qs("#progress");
+  var files = []; // {file, name, size, bytes, pages}
+  var lastBlob = null;
+
+  function showErr(msg) { err.textContent = msg; err.classList.toggle("hidden", !msg); }
+  function render() {
+    list.innerHTML = files.map(function (f, i) {
+      return '<div class="file-chip"><div class="fc-main"><div class="fc-name">' + f.name.replace(/</g, "&lt;") + '</div>' +
+        '<div class="fc-meta">' + T360.formatBytes(f.size) + " · " + f.pages + (f.pages === 1 ? " page" : " pages") + "</div></div>" +
+        '<div class="fc-actions">' +
+        '<button class="chip-btn" data-act="up" data-i="' + i + '" aria-label="Move up" ' + (i === 0 ? "disabled" : "") + ">↑</button>" +
+        '<button class="chip-btn" data-act="down" data-i="' + i + '" aria-label="Move down" ' + (i === files.length - 1 ? "disabled" : "") + ">↓</button>" +
+        '<button class="chip-btn" data-act="rm" data-i="' + i + '" aria-label="Remove">✕</button></div></div>';
+    }).join("");
+    mergeBtn.disabled = files.length < 2;
+    clearBtn.disabled = files.length === 0;
+  }
+  async function addFiles(fileObjs) {
+    showErr("");
+    for (var k = 0; k < fileObjs.length; k++) {
+      var f = fileObjs[k];
+      if (!/\.pdf$/i.test(f.name) && f.type !== "application/pdf") { showErr("“" + f.name + "” is not a PDF file and was skipped."); continue; }
+      try {
+        var bytes = await f.arrayBuffer();
+        var doc = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: false });
+        files.push({ file: f, name: f.name, size: f.size, bytes: bytes, pages: doc.getPageCount() });
+      } catch (e) {
+        showErr("Could not read “" + f.name + "” — it may be corrupted or password-protected.");
+      }
+    }
+    render();
+  }
+  dz.addEventListener("click", function () { input.click(); });
+  dz.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+  input.addEventListener("change", function () { addFiles(Array.prototype.slice.call(input.files)); input.value = ""; });
+  ["dragenter", "dragover"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("dragover"); }); });
+  ["dragleave", "drop"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove("dragover"); }); });
+  dz.addEventListener("drop", function (e) { if (e.dataTransfer.files.length) addFiles(Array.prototype.slice.call(e.dataTransfer.files)); });
+  list.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-act]"); if (!b) return;
+    var i = +b.getAttribute("data-i"), act = b.getAttribute("data-act");
+    if (act === "rm") files.splice(i, 1);
+    if (act === "up" && i > 0) { var t = files[i - 1]; files[i - 1] = files[i]; files[i] = t; }
+    if (act === "down" && i < files.length - 1) { var t2 = files[i + 1]; files[i + 1] = files[i]; files[i] = t2; }
+    render();
+  });
+  clearBtn.addEventListener("click", function () { files = []; lastBlob = null; result.classList.add("hidden"); render(); });
+  mergeBtn.addEventListener("click", async function () {
+    showErr(""); mergeBtn.disabled = true; mergeBtn.textContent = "Merging…";
+    progress.classList.remove("hidden");
+    var bar = progress.querySelector("i");
+    try {
+      var out = await PDFLib.PDFDocument.create();
+      var totalPages = 0;
+      for (var k = 0; k < files.length; k++) {
+        var src = await PDFLib.PDFDocument.load(files[k].bytes);
+        var idx = src.getPageIndices();
+        var copied = await out.copyPages(src, idx);
+        copied.forEach(function (p) { out.addPage(p); });
+        totalPages += idx.length;
+        bar.style.width = Math.round(((k + 1) / files.length) * 100) + "%";
+      }
+      var bytes = await out.save();
+      lastBlob = new Blob([bytes], { type: "application/pdf" });
+      T360.qs("#r-files").textContent = files.length;
+      T360.qs("#r-pages").textContent = totalPages;
+      T360.qs("#r-size").textContent = T360.formatBytes(lastBlob.size);
+      result.classList.remove("hidden");
+      T360.toast("PDFs merged");
+    } catch (e) {
+      showErr("Something went wrong while merging. One of the files may be damaged.");
+    }
+    progress.classList.add("hidden"); bar.style.width = "0";
+    mergeBtn.disabled = files.length < 2; mergeBtn.textContent = "Merge PDFs";
+  });
+  T360.qs("#download-btn").addEventListener("click", function () {
+    if (lastBlob) T360.download(lastBlob, "merged.pdf");
+  });
+  render();
+})();
+</script>
+</body>
+</html>

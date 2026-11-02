@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time Zone Converter — Convert Times Worldwide Instantly | Tool360</title>
+<meta name="description" content="Convert a date and time between world time zones, see UTC offsets and time differences, and check live clocks for major cities. Free, no sign-up needed.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+.clocks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px}
+.clock-card{background:var(--surface-2);border:1px solid var(--border);border-radius:13px;padding:13px 15px;display:flex;flex-direction:column;gap:1px}
+.clock-card .cc-name{font-weight:700;font-size:.9rem}
+.clock-card .cc-time{font-family:var(--mono);font-size:1.25rem;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.clock-card .cc-date{color:var(--muted);font-size:.8rem;font-weight:600}
+.clock-card .cc-off{color:var(--muted);font-size:.78rem}
+</style>
+</head>
+<body data-tool="time-zone-converter" data-category="converters">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#converters">Converters</a> <span class="sep">›</span> <span aria-current="page">Time Zone Converter</span></nav>
+  <h1>Time Zone Converter</h1>
+  <p class="lede">Convert a date and time from one time zone to another, compare UTC offsets, and see the current time in major cities around the world.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — nothing is uploaded</p>
+  <section class="workspace card">
+    <div class="grid-2">
+      <div class="field">
+        <label for="from-zone">From time zone</label>
+        <select id="from-zone" class="select"></select>
+      </div>
+      <div class="field">
+        <label for="to-zone">To time zone</label>
+        <select id="to-zone" class="select"></select>
+      </div>
+    </div>
+    <div class="field" style="margin-top:14px">
+      <label for="dt-input">Date &amp; time (in the “from” zone)</label>
+      <input id="dt-input" class="input" type="datetime-local">
+    </div>
+    <div class="options-bar">
+      <button id="swap-btn" type="button" class="btn btn-ghost">&#8646; Swap zones</button>
+      <button id="now-btn" type="button" class="btn btn-ghost">Use current time</button>
+    </div>
+    <div class="result-panel">
+      <div id="result-main" class="stat">—</div>
+      <div id="result-diff" style="margin-top:6px">Choose zones and a time to see the difference.</div>
+      <div id="result-offsets" style="margin-top:4px;color:var(--muted);font-size:.9rem"></div>
+    </div>
+    <h2 style="margin-top:26px">World clock</h2>
+    <p style="color:var(--muted);margin:0">Live local times, updating every second.</p>
+    <div id="clocks" class="clocks-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+  <section class="tool-section">
+    <h2>How to use the Time Zone Converter</h2>
+    <ol class="steps">
+      <li>Choose the time zone your starting time is in from the “From” dropdown.</li>
+      <li>Pick the date and time you want to convert — it is read as wall-clock time in that zone.</li>
+      <li>Choose the target zone from the “To” dropdown and read the converted time in the result panel.</li>
+      <li>Use Swap to reverse the zones, or “Use current time” to reset the input to now.</li>
+    </ol>
+  </section>
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>How are daylight saving changes handled?</summary><p>The converter uses your browser’s built-in time zone database (the same IANA data used by operating systems), so daylight saving time is applied automatically for the exact date you enter. A city can be an hour further ahead or behind in summer than in winter.</p></details>
+    <details><summary>What does a UTC offset mean?</summary><p>A UTC offset tells you how far a zone is from Coordinated Universal Time. UTC+05:00 means the local time is five hours ahead of UTC, while UTC−04:00 means it is four hours behind.</p></details>
+    <details><summary>Why can the same city have different offsets on different dates?</summary><p>Many regions move their clocks forward in spring and back in autumn for daylight saving time. The offset shown here is calculated for the date and time you entered, not just for today.</p></details>
+    <details><summary>Is any of my data uploaded?</summary><p>No. All conversions and the world clock run locally in your browser using the Intl API. Nothing you enter is sent anywhere.</p></details>
+    <details><summary>What is “Local time” in the dropdown?</summary><p>It is the time zone your device is currently set to, detected automatically by your browser. Its IANA name is used for the conversion, so it stays correct even if you travel.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var qs = T360.qs, qsa = T360.qsa;
+  var LOCAL_TZ = '';
+  try { LOCAL_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch(e){ LOCAL_TZ = 'UTC'; }
+
+  var ZONES = [
+    ['Local time', LOCAL_TZ],
+    ['UTC', 'UTC'],
+    ['London', 'Europe/London'],
+    ['Paris', 'Europe/Paris'],
+    ['Dubai', 'Asia/Dubai'],
+    ['Karachi', 'Asia/Karachi'],
+    ['Mumbai', 'Asia/Kolkata'],
+    ['Dhaka', 'Asia/Dhaka'],
+    ['Bangkok', 'Asia/Bangkok'],
+    ['Singapore', 'Asia/Singapore'],
+    ['Beijing', 'Asia/Shanghai'],
+    ['Tokyo', 'Asia/Tokyo'],
+    ['Sydney', 'Australia/Sydney'],
+    ['Auckland', 'Pacific/Auckland'],
+    ['New York', 'America/New_York'],
+    ['Chicago', 'America/Chicago'],
+    ['Denver', 'America/Denver'],
+    ['Los Angeles', 'America/Los_Angeles'],
+    ['Toronto', 'America/Toronto'],
+    ['Sao Paulo', 'America/Sao_Paulo'],
+    ['Lagos', 'Africa/Lagos'],
+    ['Cairo', 'Africa/Cairo'],
+    ['Moscow', 'Europe/Moscow'],
+    ['Istanbul', 'Europe/Istanbul'],
+    ['Honolulu', 'Pacific/Honolulu'],
+    ['Anchorage', 'America/Anchorage'],
+    ['Berlin', 'Europe/Berlin'],
+    ['Madrid', 'Europe/Madrid'],
+    ['Rome', 'Europe/Rome'],
+    ['Amsterdam', 'Europe/Amsterdam']
+  ];
+
+  var fromSel = qs('#from-zone'), toSel = qs('#to-zone'), dtInput = qs('#dt-input');
+  var resultMain = qs('#result-main'), resultDiff = qs('#result-diff'), resultOffsets = qs('#result-offsets');
+
+  ZONES.forEach(function(z){
+    var o1 = document.createElement('option'); o1.value = z[1]; o1.textContent = z[0] === 'Local time' ? 'Local time (' + z[1] + ')' : z[0] + ' (' + z[1] + ')'; o1.setAttribute('data-label', z[0]);
+    var o2 = o1.cloneNode(true);
+    fromSel.appendChild(o1); toSel.appendChild(o2);
+  });
+  fromSel.value = LOCAL_TZ;
+  toSel.value = (LOCAL_TZ === 'America/New_York') ? 'Europe/London' : 'America/New_York';
+  if (!toSel.value) toSel.selectedIndex = 1;
+
+  function labelOf(sel){
+    var opt = sel.options[sel.selectedIndex];
+    return opt ? (opt.getAttribute('data-label') || opt.textContent) : sel.value;
+  }
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function getOffsetMs(date, timeZone){
+    var dtf = new Intl.DateTimeFormat('en-US', { timeZone: timeZone, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23' });
+    var parts = {};
+    dtf.formatToParts(date).forEach(function(p){ if (p.type !== 'literal') parts[p.type] = parseInt(p.value, 10); });
+    var asUTC = Date.UTC(parts.year, (parts.month||1)-1, parts.day||1, parts.hour||0, parts.minute||0, parts.second||0);
+    return asUTC - Math.floor(date.getTime()/1000)*1000;
+  }
+  function formatOffset(ms){
+    var sign = ms < 0 ? '−' : '+';
+    var abs = Math.abs(ms);
+    var h = Math.floor(abs/3600000), m = Math.round((abs%3600000)/60000);
+    if (m === 60){ h += 1; m = 0; }
+    return 'UTC' + sign + pad(h) + ':' + pad(m);
+  }
+  function wallToUtc(y, mo, d, h, mi, timeZone){
+    var guess = Date.UTC(y, mo-1, d, h, mi, 0);
+    for (var i = 0; i < 3; i++){
+      var off = getOffsetMs(new Date(guess), timeZone);
+      var utc = Date.UTC(y, mo-1, d, h, mi, 0) - off;
+      if (utc === guess) { guess = utc; break; }
+      guess = utc;
+    }
+    return new Date(guess);
+  }
+  function formatDiff(ms){
+    var abs = Math.abs(ms);
+    var totalMin = Math.round(abs/60000);
+    var h = Math.floor(totalMin/60), m = totalMin%60;
+    var parts = [];
+    if (h) parts.push(h + (h === 1 ? ' hour' : ' hours'));
+    if (m) parts.push(m + (m === 1 ? ' minute' : ' minutes'));
+    return parts.length ? parts.join(' ') : '0 minutes';
+  }
+  function setNow(){
+    var now = new Date();
+    // Round to the nearest minute and express as wall time in the from-zone
+    now.setSeconds(0, 0);
+    var dtf = new Intl.DateTimeFormat('en-US', { timeZone: fromSel.value, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hourCycle:'h23' });
+    var p = {};
+    dtf.formatToParts(now).forEach(function(pt){ if (pt.type !== 'literal') p[pt.type] = pt.value; });
+    dtInput.value = p.year + '-' + p.month + '-' + p.day + 'T' + pad(parseInt(p.hour,10)%24) + ':' + p.minute;
+  }
+  function convert(){
+    var fromTz = fromSel.value, toTz = toSel.value;
+    var raw = dtInput.value;
+    if (!raw){
+      resultMain.textContent = '—';
+      resultDiff.textContent = 'Pick a date and time to convert.';
+      resultOffsets.textContent = '';
+      return;
+    }
+    var m = raw.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+    if (!m){ resultMain.textContent = '—'; return; }
+    var utcDate = wallToUtc(+m[1], +m[2], +m[3], +m[4], +m[5], fromTz);
+    var longFmt = new Intl.DateTimeFormat('en-GB', { timeZone: toTz, weekday:'long', day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23', timeZoneName:'shortOffset' });
+    resultMain.innerHTML = '<b>' + longFmt.format(utcDate) + '</b>';
+    var offFrom = getOffsetMs(utcDate, fromTz);
+    var offTo = getOffsetMs(utcDate, toTz);
+    resultOffsets.textContent = labelOf(fromSel) + ': ' + formatOffset(offFrom) + '  ·  ' + labelOf(toSel) + ': ' + formatOffset(offTo);
+    var diff = offTo - offFrom;
+    if (diff === 0){
+      resultDiff.textContent = labelOf(toSel) + ' is on the same time as ' + labelOf(fromSel) + ' for this date.';
+    } else if (diff > 0){
+      resultDiff.textContent = labelOf(toSel) + ' is ' + formatDiff(diff) + ' ahead of ' + labelOf(fromSel) + '.';
+    } else {
+      resultDiff.textContent = labelOf(toSel) + ' is ' + formatDiff(diff) + ' behind ' + labelOf(fromSel) + '.';
+    }
+  }
+
+  fromSel.addEventListener('change', convert);
+  toSel.addEventListener('change', convert);
+  dtInput.addEventListener('input', convert);
+  dtInput.addEventListener('change', convert);
+  qs('#swap-btn').addEventListener('click', function(){
+    var t = fromSel.value; fromSel.value = toSel.value; toSel.value = t; convert();
+    T360.toast('Time zones swapped');
+  });
+  qs('#now-btn').addEventListener('click', function(){ setNow(); convert(); });
+
+  /* World clock */
+  var CITIES = [
+    ['New York', 'America/New_York'],
+    ['London', 'Europe/London'],
+    ['Dubai', 'Asia/Dubai'],
+    ['Karachi', 'Asia/Karachi'],
+    ['Singapore', 'Asia/Singapore'],
+    ['Tokyo', 'Asia/Tokyo'],
+    ['Sydney', 'Australia/Sydney'],
+    ['UTC', 'UTC']
+  ];
+  var clocksEl = qs('#clocks');
+  clocksEl.innerHTML = CITIES.map(function(c, i){
+    return '<div class="clock-card"><span class="cc-name">' + c[0] + '</span><span class="cc-time" id="clock-time-' + i + '">--:--:--</span><span class="cc-date" id="clock-date-' + i + '"></span><span class="cc-off" id="clock-off-' + i + '"></span></div>';
+  }).join('');
+  function tickClocks(){
+    var now = new Date();
+    CITIES.forEach(function(c, i){
+      var timeEl = document.getElementById('clock-time-' + i);
+      var dateEl = document.getElementById('clock-date-' + i);
+      var offEl = document.getElementById('clock-off-' + i);
+      if (!timeEl) return;
+      timeEl.textContent = new Intl.DateTimeFormat('en-GB', { timeZone: c[1], hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23' }).format(now);
+      dateEl.textContent = new Intl.DateTimeFormat('en-GB', { timeZone: c[1], weekday:'short', day:'numeric', month:'short', year:'numeric' }).format(now);
+      offEl.textContent = formatOffset(getOffsetMs(now, c[1]));
+    });
+  }
+  tickClocks();
+  setInterval(tickClocks, 1000);
+
+  setNow();
+  convert();
+})();
+</script>
+</body>
+</html>

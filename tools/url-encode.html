@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URL &amp; HTML Encoder — Encode and decode URLs and HTML entities | Tool360</title>
+<meta name="description" content="Encode and decode URLs and HTML entities online for free. Percent-encode text, decode URLs, and convert special characters to HTML entities in your browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="url-encode" data-category="developer">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#developer">Developer Tools</a> <span class="sep">›</span> <span aria-current="page">URL &amp; HTML Encoder</span></nav>
+  <h1>URL &amp; HTML Encoder</h1>
+  <p class="lede">Percent-encode text for URLs, decode it back, or convert special characters to and from HTML entities.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — nothing is uploaded</p>
+
+  <section class="workspace card">
+    <div class="options-bar">
+      <div class="seg" id="mode-seg" role="group" aria-label="Mode">
+        <button type="button" data-mode="url" class="active">URL</button>
+        <button type="button" data-mode="html">HTML entities</button>
+      </div>
+      <button type="button" id="btn-encode" class="btn btn-primary">Encode</button>
+      <button type="button" id="btn-decode" class="btn">Decode</button>
+      <button type="button" id="btn-swap" class="btn">Swap</button>
+      <button type="button" id="btn-copy" class="btn">Copy output</button>
+      <button type="button" id="btn-clear" class="btn btn-ghost">Clear</button>
+    </div>
+
+    <div class="switch-row" id="full-url-row">
+      <input type="checkbox" id="opt-full">
+      <label for="opt-full">Encode a full URL (keeps : / ? &amp; = intact)</label>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label for="input">Input</label>
+        <textarea id="input" class="textarea" rows="10" placeholder="Type or paste text here…" spellcheck="false"></textarea>
+      </div>
+      <div class="field">
+        <label for="output">Output</label>
+        <textarea id="output" class="textarea out-box" rows="10" readonly placeholder="Result will appear here" spellcheck="false"></textarea>
+      </div>
+    </div>
+
+    <p id="err" class="error-text hidden"></p>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the URL &amp; HTML Encoder</h2>
+    <ol class="steps">
+      <li>Choose URL or HTML entities using the toggle at the top.</li>
+      <li>Type or paste your text into the Input box.</li>
+      <li>Click Encode to convert it, or Decode to convert it back — in URL mode you can also tick the full-URL option to keep : / ? &amp; = intact.</li>
+      <li>Click Copy output to copy the result, or Swap to move the output back into the input.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my text uploaded to a server?</summary><p>No. Encoding and decoding run entirely in your browser using JavaScript. Your text is never uploaded, stored, or sent anywhere.</p></details>
+    <details><summary>What is the difference between the URL and full-URL modes?</summary><p>Normal URL encoding (encodeURIComponent) encodes characters such as : / ? &amp; and =, which is right for a single value inside a query string. The full-URL option (encodeURI) leaves those structural characters intact, which is right when you are encoding a complete URL.</p></details>
+    <details><summary>Why did URL decoding fail?</summary><p>Decoding expects valid percent-encoded text, where every % is followed by two hexadecimal digits and the bytes form valid UTF-8. Plain text with a stray % sign will fail — encode it first, or remove the stray characters.</p></details>
+    <details><summary>Which characters does HTML encoding convert?</summary><p>It converts &amp; to &amp;amp;, &lt; to &amp;lt;, &gt; to &amp;gt;, a double quote to &amp;quot;, and a single quote to &amp;#39;. Decoding also understands &amp;apos;, &amp;nbsp;, decimal entities such as &amp;#123;, and hex entities such as &amp;#x1F600;.</p></details>
+    <details><summary>When should I encode HTML entities?</summary><p>Encode text before placing it inside HTML markup so characters such as &lt; and &amp; are displayed as text instead of being interpreted as tags or entity references.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var mode = 'url';
+  var input = T360.qs('#input');
+  var output = T360.qs('#output');
+  var err = T360.qs('#err');
+  var optFull = T360.qs('#opt-full');
+  var seg = T360.qs('#mode-seg');
+
+  function showError(msg){
+    err.textContent = msg;
+    err.classList.remove('hidden');
+  }
+  function clearError(){
+    err.textContent = '';
+    err.classList.add('hidden');
+  }
+  function encodeHtml(str){
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  function decodeHtml(str){
+    var out = str.replace(/&#x([0-9a-fA-F]+);/g, function(m, hex){
+      try { return String.fromCodePoint(parseInt(hex, 16)); } catch(e){ return m; }
+    });
+    out = out.replace(/&#(\d+);/g, function(m, dec){
+      try { return String.fromCodePoint(parseInt(dec, 10)); } catch(e){ return m; }
+    });
+    out = out
+      .replace(/&nbsp;/g, '\u00A0')
+      .replace(/&apos;/g, "'")
+      .replace(/&quot;/g, '"')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&');
+    return out;
+  }
+  function run(action){
+    clearError();
+    var val = input.value;
+    if(!val){ output.value = ''; return; }
+    try {
+      if(mode === 'url'){
+        if(action === 'encode'){
+          output.value = optFull.checked ? encodeURI(val) : encodeURIComponent(val);
+        } else {
+          try {
+            output.value = optFull.checked ? decodeURI(val) : decodeURIComponent(val);
+          } catch(e){
+            output.value = '';
+            showError("That doesn't look like valid percent-encoded text. Every % should be followed by two hexadecimal digits, and the decoded bytes should be valid UTF-8.");
+            return;
+          }
+        }
+      } else {
+        output.value = action === 'encode' ? encodeHtml(val) : decodeHtml(val);
+      }
+    } catch(e){
+      output.value = '';
+      if(mode === 'url' && action === 'encode'){
+        showError('That text could not be encoded. It may contain an unpaired surrogate character.');
+      } else {
+        showError(e.message);
+      }
+    }
+  }
+
+  T360.qsa('#mode-seg button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      mode = btn.getAttribute('data-mode');
+      T360.qsa('#mode-seg button').forEach(function(b){ b.classList.toggle('active', b === btn); });
+      T360.qs('#full-url-row').classList.toggle('hidden', mode !== 'url');
+      clearError();
+    });
+  });
+
+  T360.qs('#btn-encode').addEventListener('click', function(){ run('encode'); });
+  T360.qs('#btn-decode').addEventListener('click', function(){ run('decode'); });
+  T360.qs('#btn-swap').addEventListener('click', function(){
+    if(!output.value) return;
+    input.value = output.value;
+    output.value = '';
+    clearError();
+    input.focus();
+  });
+  T360.qs('#btn-copy').addEventListener('click', function(e){
+    if(!output.value){ T360.toast('Nothing to copy — encode or decode something first'); return; }
+    T360.copyText(output.value, e.currentTarget);
+  });
+  T360.qs('#btn-clear').addEventListener('click', function(){
+    input.value = '';
+    output.value = '';
+    clearError();
+    input.focus();
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UUID Generator — Free Online UUID Generator | Tool360</title>
+<meta name="description" content="Generate random UUID v4 online for free. Create single or bulk UUIDs up to 100, with uppercase and hyphen options, copy or download instantly.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-tool="uuid-generator" data-category="developer">
+<div id="site-header"></div>
+<main class="container tool-page">
+  <nav class="breadcrumb"><a href="../index.html">Home</a> <span class="sep">›</span> <a href="../index.html#developer">Developer Tools</a> <span class="sep">›</span> <span aria-current="page">UUID Generator</span></nav>
+  <h1>UUID Generator</h1>
+  <p class="lede">Generate cryptographically random UUID v4 values — one at a time or in bulk up to 100.</p>
+  <p class="privacy-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Runs in your browser — your code and data never leave this device</p>
+
+  <section class="workspace card">
+    <div class="field">
+      <label>Your UUID</label>
+      <pre id="singleUuid" class="out-box" style="font-size:1.25rem;text-align:center;padding:18px;word-break:break-all;margin:0"></pre>
+    </div>
+    <div class="options-bar" style="margin-top:10px">
+      <button type="button" id="copySingleBtn" class="btn">Copy UUID</button>
+      <button type="button" id="refreshSingleBtn" class="btn btn-ghost">↻ New</button>
+    </div>
+
+    <hr style="margin:24px 0;border:none;border-top:1px solid #e5e7eb">
+
+    <div class="options-bar">
+      <div class="field range-wrap">
+        <label for="qtyRange">Quantity: <span id="qtyLabel">10</span></label>
+        <input type="range" id="qtyRange" min="1" max="100" value="10">
+      </div>
+      <div class="field">
+        <label for="qtyNumber">Number (1–100)</label>
+        <input type="number" id="qtyNumber" class="input" min="1" max="100" value="10" style="width:100px">
+      </div>
+      <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="uppercaseCheck"> Uppercase</label>
+      <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="hyphensCheck" checked> Hyphens</label>
+    </div>
+    <p>Version: <strong>v4 (random)</strong> — generated with the Web Crypto API for strong randomness.</p>
+
+    <div class="options-bar">
+      <button type="button" id="generateBtn" class="btn btn-primary">Generate</button>
+      <button type="button" id="copyAllBtn" class="btn">Copy all</button>
+      <button type="button" id="downloadBtn" class="btn">Download .txt</button>
+    </div>
+
+    <div class="field" style="margin-top:12px">
+      <label for="bulkList">Bulk UUIDs</label>
+      <pre id="bulkList" class="out-box" style="max-height:320px;overflow:auto;margin:0"></pre>
+    </div>
+    <div class="result-panel" style="margin-top:12px">
+      <div class="stat-row">
+        <div class="stat"><strong>Count:</strong> <span id="countStat">0</span></div>
+        <div class="stat"><strong>Format:</strong> <span id="formatStat">Lowercase, with hyphens</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-section">
+    <h2>Related tools</h2>
+    <div id="related-tools" class="tool-grid"></div>
+  </section>
+
+  <section class="tool-section">
+    <h2>How to use the UUID Generator</h2>
+    <ol class="steps">
+      <li>A UUID is generated automatically when the page loads — copy the big UUID at the top or click New for another.</li>
+      <li>Set the quantity (1–100) using the slider or number box to control how many UUIDs appear in the bulk list.</li>
+      <li>Toggle Uppercase or Hyphens to change the display format — the list updates automatically.</li>
+      <li>Click Generate for a fresh set, Copy all to copy the whole list, or Download .txt to save it as a file.</li>
+    </ol>
+  </section>
+
+  <section class="tool-section faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my data uploaded or stored?</summary><p>No. UUIDs are generated locally in your browser with the Web Crypto API. Nothing is uploaded, logged, or stored on any server.</p></details>
+    <details><summary>What is a UUID v4?</summary><p>A UUID (Universally Unique Identifier) is a 128-bit identifier. Version 4 UUIDs are generated from random numbers, with the version and variant bits set so the pattern is <code>xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx</code> where y is 8, 9, a, or b.</p></details>
+    <details><summary>Can two generated UUIDs ever be the same?</summary><p>In practice, no. With 122 random bits, the chance of a collision is astronomically small — you would need to generate billions of UUIDs before a duplicate becomes likely.</p></details>
+    <details><summary>What happens if I turn Hyphens off?</summary><p>The hyphens are stripped for display, giving a 32-character hex string. The underlying UUID value is the same; some systems prefer the compact form.</p></details>
+    <details><summary>Where are UUIDs used?</summary><p>UUIDs are commonly used as database primary keys, session IDs, transaction IDs, file names, and distributed-system identifiers where a central counter is not practical.</p></details>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/site.js"></script>
+<script>
+(function(){
+  var singleEl = T360.qs('#singleUuid');
+  var bulkEl = T360.qs('#bulkList');
+  var qtyRange = T360.qs('#qtyRange');
+  var qtyNumber = T360.qs('#qtyNumber');
+  var qtyLabel = T360.qs('#qtyLabel');
+  var uppercaseCheck = T360.qs('#uppercaseCheck');
+  var hyphensCheck = T360.qs('#hyphensCheck');
+  var countStat = T360.qs('#countStat');
+  var formatStat = T360.qs('#formatStat');
+
+  var currentList = []; // raw lowercase hyphenated v4 strings
+
+  function generateRawV4(){
+    if(window.crypto && typeof crypto.randomUUID === 'function'){
+      return crypto.randomUUID();
+    }
+    var bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    bytes[6] = (bytes[6] & 0x0f) | 0x40; // version 4
+    bytes[8] = (bytes[8] & 0x3f) | 0x80; // variant 10xx
+    function hex(n){ return n.toString(16).padStart(2,'0'); }
+    var h = Array.from(bytes, hex).join('');
+    return h.slice(0,8) + '-' + h.slice(8,12) + '-' + h.slice(12,16) + '-' + h.slice(16,20) + '-' + h.slice(20);
+  }
+
+  function applyFormat(raw){
+    var v = raw;
+    if(!hyphensCheck.checked) v = v.replace(/-/g,'');
+    if(uppercaseCheck.checked) v = v.toUpperCase();
+    return v;
+  }
+  function formattedList(){
+    return currentList.map(applyFormat);
+  }
+  function render(){
+    var list = formattedList();
+    singleEl.textContent = list.length ? list[0] : '';
+    bulkEl.textContent = list.join('\n');
+    countStat.textContent = String(list.length);
+    formatStat.textContent = (uppercaseCheck.checked ? 'Uppercase' : 'Lowercase') + (hyphensCheck.checked ? ', with hyphens' : ', no hyphens');
+  }
+  function getQty(){
+    var n = parseInt(qtyNumber.value, 10);
+    if(isNaN(n)) n = 10;
+    n = Math.max(1, Math.min(100, n));
+    return n;
+  }
+  function generate(){
+    var qty = getQty();
+    // Keep range/number/label in sync
+    qtyNumber.value = String(qty);
+    qtyRange.value = String(qty);
+    qtyLabel.textContent = String(qty);
+    currentList = [];
+    for(var i=0;i<qty;i++) currentList.push(generateRawV4());
+    render();
+  }
+  function regenerateSingle(){
+    var fresh = generateRawV4();
+    if(currentList.length === 0) currentList = [fresh];
+    else currentList[0] = fresh;
+    // Also refresh bulk if quantity expects more? Keep list consistent: regenerate all to keep first == bulk first
+    // Spec says Generate regenerates both; single New refreshes the single + keeps bulk first in sync
+    render();
+  }
+
+  qtyRange.addEventListener('input', function(){
+    qtyNumber.value = qtyRange.value;
+    qtyLabel.textContent = qtyRange.value;
+    generate();
+  });
+  qtyNumber.addEventListener('input', function(){
+    var n = getQty();
+    qtyRange.value = String(n);
+    qtyLabel.textContent = String(n);
+    generate();
+  });
+  qtyNumber.addEventListener('change', function(){ generate(); });
+  uppercaseCheck.addEventListener('change', render);
+  hyphensCheck.addEventListener('change', render);
+
+  T360.qs('#generateBtn').addEventListener('click', generate);
+  T360.qs('#refreshSingleBtn').addEventListener('click', function(){
+    // Generate a completely fresh set so single always matches bulk[0]
+    generate();
+  });
+  T360.qs('#copySingleBtn').addEventListener('click', function(e){
+    var list = formattedList();
+    if(!list.length) return;
+    T360.copyText(list[0], e.currentTarget);
+  });
+  T360.qs('#copyAllBtn').addEventListener('click', function(e){
+    var list = formattedList();
+    if(!list.length){ T360.toast('Nothing to copy yet'); return; }
+    T360.copyText(list.join('\n'), e.currentTarget);
+  });
+  T360.qs('#downloadBtn').addEventListener('click', function(){
+    var list = formattedList();
+    if(!list.length){ T360.toast('Nothing to download yet'); return; }
+    var content = list.join('\n') + '\n';
+    if(T360.download){
+      // T360.download accepts blobOrDataUrl
+      try {
+        var blob = new Blob([content], {type:'text/plain'});
+        T360.download(blob, 'uuids.txt');
+      } catch(e){
+        T360.download('data:text/plain;charset=utf-8,' + encodeURIComponent(content), 'uuids.txt');
+      }
+    } else {
+      var a = document.createElement('a');
+      a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+      a.download = 'uuids.txt';
+      a.click();
+    }
+  });
+
+  generate();
+})();
+</script>
+</body>
+</html>
