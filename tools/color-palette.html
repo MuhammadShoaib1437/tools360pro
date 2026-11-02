@@ -36,15 +36,15 @@
     <div class="picker-row">
       <div class="field" style="flex:0 0 auto;">
         <label for="color-input">Pick a colour</label>
-        <input type="color" id="color-input" value="#7c3aed">
+        <input type="color" id="color-input" value="#0a7a55">
       </div>
       <div class="field">
         <label for="hex-input">HEX value</label>
-        <input id="hex-input" class="input mono" type="text" value="#7c3aed" placeholder="#7c3aed" spellcheck="false" autocomplete="off">
+        <input id="hex-input" class="input mono" type="text" value="#0a7a55" placeholder="#0a7a55" spellcheck="false" autocomplete="off">
       </div>
     </div>
     <p id="err" class="error-text hidden" role="alert"></p>
-    <div id="preview" class="preview-block" style="background:#7c3aed;" aria-hidden="true"></div>
+    <div id="preview" class="preview-block" style="background:#0a7a55;" aria-hidden="true"></div>
 
     <h2 style="margin-top:22px;">Conversions — click to copy</h2>
     <div class="stat-row">
@@ -79,11 +79,11 @@
   </section>
   <section class="tool-section">
     <h2>How to use the Color Converter &amp; Palette</h2>
-    <ol class="steps"><li>Pick a colour with the colour picker, or type a HEX value such as #7c3aed, 7c3aed or a short form like #73e.</li><li>Read the same colour in HEX, RGB, HSL and HSV in the conversion tiles — click any tile to copy that value.</li><li>Browse the shade and tint scale for darker and lighter versions of your colour, and click a swatch to copy its HEX.</li><li>Check the harmonies for complementary, analogous and triadic colours that work with your base colour, and click to copy the ones you want.</li></ol>
+    <ol class="steps"><li>Pick a colour with the colour picker, or type a HEX value such as #0a7a55, 7c3aed or a short form like #73e.</li><li>Read the same colour in HEX, RGB, HSL and HSV in the conversion tiles — click any tile to copy that value.</li><li>Browse the shade and tint scale for darker and lighter versions of your colour, and click a swatch to copy its HEX.</li><li>Check the harmonies for complementary, analogous and triadic colours that work with your base colour, and click to copy the ones you want.</li></ol>
   </section>
   <section class="tool-section faq">
     <h2>Frequently asked questions</h2>
-    <details><summary>Which HEX formats can I type?</summary><p>You can type a 6-digit HEX value like #7c3aed or 7c3aed (the # is optional), or a 3-digit short form like #73e, which expands to #7733ee. Anything else shows an error message and leaves the current colour unchanged.</p></details>
+    <details><summary>Which HEX formats can I type?</summary><p>You can type a 6-digit HEX value like #0a7a55 or 7c3aed (the # is optional), or a 3-digit short form like #73e, which expands to #7733ee. Anything else shows an error message and leaves the current colour unchanged.</p></details>
     <details><summary>What is the difference between HSL and HSV?</summary><p>Both describe a colour by its hue (the colour itself, 0–360°). HSL uses saturation and lightness, where 50% lightness is the pure colour. HSV (also called HSB) uses saturation and value, where 100% value is the pure colour. Design tools and CSS use HSL; HSV is common in colour pickers and graphics software.</p></details>
     <details><summary>How are shades and tints made?</summary><p>A shade is the base colour mixed with black and a tint is the base colour mixed with white. This scale uses black mixes of 80%, 60%, 40%, 25% and 12%, then the base colour, then white mixes of 12%, 25%, 40%, 60% and 80%.</p></details>
     <details><summary>What are complementary, analogous and triadic colours?</summary><p>Complementary is the colour opposite yours on the colour wheel (hue + 180°). Analogous colours sit either side of yours (±30°). Triadic colours are spaced evenly around the wheel (±120°). All three keep your colour's saturation and lightness and only rotate the hue.</p></details>
@@ -289,7 +289,7 @@
   hexInput.addEventListener('input', function(){
     var rgb = parseHex(hexInput.value);
     if (!rgb) {
-      showError('That is not a valid HEX colour. Use 3 or 6 hex digits, with or without #, for example #7c3aed.');
+      showError('That is not a valid HEX colour. Use 3 or 6 hex digits, with or without #, for example #0a7a55.');
       return;
     }
     hideError();

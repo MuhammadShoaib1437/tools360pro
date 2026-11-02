@@ -83,7 +83,7 @@
       </div>
       <div class="field">
         <label for="f-theme">Theme colour</label>
-        <input id="f-theme" type="color" value="#7c3aed">
+        <input id="f-theme" type="color" value="#0a7a55">
       </div>
       <div class="field">
         <label for="f-robots">Robots</label>
@@ -228,7 +228,7 @@
   });
   T360.qs('#clear-btn').addEventListener('click', function(){
     Object.keys(F).forEach(function(k){ if (k !== 'theme' && k !== 'type' && k !== 'twitter' && k !== 'robots') F[k].value = ''; });
-    F.theme.value = '#7c3aed'; F.type.value = 'website'; F.twitter.value = 'summary'; F.robots.value = 'index, follow';
+    F.theme.value = '#0a7a55'; F.type.value = 'website'; F.twitter.value = 'summary'; F.robots.value = 'index, follow';
     update();
     F.title.focus();
   });
