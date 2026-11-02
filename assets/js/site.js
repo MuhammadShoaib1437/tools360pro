@@ -402,7 +402,8 @@
 
   window.T360 = {
     qs: qs, qsa: qsa, toast: toast, download: download, copyText: copyText,
-    formatBytes: formatBytes, tools: TOOLS, categories: CATEGORIES, openPalette: openPalette
+    formatBytes: formatBytes, tools: TOOLS, categories: CATEGORIES, openPalette: openPalette,
+    iconFor: iconFor, bySlug: bySlug, catById: catById
   };
 
   /* ---------- Init ---------- */
