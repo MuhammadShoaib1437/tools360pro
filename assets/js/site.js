@@ -192,7 +192,7 @@
   }
 
   /* ---------- Logo (360 Orbit mark) ---------- */
-  var LOGO_SVG = '<svg class="logo-svg" viewBox="0 0 48 48" fill="none" aria-hidden="true"><defs><linearGradient id="t360lg" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0a7a55"/><stop offset=".52" stop-color="#2fbf8f"/><stop offset="1" stop-color="#d9a441"/></linearGradient></defs><circle cx="24" cy="24" r="18.5" stroke="url(#t360lg)" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="86 30"/><circle cx="36.6" cy="10.5" r="3.2" fill="#d9a441"/><path fill="currentColor" fill-rule="evenodd" d="M24 14.6l8.1 4.7v9.4L24 33.4l-8.1-4.7v-9.4L24 14.6zm0 5.3a4.1 4.1 0 1 0 0 8.2 4.1 4.1 0 0 0 0-8.2z"/></svg>';
+  var LOGO_SVG = '<svg class="logo-svg" viewBox="0 0 48 48" fill="none" aria-hidden="true"><defs><linearGradient id="t360lg" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f43f5e"/><stop offset=".38" stop-color="#f97316"/><stop offset=".68" stop-color="#06b6d4"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs><circle cx="24" cy="24" r="18.5" stroke="url(#t360lg)" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="86 30"/><circle cx="36.6" cy="10.5" r="3.2" fill="#f43f5e"/><path fill="currentColor" fill-rule="evenodd" d="M24 14.6l8.1 4.7v9.4L24 33.4l-8.1-4.7v-9.4L24 14.6zm0 5.3a4.1 4.1 0 1 0 0 8.2 4.1 4.1 0 0 0 0-8.2z"/></svg>';
 
   /* ---------- Header / footer injection ---------- */
   var sunSVG = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
@@ -408,9 +408,9 @@
 
   /* ---------- Init ---------- */
   (function initTheme() {
-    /* Dark is the default showpiece theme; a saved choice always wins. */
+    /* Light "Spectrum Worlds" is the default theme; a saved choice always wins. */
     var saved = lsGet("t360:theme", null);
-    document.documentElement.setAttribute("data-theme", saved === "light" ? "light" : "dark");
+    document.documentElement.setAttribute("data-theme", saved === "dark" ? "dark" : "light");
   })();
 
   injectChrome();
