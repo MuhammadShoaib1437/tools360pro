@@ -1,5 +1,5 @@
 /* ============================================================
-   Tool360 — Phase 7 homepage controller
+   Tools360Pro — Phase 7 homepage controller
    1) Orbit: chips are positioned with left/top percentages from
       a single JS angle per ring. A chip's own transform is only
       translate(-50%,-50%) — it is NEVER rotated, so every label

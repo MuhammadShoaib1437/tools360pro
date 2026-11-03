@@ -1,5 +1,5 @@
 /* ============================================================
-   Tool360 — shared site script
+   Tools360Pro — shared site script
    Header/footer injection · Ctrl+K palette · favourites/recent
    (localStorage) · related tools · theme · T360 helpers
    ============================================================ */
@@ -209,7 +209,7 @@
       header.className = "site-header";
       header.innerHTML =
         '<div class="container header-inner">' +
-          '<a class="logo" href="' + BASE + 'index.html" aria-label="Tool360 home">' + LOGO_SVG + '<span>Tool<span class="logo-num">360</span></span></a>' +
+          '<a class="logo" href="' + BASE + 'index.html" aria-label="Tools360Pro home">' + LOGO_SVG + '<span>Tools<span class="logo-num">360</span>Pro</span></a>' +
           '<nav class="main-nav" aria-label="Tool categories">' + nav + "</nav>" +
           '<div class="header-actions">' +
             '<button class="search-btn" id="hdr-search" type="button" aria-label="Search tools">' + searchSVG + '<span class="sb-label">Search tools…</span><span class="spacer"></span><span class="kbd">Ctrl K</span></button>' +
@@ -238,7 +238,7 @@
         '<div class="container">' +
           '<div class="footer-grid">' +
             '<div class="footer-brand">' +
-              '<a class="logo" href="' + BASE + 'index.html">' + LOGO_SVG + '<span>Tool<span class="logo-num">360</span></span></a>' +
+              '<a class="logo" href="' + BASE + 'index.html">' + LOGO_SVG + '<span>Tools<span class="logo-num">360</span>Pro</span></a>' +
               "<p>Free online tools for PDFs, images, text, conversions and code. Everything runs locally in your browser — your files are never uploaded to a server.</p>" +
             "</div>" +
             "<div><h4>Categories</h4><ul>" + catLinks + "</ul></div>" +
@@ -247,7 +247,7 @@
               }).join("") + "</ul></div>" +
             "<div><h4>More tools</h4><ul>" + toolLinks(["text", "calculators", "developer", "generators"]) + "</ul></div>" +
           "</div>" +
-          '<div class="footer-bottom"><span>© ' + new Date().getFullYear() + ' Tool360. Free tools that respect your privacy.</span><span>Runs 100% in your browser · No sign-up · No uploads</span></div>' +
+          '<div class="footer-bottom"><span>© ' + new Date().getFullYear() + ' Tools360Pro. Free tools that respect your privacy.</span><span>Runs 100% in your browser · No sign-up · No uploads</span></div>' +
         "</div>";
     }
   }
